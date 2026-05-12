@@ -121,6 +121,14 @@ The project distributes a pre-trained model for these default filenames. Users c
 
 The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, and model format version. No network access, online inference, or external services are used.
 
+Use the default training command for official artifacts. For dataset-only experiments without built-in seed examples:
+
+```bash
+python3 -m ml.train_model --no-seed
+```
+
+Regenerate the model, vectorizer, and metadata after adding balanced examples, changing preprocessing, changing supported labels, or preparing a Debian validation release.
+
 The UI shows the local model status at startup. If the distributed artifacts or metadata are not present yet, it points users to `python3 -m ml.train_model`.
 
 ## Testing and Evaluation

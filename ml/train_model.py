@@ -28,6 +28,7 @@ def build_metadata(
     model_path: Path,
     vectorizer_path: Path,
     label_balance: dict | None = None,
+    seed_examples_included: bool = True,
 ) -> dict:
     return {
         "format_version": MODEL_FORMAT_VERSION,
@@ -35,6 +36,7 @@ def build_metadata(
         "training_examples": example_count,
         "labels": dict(sorted(label_counts.items())),
         "label_balance": label_balance or {},
+        "seed_examples_included": seed_examples_included,
         "model_path": str(model_path),
         "vectorizer_path": str(vectorizer_path),
         "trainer": "TfidfVectorizer(ngram_range=(1, 2)) + LinearSVC(class_weight='balanced')",
@@ -45,6 +47,7 @@ def train(
     model_path: Path = DEFAULT_MODEL_PATH,
     vectorizer_path: Path = DEFAULT_VECTORIZER_PATH,
     metadata_path: Path = DEFAULT_METADATA_PATH,
+    include_seed: bool = True,
 ) -> dict:
     try:
         from sklearn.feature_extraction.text import TfidfVectorizer
@@ -52,7 +55,7 @@ def train(
     except ImportError as exc:
         raise RuntimeError("Install Debian package python3-sklearn to train the ML model.") from exc
 
-    examples = load_training_examples(include_seed=True)
+    examples = load_training_examples(include_seed=include_seed)
     texts, labels = as_training_arrays(examples)
     processed = [preprocess_text(text, detect_language(text)) for text in texts]
     pairs = [(text, label) for text, label in zip(processed, labels) if text]
@@ -76,6 +79,7 @@ def train(
         model_path,
         vectorizer_path,
         summarize_label_balance(examples),
+        seed_examples_included=include_seed,
     )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return metadata | {"metadata_path": str(metadata_path)}
@@ -86,11 +90,17 @@ def main() -> int:
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL_PATH)
     parser.add_argument("--vectorizer", type=Path, default=DEFAULT_VECTORIZER_PATH)
     parser.add_argument("--metadata", type=Path, default=DEFAULT_METADATA_PATH)
+    parser.add_argument(
+        "--no-seed",
+        action="store_true",
+        help="Train only from repository datasets, without built-in seed examples.",
+    )
     args = parser.parse_args()
 
-    stats = train(args.model, args.vectorizer, args.metadata)
+    stats = train(args.model, args.vectorizer, args.metadata, include_seed=not args.no_seed)
     print(f"Trained commit model with {stats['training_examples']} examples")
     print(f"Labels: {stats['labels']}")
+    print(f"Seed examples included: {stats['seed_examples_included']}")
     if stats.get("label_balance"):
         print(f"Label balance: {stats['label_balance']}")
     print(f"Model: {stats['model_path']}")

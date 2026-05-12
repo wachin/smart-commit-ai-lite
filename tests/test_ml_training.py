@@ -30,6 +30,7 @@ class MLTrainingTests(unittest.TestCase):
             model_path=Path("ml/commit_model.pkl"),
             vectorizer_path=Path("ml/vectorizer.pkl"),
             label_balance={"largest_label": "feat", "imbalance_ratio": 2.0},
+            seed_examples_included=False,
         )
 
         self.assertEqual(metadata["format_version"], MODEL_FORMAT_VERSION)
@@ -37,6 +38,7 @@ class MLTrainingTests(unittest.TestCase):
         self.assertEqual(metadata["labels"], {"feat": 8, "fix": 4})
         self.assertEqual(metadata["label_balance"]["largest_label"], "feat")
         self.assertEqual(metadata["label_balance"]["imbalance_ratio"], 2.0)
+        self.assertFalse(metadata["seed_examples_included"])
         self.assertEqual(metadata["model_path"], "ml/commit_model.pkl")
         self.assertEqual(metadata["vectorizer_path"], "ml/vectorizer.pkl")
         self.assertIn("LinearSVC", metadata["trainer"])
@@ -57,6 +59,14 @@ class MLTrainingTests(unittest.TestCase):
         self.assertEqual(summary["counts"]["chore"], 0)
         self.assertEqual(summary["largest_label"], "feat")
         self.assertEqual(summary["imbalance_ratio"], 2.0)
+
+    def test_seed_examples_are_optional_training_support(self):
+        without_seed = load_training_examples(include_seed=False)
+        with_seed = load_training_examples(include_seed=True)
+
+        self.assertGreaterEqual(len(with_seed), len(without_seed))
+        self.assertFalse(any(example.source == "built-in-seed" for example in without_seed))
+        self.assertTrue(any(example.source == "built-in-seed" for example in with_seed))
 
     @unittest.skipUnless(importlib.util.find_spec("sklearn"), "python3-sklearn is not installed")
     def test_training_writes_model_and_vectorizer(self):

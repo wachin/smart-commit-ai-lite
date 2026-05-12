@@ -1,6 +1,6 @@
 # Lightweight ML Engine
 
-This directory contains the optional scikit-learn Conventional Commit type predictor.
+This directory contains the local scikit-learn Conventional Commit type predictor.
 
 It is offline-first and Debian-friendly:
 
@@ -22,7 +22,25 @@ Generated artifacts:
 
 - `ml/commit_model.pkl`
 - `ml/vectorizer.pkl`
+- `ml/model_metadata.json`
 
-If either artifact is missing or cannot be loaded, the application falls back to
-the existing `smart_commit_nltk.py` heuristic engine.
+The metadata file records the model format version, training example count,
+label counts, label-balance summary, artifact paths, and whether built-in seed
+examples were included.
 
+To train only from repository datasets, without built-in seed examples:
+
+```bash
+python3 -m ml.train_model --no-seed
+```
+
+Regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json` when:
+
+- new balanced examples are added to `commit_examples_data/`
+- preprocessing behavior changes in `utils/preprocessing.py`
+- supported labels or model metadata format changes
+- Debian package validation is being prepared for release
+
+The official distributed artifacts should use the default command with seed
+examples enabled until the real dataset covers all supported labels well enough
+on its own.

@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 40 registered tests, 39 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 41 registered tests, 40 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -270,7 +270,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for model metadata generation without requiring sklearn at runtime.
 - [x] Tests for valid and invalid model metadata status.
 - [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
-- [x] Successful suite run: 39 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for optional built-in seed examples in local training.
+- [x] Successful suite run: 40 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -301,8 +302,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Evaluate dataset balance: the historical examples currently favor `feat`.
 - [ ] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [ ] Measure local model accuracy without increasing weight or complexity.
-- [ ] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
-- [ ] Keep offline seed examples only as support while the real dataset grows.
+- [x] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
+- [x] Keep offline seed examples only as support while the real dataset grows.
 
 ### [ ] Language Support
 - [x] Expand Spanish verbs and patterns.
