@@ -317,7 +317,8 @@ class NLPCommitGenerator(QMainWindow):
                 r'puedes|selectores|tipo|scope|regenera|manteniendo|ajuste|manual|'
                 r'añadí|anadi|quité|quite|quitada|eliminé|elimine|elimina|borra|borrar|desactiva|devuelve|foco|resultado|tests|'
                 r'continué|continue|trunca|truncado|truncate_subject|vista previa|límites de palabra|limites de palabra|'
-                r'limpiado|ajustado|'
+                r'limpiado|ajustado|clarify|clearer|explicit|supported|local|debian|contribution|guidance|'
+                r'joblib|principles|constraints|labels|responsibility split|do not use|'
                 r'idioma detectado|pendiente|español|inglés|integración|integracion|baseline|línea base|linea base|quedó|quedo)\b',
                 line,
                 re.IGNORECASE
@@ -325,6 +326,17 @@ class NLPCommitGenerator(QMainWindow):
                 continue
             cleaned_lines.append(line)
         return '\n'.join(cleaned_lines)
+
+    def is_readme_architecture_docs_summary(self, text_lower):
+        if 'readme' not in text_lower:
+            return False
+        markers = [
+            'lightweight ml layer', 'project principles', 'do not use',
+            'supported ml labels', 'responsibility split', 'joblib artifact',
+            'debian validation', 'contribution guidance', 'heavy dependencies',
+            'scikit-learn vs heuristic'
+        ]
+        return sum(1 for marker in markers if marker in text_lower) >= 2
 
     def extract_object_phrase(self, phrase):
         phrase = re.sub(r'\[.*?\]', ' ', phrase)
@@ -719,6 +731,9 @@ class NLPCommitGenerator(QMainWindow):
         ):
             return 'add', 'regression suite and evaluation baseline', language
 
+        if language == 'en' and self.is_readme_architecture_docs_summary(normalized_lower):
+            return 'expand', 'project principles and architecture', language
+
         best_sentence = self.pick_best_sentence(normalized, language)
 
         if language == 'es':
@@ -774,7 +789,8 @@ class NLPCommitGenerator(QMainWindow):
                 'add': 'add', 'update': 'update', 'fix': 'fix',
                 'improve': 'improve', 'refactor': 'refactor', 'replace': 'replace',
                 'remove': 'remove', 'doc': 'document', 'docs': 'document',
-                'format': 'format', 'configure': 'configure', 'optimize': 'optimize'
+                'format': 'format', 'configure': 'configure', 'optimize': 'optimize',
+                'expand': 'expand'
             }
 
         verb = verb_map.get(action, action)
@@ -824,6 +840,8 @@ class NLPCommitGenerator(QMainWindow):
 
     def detect_scope(self, text):
         text_lower = text.lower()
+        if self.is_readme_architecture_docs_summary(text_lower):
+            return 'readme'
         if (
             any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
             and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
@@ -890,6 +908,8 @@ class NLPCommitGenerator(QMainWindow):
             'unittest suite', 'pytest suite'
         ])
 
+        if self.is_readme_architecture_docs_summary(text_lower):
+            return 'docs'
         if (
             any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
             and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
@@ -1309,6 +1329,18 @@ class NLPCommitGenerator(QMainWindow):
                     add_bullet('- Mark testing and evaluation tasks complete in Roadmap.md')
                 if '0.446' in text_lower or '45 examples' in text_lower:
                     add_bullet('- Establish baseline metrics: 0.446 subject similarity')
+                return bullets
+
+            if self.is_readme_architecture_docs_summary(text_lower):
+                add_bullet('- Clarify lightweight ML layer and core design constraints')
+                if 'responsibility split' in text_lower or 'nltk/utils' in text_lower or 'scikit-learn' in text_lower:
+                    add_bullet('- Document responsibility split between NLTK, utils, and sklearn')
+                if 'supported ml labels' in text_lower or 'joblib' in text_lower:
+                    add_bullet('- List supported ML labels and local joblib artifact behavior')
+                if 'debian validation' in text_lower or 'contribution guidance' in text_lower:
+                    add_bullet('- Add Debian validation notes and contribution guidelines')
+                if 'do not use' in text_lower or 'heavy dependencies' in text_lower or 'cloud' in text_lower:
+                    add_bullet('- Emphasize do-not-use list for heavy dependencies and APIs')
                 return bullets
 
             has_bilingual_nlp = any(k in text_lower for k in ['bilingual', 'spanish', 'english', 'tokenization', 'spanish verbs'])

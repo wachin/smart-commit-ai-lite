@@ -301,6 +301,30 @@ Resultado: 19 tests OK.
             command.index('-m "- Validación: 19 tests pass"')
         )
 
+    def test_readme_architecture_summary_generates_rich_docs_commit(self):
+        text = """Updated [README.md](/home/wachin/Dev/smart-commit-ai-lite/README.md) where it was still a bit thin.
+
+Added:
+- clearer project title with the lightweight ML layer
+- explicit project principles and “do not use” constraints
+- supported ML labels
+- NLTK/utils vs scikit-learn vs heuristic responsibility split
+- local `joblib` artifact behavior
+- Debian validation note
+- contribution guidance for balanced ML examples and ML prediction tests
+
+No tests needed; documentation-only change.
+"""
+        command = self.render_command(text)
+
+        self.assertIn('git commit -m "docs(readme): expand project principles and architecture"', command)
+        self.assertIn('-m "- Clarify lightweight ML layer and core design constraints"', command)
+        self.assertIn('-m "- Document responsibility split between NLTK, utils, and sklearn"', command)
+        self.assertIn('-m "- List supported ML labels and local joblib artifact behavior"', command)
+        self.assertIn('-m "- Add Debian validation notes and contribution guidelines"', command)
+        self.assertIn('-m "- Emphasize do-not-use list for heavy dependencies and APIs"', command)
+        self.assertNotIn('refactor(nlp): update readme.md', command)
+
     def test_copy_button_confirms_without_modal_text_change(self):
         self.render_command('He creado Roadmap.md con tareas completadas.')
         self.assertEqual(self.generator.copy_btn.text(), 'Copiar al Portapapeles')

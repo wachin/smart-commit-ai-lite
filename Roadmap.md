@@ -49,7 +49,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added an optional ML architecture with scikit-learn, TF-IDF, LinearSVC, and fallback to NLTK heuristics.
-- [x] Current suite: 26 registered tests, 25 passing, and 1 training test skipped when `python3-sklearn` is not installed.
+- [x] Current suite: 27 registered tests, 26 passing, and 1 training test skipped when `python3-sklearn` is not installed.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -253,7 +253,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Unit tests for common Spanish action extraction.
 - [x] Direct tests for `select_commit_type()` with core categories.
 - [x] Direct tests for `detect_scope()` with common project areas.
-- [x] Successful suite run: 25 tests pass and 1 is skipped without `python3-sklearn`.
+- [x] Regression for rich README architecture summaries compared against an AI-generated commit.
+- [x] Successful suite run: 26 tests pass and 1 is skipped without `python3-sklearn`.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -261,7 +262,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ## Future Improvements
 
 ### Recommended Next Session
-- [ ] Test the program with the latest Codex-generated summary and compare it against the commit a richer AI would produce.
+- [x] Test the program with the latest Codex-generated summary and compare it against the commit a richer AI would produce.
 - [ ] If the subject is too generic, add a specific subject rule before touching the body.
 - [ ] If the body has good bullets but poor ordering, adjust `rank_body_lines()`.
 - [ ] If useful information is lost from pasted text, inspect `clean_input()` first.
