@@ -16,7 +16,8 @@ La línea de mejora actual no es integrar con Git, sino mejorar la calidad semá
 - [x] Añadida detección de menciones de archivos para clasificar código, tests, documentación, reportes y configuración.
 - [x] Ampliado el body de 5 a 7 bullets para conservar detalles importantes.
 - [x] Añadido ranking de bullets para poner primero cambios principales, luego tests/docs/reportes y dejar validación al final.
-- [x] Suite actual: 20 tests de regresión pasando.
+- [x] Añadida arquitectura ML opcional con scikit-learn, TF-IDF, LinearSVC y fallback a heurísticas NLTK.
+- [x] Suite actual: 23 tests registrados: 22 pasan y 1 entrenamiento se omite si `python3-sklearn` no está instalado.
 
 ### Ejemplo de Calidad Actual
 
@@ -48,6 +49,14 @@ QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
 
 ```bash
 QT_QPA_PLATFORM=offscreen python3 commit_examples_data/compare_generator.py
+```
+
+```bash
+sudo apt install python3-sklearn python3-joblib python3-langdetect python3-regex
+```
+
+```bash
+python3 -m ml.train_model
 ```
 
 Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado porque ya está trackeado por Git. `.gitignore` evita nuevos artefactos, pero queda pendiente sacarlo del índice.
@@ -120,6 +129,14 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Priorización de cambios NLP/bilingües como `feat(nlp)`.
 - [x] Clasificación de roadmaps creados como `docs(repo)`.
 
+### [x] Motor ML Ligero y Opcional
+- [x] Creación de `ml/dataset_loader.py` para reutilizar `examples.json`, `examples.db` y `commit_examples_data/entries/`.
+- [x] Creación de `ml/train_model.py` con `TfidfVectorizer` y `LinearSVC`.
+- [x] Guardado local de `commit_model.pkl` y `vectorizer.pkl` mediante `joblib`.
+- [x] Creación de `ml/predictor.py` con carga rápida y fallo silencioso hacia heurísticas.
+- [x] Semillas offline para cubrir `feat`, `fix`, `docs`, `refactor`, `test` y `chore`.
+- [x] Utilidades compartidas en `utils/` para preprocessing NLTK, detección de idioma y `python3-regex`.
+
 ### [x] Generación de Body Lines
 - [x] Generación de hasta 7 bullets relevantes.
 - [x] Bullets localizados en español o inglés según el texto de entrada.
@@ -156,7 +173,8 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Test para detectar validaciones indirectas como `suite completa pasa: 18 tests OK`.
 - [x] Test para detectar menciones de código, tests, documentación y reportes.
 - [x] Test para ordenar bullets por importancia y podar documentación genérica duplicada.
-- [x] Ejecución exitosa de 20 tests de regresión.
+- [x] Tests para dataset loader y fallback del predictor ML cuando no hay modelo.
+- [x] Ejecución exitosa de la suite: 22 tests pasan y 1 se omite sin `python3-sklearn`.
 
 ### [x] Higiene de Artefactos Generados
 - [x] Creación de `.gitignore` para `__pycache__/` y archivos `*.py[cod]`.
@@ -187,7 +205,8 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [ ] Soportar variantes regionales y frases más coloquiales.
 
 ### [ ] Arquitectura y Mantenibilidad
-- [ ] Separar la lógica NLP de la interfaz PyQt6.
+- [x] Añadir módulos externos para preprocessing, idioma y motor ML sin reescribir `smart_commit_nltk.py`.
+- [ ] Separar completamente la lógica NLP heurística de la interfaz PyQt6.
 - [ ] Crear una clase o módulo dedicado para limpieza de input.
 - [ ] Crear un módulo dedicado para type/scope detection.
 - [ ] Crear fixtures reutilizables con ejemplos reales.

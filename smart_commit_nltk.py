@@ -1,5 +1,4 @@
 import sys
-import re
 import time
 import threading
 import contextlib
@@ -10,6 +9,16 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QGroupBox, QComboBox)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QClipboard
+
+try:
+    import regex as re
+except ImportError:  # pragma: no cover - Debian package is recommended, stdlib keeps app usable
+    import re
+
+try:
+    from ml.predictor import SklearnCommitPredictor
+except Exception:  # pragma: no cover - ML is intentionally optional
+    SklearnCommitPredictor = None
 
 # ==========================================
 # 🔄 MEJORA: Descarga con Spinner y Feedback
@@ -81,6 +90,7 @@ class NLPCommitGenerator(QMainWindow):
         self.detected_scope = None
         self.current_subject = ""
         self.current_body_lines = []
+        self.ml_predictor = SklearnCommitPredictor() if SklearnCommitPredictor else None
 
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
@@ -920,6 +930,14 @@ class NLPCommitGenerator(QMainWindow):
             return 'docs'
         return 'feat'
 
+    def predict_commit_type(self, text, subject_verb, subject_obj, language=None):
+        heuristic_type = self.select_commit_type(text, subject_verb, subject_obj)
+        if self.ml_predictor:
+            prediction = self.ml_predictor.predict(text, language)
+            if prediction and prediction.commit_type:
+                return prediction.commit_type
+        return heuristic_type
+
     def extract_validation_bullet(self, text, language='en'):
         text_lower = text.lower()
         tests_match = re.search(
@@ -1413,7 +1431,7 @@ class NLPCommitGenerator(QMainWindow):
             subject = self.format_subject(verb, obj, language)
             subject = self.truncate_subject(subject)
 
-            commit_type = self.select_commit_type(text, verb, obj)
+            commit_type = self.predict_commit_type(text, verb, obj, language)
             body_lines = self.generate_body_lines(self.clean_input(text), language)
             self.detected_commit_type = commit_type
             self.detected_scope = scope

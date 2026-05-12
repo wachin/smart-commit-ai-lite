@@ -2,7 +2,7 @@
 
 A lightweight desktop app built with **PyQt6** and **NLTK** that turns pasted change summaries into ready-to-run Conventional Commit commands.
 
-The project is intentionally local-first: no API keys, no cloud model, and no network dependency after the initial NLTK data download. It uses language-aware tokenization, practical heuristics, and project-specific patterns to produce useful commit subjects and bullet bodies.
+The project is intentionally local-first: no API keys, no cloud model, and no network dependency after the initial NLTK data download. It uses language-aware tokenization, practical heuristics, and an optional lightweight scikit-learn classifier to produce useful Conventional Commit commands.
 
 ## Features
 
@@ -12,7 +12,9 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 - **Conventional Commits format**: Generates `type(scope): subject` commands with scopes such as `nlp`, `repo`, `docs`, `ui`, `app`, `dict`, and `tools`.
 - **Markdown noise filtering**: Ignores pasted fenced code blocks, embedded `git commit -m` examples, Markdown links, and quoted command output that would otherwise pollute the result.
 - **Smarter type detection**: Avoids false positives such as classifying a commit as `ci` just because the letters `ci` appear inside Spanish words like `funcionalidades` or `secciones`.
-- **Structured body generation**: Builds up to five high-signal bullet lines for roadmap work, bilingual NLP changes, UI work, validation, docs, and common project patterns.
+- **Optional sklearn classifier**: Can train a local TF-IDF + LinearSVC model for `feat`, `fix`, `docs`, `refactor`, `test`, and `chore` prediction.
+- **Safe fallback**: If the ML artifacts are missing or cannot load, the original NLTK heuristic engine continues to work.
+- **Structured body generation**: Builds up to seven high-signal bullet lines for roadmap work, bilingual NLP changes, UI work, validation, docs, and common project patterns.
 - **Clipboard workflow**: Shows a multiline `git commit` command ready to copy and paste into a terminal.
 
 ## Installation
@@ -21,8 +23,10 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 
 ```bash
 sudo apt update
-sudo apt install python3-pyqt6 python3-nltk
+sudo apt install python3-pyqt6 python3-nltk python3-sklearn python3-joblib python3-langdetect python3-regex
 ```
+
+The ML packages are used only for the optional local classifier. The app still falls back to the heuristic NLTK engine if no trained model exists.
 
 ### Other Linux Distributions
 
@@ -72,6 +76,14 @@ Recalculate the example-dataset comparison report:
 QT_QPA_PLATFORM=offscreen python3 commit_examples_data/compare_generator.py
 ```
 
+Train or retrain the optional offline ML model:
+
+```bash
+python3 -m ml.train_model
+```
+
+This writes `ml/commit_model.pkl` and `ml/vectorizer.pkl` locally with `joblib`.
+
 The comparison report is written to `commit_examples_data/comparison_report.json`. The current heuristics intentionally cap generated bodies at seven bullets, so body-count metrics are not expected to match older examples that contain longer commit bodies.
 
 ## Examples
@@ -116,8 +128,9 @@ git commit -m "docs(repo): agrega roadmap con seguimiento de progreso" \
 3. **Sentence splitting**: Uses NLTK sentence tokenization with the detected language.
 4. **Action extraction**: Applies English POS tagging and rule-based Spanish patterns to find the main action and object.
 5. **Type/scope selection**: Classifies the change into Conventional Commit type/scope using whole-word matching and project-aware keywords.
-6. **Body generation**: Adds concise, localized bullets for detected change categories.
-7. **Formatting**: Keeps the subject short and emits a shell-ready multiline `git commit` command.
+6. **Optional ML prediction**: If local sklearn artifacts are present, a TF-IDF + LinearSVC classifier predicts the commit type. Missing or broken artifacts fall back to the heuristic type.
+7. **Body generation**: Adds concise, localized bullets for detected change categories.
+8. **Formatting**: Keeps the subject short and emits a shell-ready multiline `git commit` command.
 
 ## Project Structure
 
@@ -126,6 +139,8 @@ git commit -m "docs(repo): agrega roadmap con seguimiento de progreso" \
 ├── Roadmap.md                    # Current progress and planned improvements
 ├── COMMIT_GENERATION_EXAMPLES.md # Real-world examples and expected outputs
 ├── commit_examples_data/         # Parsed JSON/SQLite examples and comparison tools
+├── ml/                           # Optional sklearn training and prediction modules
+├── utils/                        # Shared preprocessing, language, and regex helpers
 ├── tests/                        # Regression tests for NLP heuristics
 └── README.md                     # Project documentation
 ```
