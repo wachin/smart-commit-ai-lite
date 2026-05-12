@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import Any
 import joblib
 
 from ml.dataset_loader import SUPPORTED_TYPES
+from ml.train_model import MODEL_FORMAT_VERSION
 from utils.language import detect_language
 from utils.preprocessing import preprocess_text
 
@@ -36,12 +38,19 @@ class ModelStatus:
     model_exists: bool
     vectorizer_exists: bool
     metadata_exists: bool
+    metadata: dict[str, Any] | None
     loadable: bool
     message: str
 
     @property
     def ready(self) -> bool:
-        return self.model_exists and self.vectorizer_exists and self.metadata_exists and self.loadable
+        return (
+            self.model_exists
+            and self.vectorizer_exists
+            and self.metadata_exists
+            and self.metadata is not None
+            and self.loadable
+        )
 
 
 class SklearnCommitPredictor:
@@ -59,6 +68,7 @@ class SklearnCommitPredictor:
         self._model: Any | None = None
         self._vectorizer: Any | None = None
         self._load_error: str | None = None
+        self._metadata_error: str | None = None
 
     @property
     def available(self) -> bool:
@@ -81,10 +91,42 @@ class SklearnCommitPredictor:
             self._load_error = str(exc)
             return False
 
+    def load_metadata(self) -> dict[str, Any] | None:
+        if not self.metadata_path.exists():
+            self._metadata_error = "metadata artifact is missing"
+            return None
+        try:
+            metadata = json.loads(self.metadata_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            self._metadata_error = str(exc)
+            return None
+
+        required_fields = {
+            "format_version",
+            "training_examples",
+            "labels",
+            "model_path",
+            "vectorizer_path",
+            "trainer",
+        }
+        missing_fields = sorted(required_fields - set(metadata))
+        if missing_fields:
+            self._metadata_error = "metadata missing fields: " + ", ".join(missing_fields)
+            return None
+        if metadata.get("format_version") != MODEL_FORMAT_VERSION:
+            self._metadata_error = (
+                f"unsupported metadata format version: {metadata.get('format_version')}"
+            )
+            return None
+
+        self._metadata_error = None
+        return metadata
+
     def status(self, try_load: bool = False) -> ModelStatus:
         model_exists = self.model_path.exists()
         vectorizer_exists = self.vectorizer_path.exists()
         metadata_exists = self.metadata_path.exists()
+        metadata = self.load_metadata() if metadata_exists else None
         loadable = False
 
         if model_exists and vectorizer_exists:
@@ -98,6 +140,8 @@ class SklearnCommitPredictor:
             message = "missing vectorizer artifact"
         elif not metadata_exists:
             message = "model artifacts are ready; metadata is missing"
+        elif metadata is None:
+            message = f"model metadata is invalid: {self._metadata_error or 'unknown error'}"
         elif loadable:
             message = "model artifacts are ready"
         else:
@@ -110,6 +154,7 @@ class SklearnCommitPredictor:
             model_exists=model_exists,
             vectorizer_exists=vectorizer_exists,
             metadata_exists=metadata_exists,
+            metadata=metadata,
             loadable=loadable,
             message=message,
         )

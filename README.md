@@ -19,7 +19,7 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 - **Bilingual input support**: Detects Spanish or English summaries and keeps the generated subject/body in the same language.
 - **Language-aware tokenization**: Uses NLTK Punkt tokenizers for English and Spanish sentence splitting.
 - **Spanish action extraction**: Understands common Spanish development phrases such as `he creado`, `actualizado`, `incluye`, `resume`, `corrige`, and `mejora`.
-- **Conventional Commits format**: Generates `type(scope): subject` commands with scopes such as `nlp`, `repo`, `docs`, `ui`, `app`, `dict`, and `tools`.
+- **Conventional Commits format**: Generates `type(scope): subject` commands with scopes such as `nlp`, `ml`, `repo`, `docs`, `ui`, `app`, `dict`, and `tools`.
 - **Markdown noise filtering**: Ignores pasted fenced code blocks, embedded `git commit -m` examples, Markdown links, and quoted command output that would otherwise pollute the result.
 - **Smarter type detection**: Avoids false positives such as classifying a commit as `ci` just because the letters `ci` appear inside Spanish words like `funcionalidades` or `secciones`.
 - **Sklearn classifier**: Uses a local TF-IDF + LinearSVC model for `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, and related Conventional Commit type prediction.

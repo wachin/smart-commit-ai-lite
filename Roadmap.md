@@ -50,12 +50,13 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 30 registered tests, 29 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 34 registered tests, 33 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
 - [x] The sklearn engine is modular and part of the standard architecture.
 - [x] Add startup validation for the distributed `ml/commit_model.pkl` and `ml/vectorizer.pkl` artifacts.
+- [x] Validate `ml/model_metadata.json` format and required fields before treating the distributed model as ready.
 - [x] Training reuses `commit_examples_data/examples.json`, `commit_examples_data/examples.db`, and `commit_examples_data/entries/`.
 - [x] The predictor returns a type and approximate confidence when the model supports it.
 - [x] The system supports English and Spanish input.
@@ -191,7 +192,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 
 ### [x] Type and Scope Detection
 - [x] Automatic type detection: `feat`, `fix`, `docs`, `test`, `build`, `ci`, `style`, `refactor`, `perf`.
-- [x] Automatic scope detection: `app`, `ui`, `docs`, `repo`, `dict`, `tools`, `nlp`.
+- [x] Automatic scope detection: `app`, `ui`, `docs`, `repo`, `dict`, `tools`, `nlp`, `ml`.
 - [x] Fixed false-positive `ci` detection inside words such as `funcionalidades` and `secciones`.
 - [x] Prioritized NLP/bilingual changes as `feat(nlp)`.
 - [x] Classified newly created roadmaps as `docs(repo)`.
@@ -203,6 +204,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Added `model_metadata.json` generation for model format, label counts, and artifact paths.
 - [x] Created `ml/predictor.py` with fast local model loading.
 - [x] Added explicit model artifact status reporting for model/vectorizer presence and loadability.
+- [x] Added metadata validation for required fields and model format version.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
 - [x] Documented Debian installation and local training.
@@ -257,9 +259,12 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Direct tests for `select_commit_type()` with core categories.
 - [x] Direct tests for `detect_scope()` with common project areas.
 - [x] Regression for rich README architecture summaries compared against an AI-generated commit.
+- [x] Regression for ML metadata validation summaries compared against an AI-generated commit.
+- [x] Regression for original prompt examples: crash/audio, MIDI karaoke, installation instructions, and deprecated code.
 - [x] Tests for model artifact status reporting and UI model status text.
 - [x] Tests for model metadata generation without requiring sklearn at runtime.
-- [x] Successful suite run: 29 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for valid and invalid model metadata status.
+- [x] Successful suite run: 33 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -268,6 +273,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 
 ### Recommended Next Session
 - [x] Test the program with the latest Codex-generated summary and compare it against the commit a richer AI would produce.
+- [x] Added a regression for ML metadata validation summaries so they generate `feat(ml)` instead of generic style/docs output.
 - [ ] If the subject is too generic, add a specific subject rule before touching the body.
 - [ ] If the body has good bullets but poor ordering, adjust `rank_body_lines()`.
 - [ ] If useful information is lost from pasted text, inspect `clean_input()` first.
@@ -279,7 +285,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Add more unit tests for `select_commit_type()` and `detect_scope()`.
 - [ ] Add ML prediction tests with the distributed trained model in a Debian 12 apt environment.
 - [ ] Test on Debian 12 with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
-- [ ] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
+- [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [ ] Add regression cases for mixed English/Spanish texts.
 - [ ] Add regression cases for summaries with several modified files.
 - [ ] Define new metrics that do not penalize the current 7-bullet limit.

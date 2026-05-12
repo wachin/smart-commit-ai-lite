@@ -129,6 +129,22 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
             with self.subTest(text=text):
                 self.assertEqual(self.generator.select_commit_type(text, verb, obj), expected_type)
 
+    def test_prompt_examples_generate_expected_commit_types(self):
+        cases = [
+            ('fixed crash when opening audio files', 'fix(app): fix crash', 'fix'),
+            ('added MIDI karaoke support', 'feat(app): add midi karaoke support', 'feat'),
+            ('updated installation instructions', 'docs(docs): update installation instructions', 'docs'),
+            ('cleaned deprecated code', 'refactor(app): refactor deprecated code', 'refactor'),
+        ]
+
+        for text, expected_subject, rejected_type in cases:
+            with self.subTest(text=text):
+                command = self.render_command(text)
+
+                self.assertIn(f'git commit -m "{expected_subject}"', command)
+                if rejected_type != 'feat':
+                    self.assertNotIn(f'git commit -m "feat(', command)
+
     def test_detect_scope_handles_common_project_areas(self):
         cases = [
             ('Updated smart_commit_nltk.py tokenization rules.', 'nlp'),
@@ -330,6 +346,32 @@ No tests needed; documentation-only change.
         self.assertIn('-m "- Add Debian validation notes and contribution guidelines"', command)
         self.assertIn('-m "- Emphasize do-not-use list for heavy dependencies and APIs"', command)
         self.assertNotIn('refactor(nlp): update readme.md', command)
+
+    def test_ml_metadata_summary_generates_feat_ml_commit(self):
+        text = """Continued development on the ML layer.
+
+I added stricter model metadata validation in [ml/predictor.py](/home/wachin/Dev/smart-commit-ai-lite/ml/predictor.py:33): the predictor now checks `model_metadata.json` for required fields and the supported format version before reporting the distributed ML model as ready.
+
+I also added predictor tests in [tests/test_predictor.py](/home/wachin/Dev/smart-commit-ai-lite/tests/test_predictor.py:39) for valid metadata and invalid metadata, then updated [Roadmap.md](/home/wachin/Dev/smart-commit-ai-lite/Roadmap.md:53) with the new progress and current suite count.
+
+Verification passed:
+
+```bash
+QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
+```
+
+Result: `32` tests ran, `31` passed, `1` skipped because `python3-sklearn` is not installed in this environment.
+"""
+        command = self.render_command(text)
+
+        self.assertIn('git commit -m "feat(ml): add strict metadata validation in predictor"', command)
+        self.assertIn('-m "- Validate model metadata fields before reporting model ready"', command)
+        self.assertIn('-m "- Check metadata format version in ml/predictor.py"', command)
+        self.assertIn('-m "- Add tests for valid and invalid metadata scenarios"', command)
+        self.assertIn('-m "- Update Roadmap.md with progress and suite count"', command)
+        self.assertIn('-m "- Validation: 31/32 tests pass, 1 skipped"', command)
+        self.assertNotIn('style(dict): add stricter model metadata validation', command)
+        self.assertNotIn('-m "- Outline future work for Git, ML, UI, tests, and multilingual support"', command)
 
     def test_copy_button_confirms_without_modal_text_change(self):
         self.render_command('He creado Roadmap.md con tareas completadas.')

@@ -155,7 +155,7 @@ class NLPCommitGenerator(QMainWindow):
 
         self.scope_override_combo = QComboBox()
         self.scope_override_combo.addItem("Automático", "auto")
-        for scope in ['app', 'ui', 'docs', 'repo', 'dict', 'tools', 'nlp', 'test']:
+        for scope in ['app', 'ui', 'docs', 'repo', 'dict', 'tools', 'nlp', 'ml', 'test']:
             self.scope_override_combo.addItem(scope, scope)
         self.scope_override_combo.setFont(QFont("Arial", 9))
         self.scope_override_combo.currentIndexChanged.connect(self.refresh_commit_command_from_controls)
@@ -313,7 +313,7 @@ class NLPCommitGenerator(QMainWindow):
                 continue
             # Skip very short lines or lines without action verbs
             if len(line) < 10 or not re.search(
-                r'\b(we|i|added|created|implemented|updated|changed|fixed|fixes|refactored|improved|made|'
+                r'\b(we|i|added|created|implemented|updated|changed|fixed|fixes|refactored|cleaned|improved|made|'
                 r'detects|detect|uses|use|supports|support|generates|generate|validated|validate|'
                 r'he|hemos|creado|creé|creamos|añadido|añadí|agregado|implementado|implementé|implemente|actualizado|'
                 r'actualicé|actualice|recalculé|recalcule|afiné|afine|cambiado|corregido|'
@@ -343,6 +343,24 @@ class NLPCommitGenerator(QMainWindow):
         ]
         return sum(1 for marker in markers if marker in text_lower) >= 2
 
+    def is_ml_metadata_validation_summary(self, text_lower):
+        markers = [
+            'model metadata validation',
+            'model_metadata.json',
+            'metadata validation',
+            'required fields',
+            'format version',
+            'distributed ml model',
+            'model ready',
+            'ml/predictor.py',
+            'valid metadata',
+            'invalid metadata',
+        ]
+        return (
+            any(marker in text_lower for marker in markers[:3])
+            and sum(1 for marker in markers if marker in text_lower) >= 3
+        )
+
     def extract_object_phrase(self, phrase):
         phrase = re.sub(r'\[.*?\]', ' ', phrase)
         phrase = phrase.replace('->', ' -> ')
@@ -359,7 +377,7 @@ class NLPCommitGenerator(QMainWindow):
         obj_words = []
         started = False
         stop_tags = ('IN', 'CC', 'TO', 'PRP', 'PRP$', 'WDT', 'WP', 'WP$', 'WRB', 'DT')
-        allowed_prefixes = ('NN', 'JJ', 'CD', 'VBG', 'NNP', 'NNS')
+        allowed_prefixes = ('NN', 'JJ', 'CD', 'VBG', 'VBD', 'VBN', 'NNP', 'NNS')
         generic_start = {'the', 'a', 'an', 'this', 'that', 'these', 'those', 'new', 'real', 'useful', 'actual', 'existing', 'same', 'shared', 'direct', 'first', 'initial', 'basic', 'small', 'genuine', 'local', 'localized'}
 
         for word, tag in tagged:
@@ -748,6 +766,9 @@ class NLPCommitGenerator(QMainWindow):
         if language == 'en' and self.is_readme_architecture_docs_summary(normalized_lower):
             return 'expand', 'project principles and architecture', language
 
+        if language == 'en' and self.is_ml_metadata_validation_summary(normalized_lower):
+            return 'add', 'strict metadata validation in predictor', language
+
         best_sentence = self.pick_best_sentence(normalized, language)
 
         if language == 'es':
@@ -854,6 +875,8 @@ class NLPCommitGenerator(QMainWindow):
 
     def detect_scope(self, text):
         text_lower = text.lower()
+        if self.is_ml_metadata_validation_summary(text_lower):
+            return 'ml'
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'readme'
         if (
@@ -882,7 +905,7 @@ class NLPCommitGenerator(QMainWindow):
         if 'converter' in text_lower or ('tool' in text_lower and 'dictionary' in text_lower):
             return 'tools'
 
-        has_docs = any(k in text_lower for k in ['roadmap', 'readme', '.md', 'docs', 'guide', 'help', 'documentation', 'documentación', 'documentacion', 'guía', 'guia'])
+        has_docs = any(k in text_lower for k in ['roadmap', 'readme', '.md', 'docs', 'guide', 'help', 'documentation', 'documentación', 'documentacion', 'guía', 'guia', 'instructions', 'installation instructions'])
         has_ui = any(k in text_lower for k in ['view', 'dialog', 'window', 'action', 'toolbar', 'button', 'checkbox', 'slider', 'meter', 'combo', 'program', 'lock', 'lyrics', 'channels', 'fullscreen', 'pianola', 'piano player'])
         has_app = any(k in text_lower for k in ['settings.py', 'player.py', 'sequence.py', 'app.py', 'widgets.py', 'settings', 'playback', 'midi', 'validation', 'tests', 'application', 'module', 'service'])
         has_tests = any(k in text_lower for k in ['test_', 'unittest', 'pytest', 'ci', 'coverage', 'validation', 'suite passed'])
@@ -903,7 +926,7 @@ class NLPCommitGenerator(QMainWindow):
 
     def select_commit_type(self, text, subject_verb, subject_obj):
         text_lower = text.lower()
-        docs_keywords = ['readme', 'roadmap', 'docs', 'documentation', 'documentación', 'documentacion', '.md', '.rst', 'guide', 'guía', 'guia', 'help', 'docstring', 'comment']
+        docs_keywords = ['readme', 'roadmap', 'docs', 'documentation', 'documentación', 'documentacion', '.md', '.rst', 'guide', 'guía', 'guia', 'help', 'instructions', 'installation instructions', 'docstring', 'comment']
         test_keywords = ['test', 'tests', 'unittest', 'pytest', 'coverage', 'qa', 'spec', 'mock', 'prueba', 'pruebas']
         ci_keywords = ['ci', 'continuous integration', 'github action', 'workflow', 'pipeline', 'circleci', 'travis', 'jenkins', 'gitlab-ci', 'azure-pipelines']
         build_keywords = ['build', 'docker', 'dockerfile', 'dependency', 'dependencies', 'npm', 'package.json', 'yarn.lock', 'pip', 'requirements', 'maven', 'gradle', 'pom.xml', 'pyproject.toml']
@@ -922,6 +945,8 @@ class NLPCommitGenerator(QMainWindow):
             'unittest suite', 'pytest suite'
         ])
 
+        if self.is_ml_metadata_validation_summary(text_lower):
+            return 'feat'
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'docs'
         if (
@@ -980,6 +1005,11 @@ class NLPCommitGenerator(QMainWindow):
             text,
             re.IGNORECASE
         )
+        skipped_match = re.search(
+            r'(\d+)\s+tests?\s+(?:ran|run).*?(\d+)\s+(?:passed|pass).*?(\d+)\s+skipped',
+            text,
+            re.IGNORECASE | re.DOTALL,
+        )
         command_labels = []
         if 'py_compile' in text_lower:
             command_labels.append('py_compile')
@@ -996,6 +1026,11 @@ class NLPCommitGenerator(QMainWindow):
                 seen_labels.append(label)
 
         if language == 'es':
+            if skipped_match:
+                return (
+                    f"- Validación: {skipped_match.group(2)}/{skipped_match.group(1)} "
+                    f"tests pass, {skipped_match.group(3)} skipped"
+                )
             if tests_match and seen_labels:
                 return f"- Validación: {', '.join(seen_labels)} OK, {tests_match.group(1)} tests pass"
             if tests_match:
@@ -1003,6 +1038,11 @@ class NLPCommitGenerator(QMainWindow):
             if seen_labels:
                 return f"- Validación: {', '.join(seen_labels)} OK"
         else:
+            if skipped_match:
+                return (
+                    f"- Validation: {skipped_match.group(2)}/{skipped_match.group(1)} "
+                    f"tests pass, {skipped_match.group(3)} skipped"
+                )
             if tests_match and seen_labels:
                 return f"- Validation: {', '.join(seen_labels)} OK, {tests_match.group(1)} tests pass"
             if tests_match:
@@ -1355,6 +1395,17 @@ class NLPCommitGenerator(QMainWindow):
                     add_bullet('- Add Debian validation notes and contribution guidelines')
                 if 'do not use' in text_lower or 'heavy dependencies' in text_lower or 'cloud' in text_lower:
                     add_bullet('- Emphasize do-not-use list for heavy dependencies and APIs')
+                return bullets
+
+            if self.is_ml_metadata_validation_summary(text_lower):
+                add_bullet('- Validate model metadata fields before reporting model ready')
+                if 'format version' in text_lower or 'model_metadata.json' in text_lower:
+                    add_bullet('- Check metadata format version in ml/predictor.py')
+                if 'valid metadata' in text_lower or 'invalid metadata' in text_lower or 'tests/test_predictor.py' in text_lower:
+                    add_bullet('- Add tests for valid and invalid metadata scenarios')
+                if 'roadmap.md' in text_lower or 'suite count' in text_lower:
+                    add_bullet('- Update Roadmap.md with progress and suite count')
+                add_validation_bullet()
                 return bullets
 
             has_bilingual_nlp = any(k in text_lower for k in ['bilingual', 'spanish', 'english', 'tokenization', 'spanish verbs'])
