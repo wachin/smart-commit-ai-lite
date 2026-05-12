@@ -89,6 +89,17 @@ También corregí el bug que hacía que saliera `ci(docs)` por encontrar las let
         self.assertIn('-m "- Valida la sintaxis con py_compile"', command)
         self.assertNotIn('docs(repo): agrega roadmap', command)
 
+    def test_mixed_language_summary_generates_feat_nlp(self):
+        text = 'Mejoré language detection for mixed Spanish and English input.'
+
+        command = self.render_command(text)
+
+        self.assertIn('git commit -m "feat(nlp): mejora detección de idioma en textos mixtos"', command)
+        self.assertIn('-m "- Mejora la detección de idioma en textos mixtos"', command)
+        self.assertIn('-m "- Reconoce entradas combinadas en español e inglés"', command)
+        self.assertNotIn('feat(app): actualiza proyecto', command)
+        self.assertNotIn('feat(ui):', command)
+
     def test_english_bilingual_summary_generates_feat_nlp(self):
         text = """Updated smart_commit_nltk.py with bilingual support.
 It detects Spanish or English language input, uses localized tokenization,

@@ -361,6 +361,26 @@ class NLPCommitGenerator(QMainWindow):
             and sum(1 for marker in markers if marker in text_lower) >= 3
         )
 
+    def is_mixed_language_nlp_summary(self, text_lower):
+        language_markers = [
+            'language detection',
+            'detect language',
+            'mixed spanish',
+            'spanish and english',
+            'english and spanish',
+            'mixed-language',
+            'mixed language',
+            'tokenization',
+            'tokenización',
+            'idioma',
+        ]
+        ui_status_markers = ['status label', 'language status', 'detected language status', 'etiqueta de estado']
+        return (
+            any(marker in text_lower for marker in language_markers)
+            and any(marker in text_lower for marker in ['mixed', 'mixed-language', 'mixed language', 'mixto', 'mixta', 'mixtos', 'mixtas'])
+            and not any(marker in text_lower for marker in ui_status_markers)
+        )
+
     def extract_object_phrase(self, phrase):
         phrase = re.sub(r'\[.*?\]', ' ', phrase)
         phrase = phrase.replace('->', ' -> ')
@@ -769,6 +789,11 @@ class NLPCommitGenerator(QMainWindow):
         if language == 'en' and self.is_ml_metadata_validation_summary(normalized_lower):
             return 'add', 'strict metadata validation in predictor', language
 
+        if self.is_mixed_language_nlp_summary(normalized_lower):
+            if language == 'es':
+                return 'improve', 'detección de idioma en textos mixtos', language
+            return 'improve', 'mixed-language detection', language
+
         best_sentence = self.pick_best_sentence(normalized, language)
 
         if language == 'es':
@@ -877,6 +902,8 @@ class NLPCommitGenerator(QMainWindow):
         text_lower = text.lower()
         if self.is_ml_metadata_validation_summary(text_lower):
             return 'ml'
+        if self.is_mixed_language_nlp_summary(text_lower):
+            return 'nlp'
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'readme'
         if (
@@ -946,6 +973,8 @@ class NLPCommitGenerator(QMainWindow):
         ])
 
         if self.is_ml_metadata_validation_summary(text_lower):
+            return 'feat'
+        if self.is_mixed_language_nlp_summary(text_lower):
             return 'feat'
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'docs'
@@ -1265,6 +1294,15 @@ class NLPCommitGenerator(QMainWindow):
                     add_bullet('- Establece baseline: 0.446 de similitud de subject')
                 return bullets
 
+            if self.is_mixed_language_nlp_summary(text_lower):
+                add_bullet('- Mejora la detección de idioma en textos mixtos')
+                if 'spanish' in text_lower or 'english' in text_lower or 'español' in text_lower or 'inglés' in text_lower:
+                    add_bullet('- Reconoce entradas combinadas en español e inglés')
+                if 'tokenization' in text_lower or 'tokenización' in text_lower:
+                    add_bullet('- Mantiene tokenización localizada para cada idioma')
+                add_validation_bullet()
+                return bullets
+
             has_bilingual_nlp = any(k in text_lower for k in ['bilingüe', 'bilingue', 'español', 'inglés', 'ingles', 'tokenización', 'tokenizacion', 'verbos españoles'])
             if has_bilingual_nlp and any(k in text_lower for k in ['smart_commit_nltk.py', 'nltk', 'idioma']):
                 add_bullet('- Detecta el idioma de entrada para tokenización localizada')
@@ -1405,6 +1443,15 @@ class NLPCommitGenerator(QMainWindow):
                     add_bullet('- Add tests for valid and invalid metadata scenarios')
                 if 'roadmap.md' in text_lower or 'suite count' in text_lower:
                     add_bullet('- Update Roadmap.md with progress and suite count')
+                add_validation_bullet()
+                return bullets
+
+            if self.is_mixed_language_nlp_summary(text_lower):
+                add_bullet('- Improve language detection for mixed-language input')
+                if 'spanish' in text_lower or 'english' in text_lower:
+                    add_bullet('- Recognize summaries that combine Spanish and English')
+                if 'tokenization' in text_lower or 'tokenización' in text_lower:
+                    add_bullet('- Preserve localized tokenization behavior')
                 add_validation_bullet()
                 return bullets
 
