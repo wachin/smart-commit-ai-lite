@@ -80,6 +80,29 @@ python3 -c "import nltk; nltk.download('punkt'); nltk.download('averaged_percept
 6. Adjust **Tipo** or **Scope** if the automatic choice needs a manual correction.
 7. Copy it to the clipboard and run it in your repository. The copy button confirms the action in-place, without opening a popup.
 
+## Startup Window Size
+
+The default startup position and size are defined near the top of `smart_commit_nltk.py` in `NLPCommitGenerator`:
+
+```python
+DEFAULT_WINDOW_GEOMETRY = (90, 30, 660, 690)
+MINIMUM_WINDOW_SIZE = (620, 620)
+```
+
+`DEFAULT_WINDOW_GEOMETRY` uses this order:
+
+```text
+(x position, y position, width, height)
+```
+
+For example, to open the app wider and slightly lower:
+
+```python
+DEFAULT_WINDOW_GEOMETRY = (120, 80, 820, 720)
+```
+
+Adjust `MINIMUM_WINDOW_SIZE` only if you want to allow the window to be resized smaller or force it to stay larger.
+
 ## Hybrid Architecture
 
 The machine-learning engine predicts the Conventional Commit type. Supported ML labels include:
