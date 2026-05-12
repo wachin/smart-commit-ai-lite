@@ -1,8 +1,16 @@
-# NLTK Git Commit Generator
+# NLTK + Lightweight ML Git Commit Generator
 
-A lightweight desktop app built with **PyQt6** and **NLTK** that turns pasted change summaries into ready-to-run Conventional Commit commands.
+A lightweight desktop app built with **PyQt6**, **NLTK**, and an optional classic **scikit-learn** engine that turns pasted change summaries into ready-to-run Conventional Commit commands.
 
 The project is intentionally local-first: no API keys, no cloud model, and no network dependency after the initial NLTK data download. It uses language-aware tokenization, practical heuristics, and an optional lightweight scikit-learn classifier to produce useful Conventional Commit commands.
+
+## Project Principles
+
+- Lightweight, offline-first, open source, Linux friendly, Debian 12 friendly, and low-resource friendly.
+- `smart_commit_nltk.py` remains the functional heuristic fallback engine.
+- The sklearn engine extends the existing NLTK workflow instead of replacing it.
+- Stability, offline compatibility, Debian compatibility, and low memory usage take priority over raw accuracy.
+- No transformers, torch, tensorflow, spaCy, Hugging Face tooling, neural networks, cloud APIs, LLM frameworks, online inference, telemetry, or heavy pip-only dependencies.
 
 ## Features
 
@@ -72,7 +80,20 @@ python3 -c "import nltk; nltk.download('punkt'); nltk.download('averaged_percept
 
 ## Optional ML Model
 
-The machine-learning engine predicts only the Conventional Commit type. NLTK and the existing heuristic engine still handle cleanup, language-aware processing, subject generation, scope detection, and body generation.
+The machine-learning engine predicts only the Conventional Commit type. Supported ML labels are:
+
+- `feat`
+- `fix`
+- `docs`
+- `refactor`
+- `test`
+- `chore`
+
+Responsibility split:
+
+- **NLTK/utils**: normalization, cleanup, tokenization, stemming, stopword removal, language-aware preprocessing.
+- **scikit-learn**: TF-IDF vectorization, machine-learning classification, and type prediction.
+- **Heuristic engine**: fallback behavior, scope detection, subject/body generation, and current UI workflow.
 
 Train or retrain the local model after installing `python3-sklearn`:
 
@@ -92,6 +113,8 @@ It writes:
 - `ml/vectorizer.pkl`
 
 These files are local generated artifacts and are ignored by Git. If they are missing, corrupted, or incompatible, prediction silently falls back to the heuristic type detector.
+
+The model is trained and loaded locally with `joblib`. It does not use network access, online inference, or external services.
 
 ## Testing and Evaluation
 
@@ -173,6 +196,7 @@ git commit -m "docs(repo): agrega roadmap con seguimiento de progreso" \
 - Spanish grammar support is rule-based. NLTK Punkt can split Spanish sentences, but this project does not currently use a full Spanish POS tagger.
 - The generator is heuristic plus optional classic ML, not a large language model. It improves through specific patterns, examples, and evaluation data.
 - The current dataset is small and mostly feature-oriented, so the ML classifier uses a small offline seed set to represent all six supported types.
+- Real sklearn training and prediction should still be validated on a Debian 12 system with the required apt packages installed.
 - It works best with summaries that describe concrete changes, files, features, validation, and user-visible behavior.
 
 ## Contributing
@@ -181,8 +205,9 @@ Good contributions include:
 
 - Adding more Spanish and English phrase patterns.
 - Expanding `commit_examples_data` with real summaries and expected commits.
+- Adding balanced examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - Improving comparison metrics.
-- Adding tests for language detection, Markdown cleanup, type/scope selection, and body generation.
+- Adding tests for language detection, Markdown cleanup, type/scope selection, ML prediction, and body generation.
 
 ## License
 
