@@ -314,7 +314,8 @@ class NLPCommitGenerator(QMainWindow):
             # Skip very short lines or lines without action verbs
             if len(line) < 10 or not re.search(
                 r'\b(we|i|added|created|implemented|updated|changed|fixed|fixes|refactored|cleaned|improved|made|'
-                r'detects|detect|uses|use|supports|support|generates|generate|validated|validate|'
+                r'detects|detect|uses|use|loads|load|writes|write|reports|report|normalizes|normalize|covers|cover|documents|document|'
+                r'supports|support|generates|generate|validated|validate|'
                 r'he|hemos|creado|creé|creamos|añadido|añadí|agregado|implementado|implementé|implemente|actualizado|'
                 r'actualicé|actualice|recalculé|recalcule|afiné|afine|cambiado|corregido|'
                 r'arreglado|mejorado|mejoré|mejore|documenta|documentado|incluye|resume|'
@@ -380,6 +381,24 @@ class NLPCommitGenerator(QMainWindow):
             and any(marker in text_lower for marker in ['mixed', 'mixed-language', 'mixed language', 'mixto', 'mixta', 'mixtos', 'mixtas'])
             and not any(marker in text_lower for marker in ui_status_markers)
         )
+
+    def is_ml_pipeline_summary(self, text_lower):
+        ml_markers = [
+            'ml/dataset_loader.py',
+            'ml/train_model.py',
+            'ml/predictor.py',
+            'offline ml',
+            'ml training',
+            'training pipeline',
+            'joblib',
+            'vectorizer',
+            'model_metadata',
+            'sklearn',
+            'scikit-learn',
+            'tf-idf',
+            'linearsvc',
+        ]
+        return sum(1 for marker in ml_markers if marker in text_lower) >= 2
 
     def extract_object_phrase(self, phrase):
         phrase = re.sub(r'\[.*?\]', ' ', phrase)
@@ -789,6 +808,9 @@ class NLPCommitGenerator(QMainWindow):
         if language == 'en' and self.is_ml_metadata_validation_summary(normalized_lower):
             return 'add', 'strict metadata validation in predictor', language
 
+        if language == 'en' and self.is_ml_pipeline_summary(normalized_lower):
+            return 'improve', 'offline ml training pipeline', language
+
         if self.is_mixed_language_nlp_summary(normalized_lower):
             if language == 'es':
                 return 'improve', 'detección de idioma en textos mixtos', language
@@ -906,6 +928,8 @@ class NLPCommitGenerator(QMainWindow):
             return 'nlp'
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'readme'
+        if self.is_ml_pipeline_summary(text_lower):
+            return 'ml'
         if (
             any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
             and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
@@ -978,6 +1002,8 @@ class NLPCommitGenerator(QMainWindow):
             return 'feat'
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'docs'
+        if self.is_ml_pipeline_summary(text_lower):
+            return 'feat'
         if (
             any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
             and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
@@ -1443,6 +1469,22 @@ class NLPCommitGenerator(QMainWindow):
                     add_bullet('- Add tests for valid and invalid metadata scenarios')
                 if 'roadmap.md' in text_lower or 'suite count' in text_lower:
                     add_bullet('- Update Roadmap.md with progress and suite count')
+                add_validation_bullet()
+                return bullets
+
+            if self.is_ml_pipeline_summary(text_lower):
+                if 'ml/dataset_loader.py' in text_lower or 'examples' in text_lower or 'sqlite' in text_lower:
+                    add_bullet('- Load training examples from local dataset sources')
+                if 'ml/train_model.py' in text_lower or 'joblib' in text_lower or 'metadata' in text_lower:
+                    add_bullet('- Write local joblib artifacts and model metadata')
+                if 'ml/predictor.py' in text_lower or 'artifact readiness' in text_lower:
+                    add_bullet('- Report ML artifact readiness from the predictor')
+                if 'utils/preprocessing.py' in text_lower or 'vectorization' in text_lower or 'vectorizer' in text_lower:
+                    add_bullet('- Normalize text before TF-IDF vectorization')
+                if 'test_ml_training.py' in text_lower or 'test_predictor.py' in text_lower:
+                    add_bullet('- Cover training and predictor behavior with tests')
+                if 'readme.md' in text_lower or 'roadmap.md' in text_lower:
+                    add_bullet('- Document the offline ML workflow')
                 add_validation_bullet()
                 return bullets
 

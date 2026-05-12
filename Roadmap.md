@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 35 registered tests, 34 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 36 registered tests, 35 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -262,10 +262,11 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Regression for ML metadata validation summaries compared against an AI-generated commit.
 - [x] Regression for original prompt examples: crash/audio, MIDI karaoke, installation instructions, and deprecated code.
 - [x] Regression for mixed English/Spanish NLP summaries.
+- [x] Regression for several modified files in the offline ML pipeline.
 - [x] Tests for model artifact status reporting and UI model status text.
 - [x] Tests for model metadata generation without requiring sklearn at runtime.
 - [x] Tests for valid and invalid model metadata status.
-- [x] Successful suite run: 34 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Successful suite run: 35 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -288,7 +289,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Test on Debian 12 with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
 - [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [x] Add regression cases for mixed English/Spanish texts.
-- [ ] Add regression cases for summaries with several modified files.
+- [x] Add regression cases for summaries with several modified files.
 - [ ] Define new metrics that do not penalize the current 7-bullet limit.
 - [ ] Improve historical dataset metrics without losing recent bilingual cases.
 

@@ -384,6 +384,31 @@ Result: `32` tests ran, `31` passed, `1` skipped because `python3-sklearn` is no
         self.assertNotIn('style(dict): add stricter model metadata validation', command)
         self.assertNotIn('-m "- Outline future work for Git, ML, UI, tests, and multilingual support"', command)
 
+    def test_multi_file_ml_pipeline_summary_generates_feat_ml_commit(self):
+        text = """Improved the offline ML training pipeline across several files.
+
+Changed:
+- ml/dataset_loader.py loads examples from JSON, SQLite, and entries.
+- ml/train_model.py writes joblib artifacts and metadata.
+- ml/predictor.py reports artifact readiness.
+- utils/preprocessing.py normalizes text before vectorization.
+- tests/test_ml_training.py and tests/test_predictor.py cover training and predictor behavior.
+- README.md and Roadmap.md document the workflow.
+
+Result: 35 tests OK.
+"""
+        command = self.render_command(text)
+
+        self.assertIn('git commit -m "feat(ml): improve offline ml training pipeline"', command)
+        self.assertIn('-m "- Load training examples from local dataset sources"', command)
+        self.assertIn('-m "- Write local joblib artifacts and model metadata"', command)
+        self.assertIn('-m "- Report ML artifact readiness from the predictor"', command)
+        self.assertIn('-m "- Normalize text before TF-IDF vectorization"', command)
+        self.assertIn('-m "- Cover training and predictor behavior with tests"', command)
+        self.assertIn('-m "- Document the offline ML workflow"', command)
+        self.assertIn('-m "- Validation: 35 tests pass"', command)
+        self.assertNotIn('ci(dict):', command)
+
     def test_copy_button_confirms_without_modal_text_change(self):
         self.render_command('He creado Roadmap.md con tareas completadas.')
         self.assertEqual(self.generator.copy_btn.text(), 'Copiar al Portapapeles')
