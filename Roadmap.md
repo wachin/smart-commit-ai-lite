@@ -1,6 +1,6 @@
 # Roadmap: NLTK + Lightweight ML Git Commit Generator
 
-This roadmap tracks the progress of the NLTK-based smart commit generator, now extended with an optional classic scikit-learn ML engine. The goal is to improve Conventional Commit prediction without turning the project into a heavy AI application: everything should stay local, lightweight, explainable, maintainable, and Debian 12 friendly.
+This roadmap tracks the progress of the NLTK-based smart commit generator, now extended with a mandatory classic scikit-learn ML engine. The goal is to improve Conventional Commit prediction without turning the project into a heavy AI application: everything should stay local, lightweight, explainable, maintainable, and Debian 12 friendly.
 
 ## Project Contract
 
@@ -21,9 +21,10 @@ This roadmap tracks the progress of the NLTK-based smart commit generator, now e
 ### Engine Responsibilities
 - [x] NLTK and local utilities: normalization, cleanup, tokenization, stemming, stopword removal, and preprocessing.
 - [x] scikit-learn: TF-IDF vectorization, ML classification, and commit type prediction.
-- [x] Existing heuristics: fallback, subject/body generation, scope detection, and compatibility with the current UI behavior.
-- [x] `python3-langdetect`: support language detection when useful, with deterministic fallback behavior.
-- [x] `python3-regex`: improve regular-expression handling where useful, with a cautious fallback if the package is missing.
+- [x] `smart_commit_nltk.py`: orchestrator for NLTK preprocessing -> sklearn classification -> NLTK/heuristic subject and body generation.
+- [x] Existing heuristics: scope detection, subject/body generation, and compatibility with the current UI behavior.
+- [x] `python3-langdetect`: support language detection when useful, with deterministic behavior.
+- [x] `python3-regex`: improve regular-expression handling where useful.
 
 ### ML Objective
 - [x] Predict Conventional Commit types from user text.
@@ -31,14 +32,14 @@ This roadmap tracks the progress of the NLTK-based smart commit generator, now e
 - [x] Use `TfidfVectorizer` and `LinearSVC`.
 - [x] Save the model locally with `joblib`.
 - [x] Save the vectorizer separately.
-- [x] Load quickly and fail without breaking the application.
+- [x] Load quickly from the distributed local model artifacts.
 - [x] Avoid online inference and external services.
 
 ## Current State
 
 The program is already usable for daily work: it accepts pasted English or Spanish text, removes Markdown/command noise, detects language, proposes `type(scope)`, generates a localized subject and body, lets the user manually correct language/type/scope, and copies the command without a modal dialog.
 
-The current improvement track is not Git integration. It is better semantic quality from pasted text. The ML layer must remain optional, classic, and local on top of the NLTK engine, not a replacement.
+The current improvement track is not Git integration. It is better semantic quality from pasted text. The ML layer is mandatory, classic, and local; `smart_commit_nltk.py` orchestrates the hybrid flow instead of being replaced by it.
 
 ### Latest Important Progress
 - [x] Removed the separate subject/body preview because it did not improve the workflow.
@@ -48,20 +49,20 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Added file mention detection to classify code, tests, documentation, reports, and configuration.
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
-- [x] Added an optional ML architecture with scikit-learn, TF-IDF, LinearSVC, and fallback to NLTK heuristics.
-- [x] Current suite: 27 registered tests, 26 passing, and 1 training test skipped when `python3-sklearn` is not installed.
+- [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
+- [x] Current suite: 27 registered tests, 26 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
-- [x] The sklearn engine is modular and optional.
-- [x] The application works even if `ml/commit_model.pkl` and `ml/vectorizer.pkl` are missing.
+- [x] The sklearn engine is modular and part of the standard architecture.
+- [ ] Add startup validation for the distributed `ml/commit_model.pkl` and `ml/vectorizer.pkl` artifacts.
 - [x] Training reuses `commit_examples_data/examples.json`, `commit_examples_data/examples.db`, and `commit_examples_data/entries/`.
 - [x] The predictor returns a type and approximate confidence when the model supports it.
 - [x] The system supports English and Spanish input.
 - [x] The project includes `ml/`, `utils/`, and dedicated tests for the new architecture.
 - [x] Product decision: distribute a pre-trained model while keeping local retraining available for users who need it.
 - [ ] Validate real training and predictions on Debian 12 with `python3-sklearn` installed.
-- [ ] A pre-trained model will be distributed, and if the user wishes, they will have the instructions to train it locally as needed.
+- [ ] Distribute a pre-trained model and document how users can retrain it locally as needed.
 
 ### Current Quality Example
 
@@ -132,7 +133,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Installed the main dependencies: NLTK and PyQt6.
 - [x] Added startup checks for required NLTK data.
 - [x] Added first-run download support for missing NLTK packages.
-- [x] Documented Debian packages required for the optional ML engine.
+- [x] Documented Debian packages required for the hybrid ML engine.
 - [x] Documented `python3-gensim` as an optional dependency.
 
 ### [x] Desktop Interface
@@ -195,21 +196,21 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Prioritized NLP/bilingual changes as `feat(nlp)`.
 - [x] Classified newly created roadmaps as `docs(repo)`.
 
-### [x] Lightweight Optional ML Engine
+### [x] Lightweight Hybrid ML Engine
 - [x] Created `ml/dataset_loader.py` to reuse `examples.json`, `examples.db`, and `commit_examples_data/entries/`.
 - [x] Created `ml/train_model.py` with `TfidfVectorizer` and `LinearSVC`.
 - [x] Saved `commit_model.pkl` and `vectorizer.pkl` locally with `joblib`.
-- [x] Created `ml/predictor.py` with fast loading and silent fallback to heuristics.
+- [x] Created `ml/predictor.py` with fast local model loading.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
-- [x] Documented Debian installation, local training, and behavior without a model.
+- [x] Documented Debian installation and local training.
 - [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
-- [x] Added automatic fallback to the heuristic engine when ML prediction fails.
+- [ ] Tighten runtime validation so missing official model artifacts are surfaced clearly in Debian installs.
 
 ### [x] Offline and Extensible Architecture
-- [x] Kept the existing heuristic engine as fallback.
+- [x] Kept the existing heuristic engine as the subject/body and scope orchestration layer.
 - [x] Added the sklearn engine without breaking the current UI flow.
-- [x] Prepared the structure for future engines: heuristic, sklearn, and possible future optional engines.
+- [x] Prepared the structure around the hybrid engines: NLTK/utils, sklearn classifier, and heuristic subject/body generation.
 - [x] Avoided any dependency on network access, external APIs, telemetry, or online inference.
 - [x] Kept model artifacts as local files generated by `joblib`.
 
@@ -249,7 +250,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Test to detect indirect validations such as `full suite passes: 18 tests OK`.
 - [x] Test to detect code, test, documentation, and report mentions.
 - [x] Test to rank bullets by importance and remove duplicate generic documentation.
-- [x] Tests for dataset loading and predictor fallback when no model exists.
+- [x] Tests for dataset loading and local predictor artifact handling.
 - [x] Unit tests for common Spanish action extraction.
 - [x] Direct tests for `select_commit_type()` with core categories.
 - [x] Direct tests for `detect_scope()` with common project areas.
@@ -272,7 +273,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ### [ ] Evaluation and Testing
 - [x] Add more unit tests for Spanish action extraction.
 - [x] Add more unit tests for `select_commit_type()` and `detect_scope()`.
-- [ ] Add ML prediction tests with a trained model when `python3-sklearn` is available.
+- [ ] Add ML prediction tests with the distributed trained model in a Debian 12 apt environment.
 - [ ] Test on Debian 12 with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
 - [ ] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [ ] Add regression cases for mixed English/Spanish texts.
@@ -301,7 +302,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Create a dedicated module for type/scope detection.
 - [ ] Create reusable fixtures with real examples.
 - [ ] Define the packaging/versioning policy for the distributed pre-trained model and locally retrained `ml/*.pkl` artifacts.
-- [ ] Define a common engine interface for `heuristic`, `sklearn`, and future optional engines.
+- [ ] Define a common internal interface for the hybrid NLTK/utils, sklearn, and heuristic components.
 - [ ] Remove any already-tracked `__pycache__` files from the Git index.
 
 ### [ ] User Interface
@@ -321,4 +322,4 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ---
 
 **Last updated:** May 12, 2026  
-**Status:** Functional for basic use and daily iteration. It now has initial regressions, dataset evaluation, and an optional offline ML engine. The next priority is improving semantic quality from pasted text without losing lightness or Debian compatibility.
+**Status:** Functional for basic use and daily iteration. It now has initial regressions, dataset evaluation, and a documented mandatory offline NLTK + sklearn architecture. The next priority is improving semantic quality from pasted text without losing lightness or Debian compatibility.

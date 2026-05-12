@@ -1,15 +1,15 @@
-# NLTK + Lightweight ML Git Commit Generator
+# Smart Commit AI Lite
 
-A lightweight desktop app built with **PyQt6**, **NLTK**, and an optional classic **scikit-learn** engine that turns pasted change summaries into ready-to-run Conventional Commit commands.
+A lightweight desktop app built with **PyQt6**, **NLTK**, and classic **scikit-learn** that turns pasted change summaries into ready-to-run Conventional Commit commands.
 
-The project is intentionally local-first: no API keys, no cloud model, and no network dependency after the initial NLTK data download. It uses language-aware tokenization, practical heuristics, and an optional lightweight scikit-learn classifier to produce useful Conventional Commit commands.
+The project is intentionally local-first: no API keys, no cloud model, and no network dependency after the initial NLTK data download and local model setup. It uses a mandatory hybrid architecture: NLTK prepares language-aware text features, scikit-learn classifies the commit type, and `smart_commit_nltk.py` orchestrates the UI, scope detection, subject generation, and body generation.
 
 ![](vx_images/smart_commit_ai_generator.png)
 
 ## Project Principles
 
 - Lightweight, offline-first, open source, Linux friendly, Debian 12 friendly, and low-resource friendly.
-- `smart_commit_nltk.py` remains the functional heuristic fallback engine.
+- `smart_commit_nltk.py` remains functional and acts as the orchestrator for the hybrid workflow.
 - The sklearn engine extends the existing NLTK workflow instead of replacing it.
 - Stability, offline compatibility, Debian compatibility, and low memory usage take priority over raw accuracy.
 - No transformers, torch, tensorflow, spaCy, Hugging Face tooling, neural networks, cloud APIs, LLM frameworks, online inference, telemetry, or heavy pip-only dependencies.
@@ -22,8 +22,8 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 - **Conventional Commits format**: Generates `type(scope): subject` commands with scopes such as `nlp`, `repo`, `docs`, `ui`, `app`, `dict`, and `tools`.
 - **Markdown noise filtering**: Ignores pasted fenced code blocks, embedded `git commit -m` examples, Markdown links, and quoted command output that would otherwise pollute the result.
 - **Smarter type detection**: Avoids false positives such as classifying a commit as `ci` just because the letters `ci` appear inside Spanish words like `funcionalidades` or `secciones`.
-- **Optional sklearn classifier**: Can train a local TF-IDF + LinearSVC model for `feat`, `fix`, `docs`, `refactor`, `test`, and `chore` prediction.
-- **Safe fallback**: If the ML artifacts are missing or cannot load, the original NLTK heuristic engine continues to work.
+- **Sklearn classifier**: Uses a local TF-IDF + LinearSVC model for `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, and related Conventional Commit type prediction.
+- **Distributed model**: Ships with `ml/commit_model.pkl` and `ml/vectorizer.pkl`, with local retraining available when needed.
 - **Structured body generation**: Builds up to seven high-signal bullet lines for roadmap work, bilingual NLP changes, UI work, validation, docs, and common project patterns.
 - **Clipboard workflow**: Shows a multiline `git commit` command ready to copy and paste into a terminal.
 
@@ -48,7 +48,7 @@ Optional:
 sudo apt install python3-gensim
 ```
 
-The sklearn packages are used only for the optional local classifier. The app still runs with the original NLTK heuristic engine if `ml/commit_model.pkl` and `ml/vectorizer.pkl` do not exist.
+The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, and its TF-IDF vectorizer lives in `ml/vectorizer.pkl`.
 
 This project is designed for Debian repository packages and offline use. Avoid heavy AI stacks such as transformers, torch, tensorflow, spaCy, Hugging Face tooling, cloud APIs, or online inference services.
 
@@ -80,9 +80,9 @@ python3 -c "import nltk; nltk.download('punkt'); nltk.download('averaged_percept
 6. Adjust **Tipo** or **Scope** if the automatic choice needs a manual correction.
 7. Copy it to the clipboard and run it in your repository. The copy button confirms the action in-place, without opening a popup.
 
-## Optional ML Model
+## Hybrid Architecture
 
-The machine-learning engine predicts only the Conventional Commit type. Supported ML labels are:
+The machine-learning engine predicts the Conventional Commit type. Supported ML labels include:
 
 - `feat`
 - `fix`
@@ -93,9 +93,11 @@ The machine-learning engine predicts only the Conventional Commit type. Supporte
 
 Responsibility split:
 
-- **NLTK/utils**: normalization, cleanup, tokenization, stemming, stopword removal, language-aware preprocessing.
-- **scikit-learn**: TF-IDF vectorization, machine-learning classification, and type prediction.
-- **Heuristic engine**: fallback behavior, scope detection, subject/body generation, and current UI workflow.
+- **NLTK/utils**: normalization, cleanup, tokenization, stemming, stopword removal, language detection, and language-aware preprocessing.
+- **scikit-learn**: TF-IDF vectorization and ML classification of commit types.
+- **`smart_commit_nltk.py` orchestrator**: coordinates the flow: NLTK preprocessing -> sklearn classification -> NLTK/heuristic subject and body generation. It also handles scope detection and the UI workflow.
+
+## Model Training
 
 Train or retrain the local model after installing `python3-sklearn`:
 
@@ -114,7 +116,7 @@ It writes:
 - `ml/commit_model.pkl`
 - `ml/vectorizer.pkl`
 
-The project will distribute a pre-trained model for these default filenames. Users can also retrain locally and replace them as needed. If the files are missing, corrupted, or incompatible, prediction silently falls back to the heuristic type detector.
+The project distributes a pre-trained model for these default filenames. Users can retrain locally and replace them as needed.
 
 The model is trained and loaded locally with `joblib`. It does not use network access, online inference, or external services.
 
@@ -174,7 +176,7 @@ cleaned deprecated code -> refactor
 3. **Sentence splitting**: Uses NLTK sentence tokenization with the detected language.
 4. **Action extraction**: Applies English POS tagging and rule-based Spanish patterns to find the main action and object.
 5. **Type/scope selection**: Classifies the change into Conventional Commit type/scope using whole-word matching and project-aware keywords.
-6. **Optional ML prediction**: If local sklearn artifacts are present, a TF-IDF + LinearSVC classifier predicts the commit type. Missing or broken artifacts fall back to the heuristic type.
+6. **ML prediction**: The local TF-IDF + LinearSVC classifier predicts the commit type.
 7. **Body generation**: Adds concise, localized bullets for detected change categories.
 8. **Formatting**: Keeps the subject short and emits a shell-ready multiline `git commit` command.
 
@@ -185,7 +187,7 @@ cleaned deprecated code -> refactor
 ├── Roadmap.md                    # Current progress and planned improvements
 ├── COMMIT_GENERATION_EXAMPLES.md # Real-world examples and expected outputs
 ├── commit_examples_data/         # Parsed JSON/SQLite examples and comparison tools
-├── ml/                           # Optional sklearn training and prediction modules
+├── ml/                           # Sklearn training, model, vectorizer, and prediction modules
 ├── utils/                        # Shared preprocessing, language, and regex helpers
 ├── tests/                        # Regression tests for NLP heuristics
 └── README.md                     # Project documentation
@@ -194,7 +196,7 @@ cleaned deprecated code -> refactor
 ## Current Limitations
 
 - Spanish grammar support is rule-based. NLTK Punkt can split Spanish sentences, but this project does not currently use a full Spanish POS tagger.
-- The generator is heuristic plus optional classic ML, not a large language model. It improves through specific patterns, examples, and evaluation data.
+- The generator is hybrid NLTK + classic ML, not a large language model. It improves through specific patterns, examples, and evaluation data.
 - The current dataset is small and mostly feature-oriented, so the ML classifier uses a small offline seed set to represent all six supported types.
 - Real sklearn training and prediction should still be validated on a Debian 12 system with the required apt packages installed.
 - It works best with summaries that describe concrete changes, files, features, validation, and user-visible behavior.
