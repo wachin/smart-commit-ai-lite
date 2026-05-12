@@ -316,9 +316,9 @@ class NLPCommitGenerator(QMainWindow):
                 r'\b(we|i|added|created|implemented|updated|changed|fixed|fixes|refactored|cleaned|improved|made|'
                 r'detects|detect|uses|use|loads|load|writes|write|reports|report|normalizes|normalize|covers|cover|documents|document|'
                 r'supports|support|generates|generate|validated|validate|'
-                r'he|hemos|creado|creé|creamos|añadido|añadí|agregado|implementado|implementé|implemente|actualizado|'
-                r'actualicé|actualice|recalculé|recalcule|afiné|afine|cambiado|corregido|'
-                r'arreglado|mejorado|mejoré|mejore|documenta|documentado|incluye|resume|'
+                r'he|hemos|creado|creé|creamos|añadido|añadí|añadimos|agregado|implementado|implementé|implemente|actualizado|'
+                r'actualicé|actualice|actualizamos|recalculé|recalcule|afiné|afine|cambiado|corregido|'
+                r'arreglado|arreglé|arreglamos|mejorado|mejoré|mejore|mejoramos|documenta|documentado|documentamos|incluye|resume|'
                 r'detecta|usa|entiende|genera|corrige|corregí|corregi|verifiqué|verifique|validé|valide|'
                 r'puedes|selectores|tipo|scope|regenera|manteniendo|ajuste|manual|'
                 r'añadí|anadi|quité|quite|quitada|eliminé|elimine|elimina|borra|borrar|desactiva|devuelve|foco|resultado|tests|'
@@ -666,14 +666,24 @@ class NLPCommitGenerator(QMainWindow):
         if re.search(r'\b(falso positivo|false-positive)\b.*\bci\b|\bci\b.*\b(falso positivo|false-positive)\b', sentence_lower):
             return 'fix', 'detección de tipo ci'
 
+        support_match = re.search(
+            r'\b(?:he|hemos)?\s*(?:añadido|añadí|añadimos|agregado|agregué|agregamos|incorporado|incorporamos)\s+soporte\s+para\s+(.+?)(?:\s+en|\s+con|\s+y|\.|$)',
+            sentence_lower,
+            re.IGNORECASE,
+        )
+        if support_match:
+            obj = self.extract_spanish_object_phrase(support_match.group(1))
+            if obj:
+                return 'add', f'soporte para {obj}'
+
         special_patterns = [
             (r'\b(?:he|hemos)?\s*(?:creado|creé|creamos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'add'),
-            (r'\b(?:he|hemos)?\s*(?:añadido|añadí|agregado|agregué|incorporado)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'add'),
+            (r'\b(?:he|hemos)?\s*(?:añadido|añadí|añadimos|agregado|agregué|agregamos|incorporado|incorporamos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'add'),
             (r'\b(?:he|hemos)?\s*(?:implementado|implementé|implementamos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'add'),
             (r'\b(?:he|hemos)?\s*(?:actualizado|actualicé|actualizamos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'update'),
-            (r'\b(?:he|hemos)?\s*(?:corregido|arreglado|resuelto)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'fix'),
-            (r'\b(?:he|hemos)?\s*(?:mejorado|optimizado)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'improve'),
-            (r'\b(?:he|hemos)?\s*(?:documentado)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'doc'),
+            (r'\b(?:he|hemos)?\s*(?:corregido|corregí|corregimos|arreglado|arreglé|arreglamos|resuelto|resolvimos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'fix'),
+            (r'\b(?:he|hemos)?\s*(?:mejorado|mejoré|mejoramos|optimizado|optimizamos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'improve'),
+            (r'\b(?:he|hemos)?\s*(?:documentado|documenté|documentamos)\s+(.+?)(?:\s+en|\s+para|\s+con|\s+y|\.|$)', 'doc'),
             (r'\b(?:este\s+documento\s+)?(?:incluye|resume|documenta)\s+(.+?)(?:\s+para|\s+con|\s+y|\.|$)', 'doc'),
         ]
 
@@ -956,10 +966,11 @@ class NLPCommitGenerator(QMainWindow):
         if 'converter' in text_lower or ('tool' in text_lower and 'dictionary' in text_lower):
             return 'tools'
 
-        has_docs = any(k in text_lower for k in ['roadmap', 'readme', '.md', 'docs', 'guide', 'help', 'documentation', 'documentación', 'documentacion', 'guía', 'guia', 'instructions', 'installation instructions'])
+        has_docs = any(k in text_lower for k in ['roadmap', 'readme', '.md', 'docs', 'guide', 'help', 'documentation', 'documentación', 'documentacion', 'guía', 'guia', 'instructions', 'installation instructions', 'instrucciones', 'instalación', 'instalacion'])
         has_ui = any(k in text_lower for k in ['view', 'dialog', 'window', 'action', 'toolbar', 'button', 'checkbox', 'slider', 'meter', 'combo', 'program', 'lock', 'lyrics', 'channels', 'fullscreen', 'pianola', 'piano player'])
         has_app = any(k in text_lower for k in ['settings.py', 'player.py', 'sequence.py', 'app.py', 'widgets.py', 'settings', 'playback', 'midi', 'validation', 'tests', 'application', 'module', 'service'])
-        has_tests = any(k in text_lower for k in ['test_', 'unittest', 'pytest', 'ci', 'coverage', 'validation', 'suite passed'])
+        has_tests = any(k in text_lower for k in ['test_', 'unittest', 'pytest', 'coverage', 'validation', 'suite passed'])
+        has_tests = has_tests or re.search(r'\bci\b', text_lower) is not None
 
         if has_ui and not has_docs:
             return 'ui'
@@ -977,14 +988,14 @@ class NLPCommitGenerator(QMainWindow):
 
     def select_commit_type(self, text, subject_verb, subject_obj):
         text_lower = text.lower()
-        docs_keywords = ['readme', 'roadmap', 'docs', 'documentation', 'documentación', 'documentacion', '.md', '.rst', 'guide', 'guía', 'guia', 'help', 'instructions', 'installation instructions', 'docstring', 'comment']
+        docs_keywords = ['readme', 'roadmap', 'docs', 'documentation', 'documentación', 'documentacion', '.md', '.rst', 'guide', 'guía', 'guia', 'help', 'instructions', 'installation instructions', 'instrucciones', 'instalación', 'instalacion', 'docstring', 'comment']
         test_keywords = ['test', 'tests', 'unittest', 'pytest', 'coverage', 'qa', 'spec', 'mock', 'prueba', 'pruebas']
         ci_keywords = ['ci', 'continuous integration', 'github action', 'workflow', 'pipeline', 'circleci', 'travis', 'jenkins', 'gitlab-ci', 'azure-pipelines']
         build_keywords = ['build', 'docker', 'dockerfile', 'dependency', 'dependencies', 'npm', 'package.json', 'yarn.lock', 'pip', 'requirements', 'maven', 'gradle', 'pom.xml', 'pyproject.toml']
         perf_keywords = ['perf', 'performance', 'speed', 'latency', 'memory', 'optimiz', 'cache', 'caching', 'rendimiento']
         style_keywords = ['style', 'format', 'formatted', 'lint', 'whitespace', 'indent', 'prettier', 'eslint', 'formato']
         refactor_keywords = ['refactor', 'cleanup', 'cleaned', 'restructure', 'rename', 'split', 'extract', 'simplify', 'refactoriza', 'limpia']
-        fix_keywords = ['fix', 'fixed', 'correct', 'corrected', 'resolve', 'resolved', 'bug', 'crash', 'error', 'corrige', 'corregido', 'arregla', 'arreglado']
+        fix_keywords = ['fix', 'fixed', 'correct', 'corrected', 'resolve', 'resolved', 'bug', 'crash', 'error', 'fallo', 'corrige', 'corregido', 'corregí', 'arregla', 'arreglado', 'arreglé']
         has_evaluation_baseline_context = any(k in text_lower for k in [
             'testing/evaluación', 'testing/evaluation', 'línea base', 'linea base',
             'baseline', '45 ejemplos', '45 examples', '0.446', '6 regresiones',

@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 36 registered tests, 35 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 37 registered tests, 36 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -256,6 +256,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Test to rank bullets by importance and remove duplicate generic documentation.
 - [x] Tests for dataset loading and local predictor artifact handling.
 - [x] Unit tests for common Spanish action extraction.
+- [x] Tests for Spanish first-person and team conjugations such as `arreglé`, `añadimos`, `mejoramos`, and `documentamos`.
 - [x] Direct tests for `select_commit_type()` with core categories.
 - [x] Direct tests for `detect_scope()` with common project areas.
 - [x] Regression for rich README architecture summaries compared against an AI-generated commit.
@@ -266,7 +267,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for model artifact status reporting and UI model status text.
 - [x] Tests for model metadata generation without requiring sklearn at runtime.
 - [x] Tests for valid and invalid model metadata status.
-- [x] Successful suite run: 35 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Successful suite run: 36 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -301,7 +302,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Keep offline seed examples only as support while the real dataset grows.
 
 ### [ ] Language Support
-- [ ] Expand Spanish verbs and patterns.
+- [x] Expand Spanish verbs and patterns.
 - [x] Improve language detection for mixed-language texts.
 - [ ] Separate language-specific rules into more maintainable structures.
 - [ ] Evaluate a Spanish POS tagger if more grammatical precision is desired.

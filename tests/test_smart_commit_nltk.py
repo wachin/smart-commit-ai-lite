@@ -174,6 +174,9 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
             ('He corregido el error de apertura de archivos.', 'fix', 'error de apertura de archivos'),
             ('Hemos documentado las opciones de instalación.', 'doc', 'opciones de instalación'),
             ('He mejorado el ranking de bullets.', 'improve', 'ranking de bullets'),
+            ('Arreglé el fallo al abrir archivos de audio.', 'fix', 'fallo al abrir archivos de audio'),
+            ('Añadimos soporte para karaoke MIDI.', 'add', 'soporte para karaoke midi'),
+            ('Documentamos las instrucciones de instalación.', 'doc', 'instrucciones de instalación'),
         ]
 
         for sentence, expected_action, expected_obj in cases:
@@ -182,6 +185,21 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
                 self.assertEqual(action, expected_action)
                 self.assertEqual(obj, expected_obj)
+
+    def test_spanish_conjugated_summaries_generate_specific_commits(self):
+        cases = [
+            ('Arreglé el fallo al abrir archivos de audio.', 'fix(app): corrige fallo al abrir archivos de audio'),
+            ('Añadimos soporte para karaoke MIDI.', 'feat(app): agrega soporte para karaoke midi'),
+            ('Mejoramos la detección de idioma mixto.', 'feat(nlp): mejora detección de idioma en textos mixtos'),
+            ('Documentamos las instrucciones de instalación.', 'docs(docs): documenta instrucciones de instalación'),
+        ]
+
+        for text, expected_subject in cases:
+            with self.subTest(text=text):
+                command = self.render_command(text)
+
+                self.assertIn(f'git commit -m "{expected_subject}"', command)
+                self.assertNotIn('actualiza proyecto', command)
 
     def test_clear_input_button_resets_input_output_and_copy_state(self):
         self.generator.input_text.setPlainText('He creado Roadmap.md.')
