@@ -61,7 +61,7 @@ La línea de mejora actual no es integrar con Git, sino mejorar la calidad semá
 - [x] El proyecto incluye `ml/`, `utils/` y tests dedicados para la nueva arquitectura.
 - [x] Los artefactos `ml/*.pkl` se tratan como generados localmente y no se versionan por defecto.
 - [ ] Validar entrenamiento real y predicciones con `python3-sklearn` instalado en Debian 12.
-- [ ] Definir si se distribuirá un modelo preentrenado o si cada instalación lo entrenará localmente.
+- [ ] Se distribuirá un modelo preentrenado, y si el usuario lo desea tendrá las instrucciones para que lo entrene localmente según el lo necesite
 
 ### Ejemplo de Calidad Actual
 
