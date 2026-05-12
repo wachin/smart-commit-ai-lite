@@ -17,7 +17,7 @@ La línea de mejora actual no es integrar con Git, sino mejorar la calidad semá
 - [x] Ampliado el body de 5 a 7 bullets para conservar detalles importantes.
 - [x] Añadido ranking de bullets para poner primero cambios principales, luego tests/docs/reportes y dejar validación al final.
 - [x] Añadida arquitectura ML opcional con scikit-learn, TF-IDF, LinearSVC y fallback a heurísticas NLTK.
-- [x] Suite actual: 23 tests registrados: 22 pasan y 1 entrenamiento se omite si `python3-sklearn` no está instalado.
+- [x] Suite actual: 26 tests registrados: 25 pasan y 1 entrenamiento se omite si `python3-sklearn` no está instalado.
 
 ### Ejemplo de Calidad Actual
 
@@ -189,7 +189,10 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Test para detectar menciones de código, tests, documentación y reportes.
 - [x] Test para ordenar bullets por importancia y podar documentación genérica duplicada.
 - [x] Tests para dataset loader y fallback del predictor ML cuando no hay modelo.
-- [x] Ejecución exitosa de la suite: 22 tests pasan y 1 se omite sin `python3-sklearn`.
+- [x] Tests unitarios para extracción de acciones comunes en español.
+- [x] Tests directos para `select_commit_type()` con categorías core.
+- [x] Tests directos para `detect_scope()` con áreas comunes del proyecto.
+- [x] Ejecución exitosa de la suite: 25 tests pasan y 1 se omite sin `python3-sklearn`.
 
 ### [x] Higiene de Artefactos Generados
 - [x] Creación de `.gitignore` para `__pycache__/` y archivos `*.py[cod]`.
@@ -205,8 +208,8 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [ ] Ejecutar siempre `QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v`.
 
 ### [ ] Evaluación y Testing
-- [ ] Añadir más tests unitarios para extracción de acciones en español.
-- [ ] Añadir más tests unitarios para `select_commit_type()` y `detect_scope()`.
+- [x] Añadir más tests unitarios para extracción de acciones en español.
+- [x] Añadir más tests unitarios para `select_commit_type()` y `detect_scope()`.
 - [ ] Añadir tests de predicción ML con un modelo entrenado cuando `python3-sklearn` esté disponible.
 - [ ] Añadir casos de regresión para textos mixtos español/inglés.
 - [ ] Añadir casos de regresión para resúmenes con varios archivos modificados.

@@ -117,6 +117,45 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
         self.assertEqual(self.generator.select_commit_type(text, verb, obj), 'docs')
 
+    def test_select_commit_type_handles_core_change_categories(self):
+        cases = [
+            ('Fixed crash when opening audio files.', 'fix', 'audio files', 'fix'),
+            ('Updated README.md with installation instructions.', 'update', 'README.md', 'docs'),
+            ('Refactored parser cleanup and simplified token handling.', 'refactor', 'parser', 'refactor'),
+            ('Added regression tests for language detection.', 'add', 'regression tests', 'test'),
+        ]
+
+        for text, verb, obj, expected_type in cases:
+            with self.subTest(text=text):
+                self.assertEqual(self.generator.select_commit_type(text, verb, obj), expected_type)
+
+    def test_detect_scope_handles_common_project_areas(self):
+        cases = [
+            ('Updated smart_commit_nltk.py tokenization rules.', 'nlp'),
+            ('Added checkbox and button behavior to the dialog UI.', 'ui'),
+            ('Updated README.md with usage instructions.', 'docs'),
+            ('Changed converter tool for dictionary exports.', 'dict'),
+            ('Added .gitignore and comparison_report.json baseline data.', 'repo'),
+        ]
+
+        for text, expected_scope in cases:
+            with self.subTest(text=text):
+                self.assertEqual(self.generator.detect_scope(text), expected_scope)
+
+    def test_extract_action_phrase_es_handles_common_verbs(self):
+        cases = [
+            ('He corregido el error de apertura de archivos.', 'fix', 'error de apertura de archivos'),
+            ('Hemos documentado las opciones de instalación.', 'doc', 'opciones de instalación'),
+            ('He mejorado el ranking de bullets.', 'improve', 'ranking de bullets'),
+        ]
+
+        for sentence, expected_action, expected_obj in cases:
+            with self.subTest(sentence=sentence):
+                action, obj = self.generator.extract_action_phrase_es(sentence)
+
+                self.assertEqual(action, expected_action)
+                self.assertEqual(obj, expected_obj)
+
     def test_clear_input_button_resets_input_output_and_copy_state(self):
         self.generator.input_text.setPlainText('He creado Roadmap.md.')
         self.generator.output_text.setPlainText('git commit -m "docs(repo): test"')
