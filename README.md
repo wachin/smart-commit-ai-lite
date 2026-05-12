@@ -4,6 +4,8 @@ A lightweight desktop app built with **PyQt6**, **NLTK**, and an optional classi
 
 The project is intentionally local-first: no API keys, no cloud model, and no network dependency after the initial NLTK data download. It uses language-aware tokenization, practical heuristics, and an optional lightweight scikit-learn classifier to produce useful Conventional Commit commands.
 
+![](vx_images/smart_commit_ai_generator.png)
+
 ## Project Principles
 
 - Lightweight, offline-first, open source, Linux friendly, Debian 12 friendly, and low-resource friendly.
