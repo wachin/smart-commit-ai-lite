@@ -61,7 +61,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] The project includes `ml/`, `utils/`, and dedicated tests for the new architecture.
 - [x] `ml/*.pkl` artifacts are treated as locally generated files and are not versioned by default.
 - [ ] Validate real training and predictions on Debian 12 with `python3-sklearn` installed.
-- [ ] Decide whether to distribute a pre-trained model or keep training as a local user action with clear instructions.
+- [ ] A pre-trained model will be distributed, and if the user wishes, they will have the instructions to train it locally as needed.
 
 ### Current Quality Example
 
