@@ -1,12 +1,44 @@
-# Roadmap: NLTK Git Commit Generator
+# Roadmap: NLTK + Lightweight ML Git Commit Generator
 
-Este roadmap documenta el progreso del generador de commits inteligente basado en NLTK. El objetivo del proyecto es acercarse al estilo de commits que suele producir una IA avanzada, pero manteniendo una implementación local, ligera y explicable.
+Este roadmap documenta el progreso del generador de commits inteligente basado en NLTK, extendido con un motor ML clásico y opcional basado en scikit-learn. El objetivo del proyecto es mejorar la predicción de Conventional Commits sin convertirlo en una aplicación pesada de IA: todo debe seguir siendo local, ligero, explicable, mantenible y compatible con Debian 12.
+
+## Contrato del Proyecto
+
+### Filosofía
+- [x] Mantener el proyecto ligero, offline-first, open source, Linux friendly y Debian 12 friendly.
+- [x] Priorizar estabilidad, compatibilidad offline, compatibilidad Debian, bajo uso de memoria y luego precisión.
+- [x] Mantener `smart_commit_nltk.py` funcional como motor heurístico existente.
+- [x] Extender la arquitectura actual en vez de reemplazarla.
+- [x] Evitar complejidad innecesaria y dependencias pesadas.
+
+### Límites Técnicos
+- [x] No usar transformers, torch, tensorflow, spaCy, Hugging Face, redes neuronales, APIs cloud, frameworks LLM, inferencia online ni telemetría.
+- [x] Usar dependencias disponibles en repositorios Debian 12: `python3-nltk`, `python3-sklearn`, `python3-joblib`, `python3-langdetect`, `python3-regex`.
+- [x] Mantener `python3-gensim` como opcional, no requerido.
+- [x] No depender de paquetes pesados instalables solo por pip para la ruta principal.
+- [x] Conservar funcionamiento completo sin internet una vez presentes los datos locales de NLTK y, si se usa, el modelo local.
+
+### Responsabilidades por Motor
+- [x] NLTK y utilidades locales: normalización, limpieza, tokenización, stemming, stopword removal y preprocessing.
+- [x] scikit-learn: vectorización TF-IDF, clasificación ML y predicción del tipo de commit.
+- [x] Heurísticas existentes: fallback, generación de subject/body, scope y comportamiento compatible con la UI actual.
+- [x] `python3-langdetect`: apoyo para detección de idioma cuando sea útil, con fallback determinista.
+- [x] `python3-regex`: mejoras de regex donde aporten valor, con fallback prudente si falta el paquete.
+
+### Objetivo ML
+- [x] Predecir tipos Conventional Commit desde texto de usuario.
+- [x] Soportar tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`.
+- [x] Usar `TfidfVectorizer` y `LinearSVC`.
+- [x] Guardar modelo local con `joblib`.
+- [x] Guardar vectorizer separado.
+- [x] Cargar rápido y fallar sin romper la aplicación.
+- [x] No usar inferencia online ni servicios externos.
 
 ## Estado Actual para Retomar
 
 El programa ya es funcional para uso diario: toma texto pegado en español o inglés, limpia ruido de Markdown/comandos, detecta idioma, propone `type(scope)`, genera subject y body localizado, permite corregir manualmente idioma/type/scope y copia el comando sin ventana modal.
 
-La línea de mejora actual no es integrar con Git, sino mejorar la calidad semántica desde el texto pegado, imitando mejor los commits ricos que devuelve una IA.
+La línea de mejora actual no es integrar con Git, sino mejorar la calidad semántica desde el texto pegado. La mejora ML debe permanecer como una capa opcional, clásica y local encima del motor NLTK, no como reemplazo.
 
 ### Últimos Avances Importantes
 - [x] Eliminada la vista previa separada de subject/body porque no aportaba al flujo.
@@ -18,6 +50,18 @@ La línea de mejora actual no es integrar con Git, sino mejorar la calidad semá
 - [x] Añadido ranking de bullets para poner primero cambios principales, luego tests/docs/reportes y dejar validación al final.
 - [x] Añadida arquitectura ML opcional con scikit-learn, TF-IDF, LinearSVC y fallback a heurísticas NLTK.
 - [x] Suite actual: 26 tests registrados: 25 pasan y 1 entrenamiento se omite si `python3-sklearn` no está instalado.
+
+### Estado de Cumplimiento del Prompt ML
+- [x] `smart_commit_nltk.py` permanece y sigue siendo funcional.
+- [x] El motor sklearn es modular y opcional.
+- [x] La aplicación funciona aunque falten `ml/commit_model.pkl` y `ml/vectorizer.pkl`.
+- [x] El entrenamiento reutiliza `commit_examples_data/examples.json`, `commit_examples_data/examples.db` y `commit_examples_data/entries/`.
+- [x] El predictor devuelve tipo y confianza aproximada cuando el modelo lo permite.
+- [x] El sistema soporta entrada en inglés y español.
+- [x] El proyecto incluye `ml/`, `utils/` y tests dedicados para la nueva arquitectura.
+- [x] Los artefactos `ml/*.pkl` se tratan como generados localmente y no se versionan por defecto.
+- [ ] Validar entrenamiento real y predicciones con `python3-sklearn` instalado en Debian 12.
+- [ ] Definir si se distribuirá un modelo preentrenado o si cada instalación lo entrenará localmente.
 
 ### Ejemplo de Calidad Actual
 
@@ -55,6 +99,12 @@ sudo apt install \
     python3-regex
 ```
 
+Dependencia opcional:
+
+```bash
+sudo apt install python3-gensim
+```
+
 Entrenar o reentrenar el modelo ML local:
 
 ```bash
@@ -82,6 +132,8 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Instalación de dependencias principales: NLTK y PyQt6.
 - [x] Verificación inicial de datos NLTK requeridos al arrancar la aplicación.
 - [x] Descarga automática de paquetes NLTK faltantes en el primer uso.
+- [x] Documentación de paquetes Debian requeridos para el motor ML opcional.
+- [x] Documentación de `python3-gensim` como dependencia opcional.
 
 ### [x] Interfaz de Escritorio
 - [x] Ventana principal en PyQt6 para pegar resúmenes de cambios.
@@ -151,6 +203,15 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Semillas offline para cubrir `feat`, `fix`, `docs`, `refactor`, `test` y `chore`.
 - [x] Utilidades compartidas en `utils/` para preprocessing NLTK, detección de idioma y `python3-regex`.
 - [x] Documentación de instalación Debian, entrenamiento local y comportamiento sin modelo.
+- [x] Separación inicial entre responsabilidades NLTK/preprocessing y sklearn/clasificación.
+- [x] Fallback automático al motor heurístico cuando falla la predicción ML.
+
+### [x] Arquitectura Offline y Extensible
+- [x] Mantener motor heurístico existente como fallback.
+- [x] Añadir motor sklearn sin romper el flujo de UI actual.
+- [x] Preparar estructura para futuros motores: heurístico, sklearn y posible motor futuro opcional.
+- [x] Evitar cualquier dependencia de red, API externa, telemetría o inferencia online.
+- [x] Mantener artefactos de modelo como archivos locales generados por `joblib`.
 
 ### [x] Generación de Body Lines
 - [x] Generación de hasta 7 bullets relevantes.
@@ -211,10 +272,19 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Añadir más tests unitarios para extracción de acciones en español.
 - [x] Añadir más tests unitarios para `select_commit_type()` y `detect_scope()`.
 - [ ] Añadir tests de predicción ML con un modelo entrenado cuando `python3-sklearn` esté disponible.
+- [ ] Probar en Debian 12 con `python3-sklearn`, `python3-joblib`, `python3-langdetect` y `python3-regex` instalados desde apt.
+- [ ] Verificar ejemplos prompt: crash/audio -> `fix`, MIDI karaoke -> `feat`, instrucciones -> `docs`, código deprecated -> `refactor`.
 - [ ] Añadir casos de regresión para textos mixtos español/inglés.
 - [ ] Añadir casos de regresión para resúmenes con varios archivos modificados.
 - [ ] Definir nuevas métricas que no penalicen el límite actual de 7 bullets.
 - [ ] Mejorar métricas del dataset histórico sin perder los casos bilingües recientes.
+
+### [ ] Motor ML y Datos
+- [ ] Evaluar balance del dataset: actualmente los ejemplos históricos favorecen `feat`.
+- [ ] Añadir más ejemplos reales para `fix`, `docs`, `refactor`, `test` y `chore`.
+- [ ] Medir precisión del modelo entrenado localmente sin aumentar peso ni complejidad.
+- [ ] Documentar criterio para regenerar `commit_model.pkl` y `vectorizer.pkl`.
+- [ ] Mantener semillas offline solo como apoyo mientras el dataset real crece.
 
 ### [ ] Soporte Lingüístico
 - [ ] Ampliar verbos y patrones en español.
@@ -230,6 +300,7 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [ ] Crear un módulo dedicado para type/scope detection.
 - [ ] Crear fixtures reutilizables con ejemplos reales.
 - [ ] Decidir si los artefactos `ml/*.pkl` deben distribuirse preentrenados o mantenerse como generación local.
+- [ ] Definir una interfaz común de motores para `heuristic`, `sklearn` y futuros motores opcionales.
 - [ ] Sacar del índice de Git cualquier `__pycache__` ya trackeado.
 
 ### [ ] Interfaz de Usuario
