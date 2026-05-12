@@ -43,20 +43,34 @@ git commit -m "feat(nlp): mejora detección de menciones de archivos" \
 
 ### Comandos Útiles
 
+Instalar dependencias Debian:
+
+```bash
+sudo apt install \
+    python3-pyqt6 \
+    python3-nltk \
+    python3-sklearn \
+    python3-joblib \
+    python3-langdetect \
+    python3-regex
+```
+
+Entrenar o reentrenar el modelo ML local:
+
+```bash
+python3 -m ml.train_model
+```
+
+Ejecutar la suite de regresión:
+
 ```bash
 QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
 ```
 
+Recalcular el reporte de comparación:
+
 ```bash
 QT_QPA_PLATFORM=offscreen python3 commit_examples_data/compare_generator.py
-```
-
-```bash
-sudo apt install python3-sklearn python3-joblib python3-langdetect python3-regex
-```
-
-```bash
-python3 -m ml.train_model
 ```
 
 Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado porque ya está trackeado por Git. `.gitignore` evita nuevos artefactos, pero queda pendiente sacarlo del índice.
@@ -136,6 +150,7 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [x] Creación de `ml/predictor.py` con carga rápida y fallo silencioso hacia heurísticas.
 - [x] Semillas offline para cubrir `feat`, `fix`, `docs`, `refactor`, `test` y `chore`.
 - [x] Utilidades compartidas en `utils/` para preprocessing NLTK, detección de idioma y `python3-regex`.
+- [x] Documentación de instalación Debian, entrenamiento local y comportamiento sin modelo.
 
 ### [x] Generación de Body Lines
 - [x] Generación de hasta 7 bullets relevantes.
@@ -192,6 +207,7 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 ### [ ] Evaluación y Testing
 - [ ] Añadir más tests unitarios para extracción de acciones en español.
 - [ ] Añadir más tests unitarios para `select_commit_type()` y `detect_scope()`.
+- [ ] Añadir tests de predicción ML con un modelo entrenado cuando `python3-sklearn` esté disponible.
 - [ ] Añadir casos de regresión para textos mixtos español/inglés.
 - [ ] Añadir casos de regresión para resúmenes con varios archivos modificados.
 - [ ] Definir nuevas métricas que no penalicen el límite actual de 7 bullets.
@@ -210,6 +226,7 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 - [ ] Crear una clase o módulo dedicado para limpieza de input.
 - [ ] Crear un módulo dedicado para type/scope detection.
 - [ ] Crear fixtures reutilizables con ejemplos reales.
+- [ ] Decidir si los artefactos `ml/*.pkl` deben distribuirse preentrenados o mantenerse como generación local.
 - [ ] Sacar del índice de Git cualquier `__pycache__` ya trackeado.
 
 ### [ ] Interfaz de Usuario
@@ -228,5 +245,5 @@ Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado 
 
 ---
 
-**Última actualización:** 11 de mayo de 2026  
-**Estado:** Funcional para uso básico e iteración diaria; ya cuenta con regresiones iniciales y evaluación del dataset. La prioridad siguiente es mejorar la calidad semántica desde el texto pegado, sin depender de integración con Git.
+**Última actualización:** 12 de mayo de 2026  
+**Estado:** Funcional para uso básico e iteración diaria; ya cuenta con regresiones iniciales, evaluación del dataset y motor ML opcional offline. La prioridad siguiente es mejorar la calidad semántica desde el texto pegado sin perder ligereza ni compatibilidad Debian.

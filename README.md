@@ -19,20 +19,28 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 
 ## Installation
 
-### Debian / Ubuntu / Linux Mint
+### Debian 12 / Ubuntu / Linux Mint
 
 ```bash
 sudo apt update
-sudo apt install python3-pyqt6 python3-nltk python3-sklearn python3-joblib python3-langdetect python3-regex
+sudo apt install \
+    python3-pyqt6 \
+    python3-nltk \
+    python3-sklearn \
+    python3-joblib \
+    python3-langdetect \
+    python3-regex
 ```
 
-The ML packages are used only for the optional local classifier. The app still falls back to the heuristic NLTK engine if no trained model exists.
-
-### Other Linux Distributions
+Optional:
 
 ```bash
-pip install PyQt6 nltk
+sudo apt install python3-gensim
 ```
+
+The sklearn packages are used only for the optional local classifier. The app still runs with the original NLTK heuristic engine if `ml/commit_model.pkl` and `ml/vectorizer.pkl` do not exist.
+
+This project is designed for Debian repository packages and offline use. Avoid heavy AI stacks such as transformers, torch, tensorflow, spaCy, Hugging Face tooling, cloud APIs, or online inference services.
 
 On first run, the app checks for required NLTK data and downloads missing packages:
 
@@ -62,6 +70,29 @@ python3 -c "import nltk; nltk.download('punkt'); nltk.download('averaged_percept
 6. Adjust **Tipo** or **Scope** if the automatic choice needs a manual correction.
 7. Copy it to the clipboard and run it in your repository. The copy button confirms the action in-place, without opening a popup.
 
+## Optional ML Model
+
+The machine-learning engine predicts only the Conventional Commit type. NLTK and the existing heuristic engine still handle cleanup, language-aware processing, subject generation, scope detection, and body generation.
+
+Train or retrain the local model after installing `python3-sklearn`:
+
+```bash
+python3 -m ml.train_model
+```
+
+The trainer reads local examples from:
+
+- `commit_examples_data/examples.json`
+- `commit_examples_data/examples.db`
+- `commit_examples_data/entries/`
+
+It writes:
+
+- `ml/commit_model.pkl`
+- `ml/vectorizer.pkl`
+
+These files are local generated artifacts and are ignored by Git. If they are missing, corrupted, or incompatible, prediction silently falls back to the heuristic type detector.
+
 ## Testing and Evaluation
 
 Run the regression tests:
@@ -75,14 +106,6 @@ Recalculate the example-dataset comparison report:
 ```bash
 QT_QPA_PLATFORM=offscreen python3 commit_examples_data/compare_generator.py
 ```
-
-Train or retrain the optional offline ML model:
-
-```bash
-python3 -m ml.train_model
-```
-
-This writes `ml/commit_model.pkl` and `ml/vectorizer.pkl` locally with `joblib`.
 
 The comparison report is written to `commit_examples_data/comparison_report.json`. The current heuristics intentionally cap generated bodies at seven bullets, so body-count metrics are not expected to match older examples that contain longer commit bodies.
 
@@ -148,7 +171,8 @@ git commit -m "docs(repo): agrega roadmap con seguimiento de progreso" \
 ## Current Limitations
 
 - Spanish grammar support is rule-based. NLTK Punkt can split Spanish sentences, but this project does not currently use a full Spanish POS tagger.
-- The generator is heuristic, not a large language model. It improves through specific patterns, examples, and evaluation data.
+- The generator is heuristic plus optional classic ML, not a large language model. It improves through specific patterns, examples, and evaluation data.
+- The current dataset is small and mostly feature-oriented, so the ML classifier uses a small offline seed set to represent all six supported types.
 - It works best with summaries that describe concrete changes, files, features, validation, and user-visible behavior.
 
 ## Contributing
