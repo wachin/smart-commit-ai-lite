@@ -328,7 +328,6 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Improve subject truncation so it does not cut words.
 - [x] Expand the body up to 7 bullets to preserve relevant changes and validation.
 - [x] Prioritize combined semantic improvements over secondary test/documentation mentions.
-- [ ] Generate alternatives when several interpretations are possible.
 
 ---
 
