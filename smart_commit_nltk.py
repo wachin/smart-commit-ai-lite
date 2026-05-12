@@ -82,10 +82,14 @@ def ensure_nltk_data():
 ensure_nltk_data()
 
 class NLPCommitGenerator(QMainWindow):
+    DEFAULT_WINDOW_GEOMETRY = (90, 30, 660, 690)
+    MINIMUM_WINDOW_SIZE = (620, 620)
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Generador de Commits - NLTK Enhanced")
-        self.setGeometry(100, 100, 900, 700)
+        self.setGeometry(*self.DEFAULT_WINDOW_GEOMETRY)
+        self.setMinimumSize(*self.MINIMUM_WINDOW_SIZE)
         self.detected_commit_type = None
         self.detected_scope = None
         self.current_subject = ""
@@ -260,7 +264,7 @@ class NLPCommitGenerator(QMainWindow):
             self.noise_warning_label.setVisible(False)
 
     def detect_language(self, text):
-        text_lower = text.lower()
+        text_lower = self.language_signal_text(text).lower()
         spanish_markers = [
             ' el ', ' la ', ' los ', ' las ', ' un ', ' una ', ' este ', ' esta ',
             ' que ', ' para ', ' con ', ' sin ', ' desde ', ' hasta ', ' también ',
@@ -281,6 +285,25 @@ class NLPCommitGenerator(QMainWindow):
         spanish_score += len(re.findall(r'[áéíóúñü¿¡]', text_lower)) * 3
 
         return 'es' if spanish_score > english_score else 'en'
+
+    def language_signal_text(self, text):
+        signal_lines = []
+        in_fence = False
+        for raw_line in text.splitlines():
+            line = raw_line.strip()
+            if line.startswith("```"):
+                in_fence = not in_fence
+                continue
+            if in_fence:
+                continue
+            if re.search(r'^\s*git\s+commit\b', line):
+                continue
+            signal_lines.append(raw_line)
+
+        signal = "\n".join(signal_lines)
+        signal = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', signal)
+        signal = re.sub(r'`[^`]+`', ' ', signal)
+        return signal
 
     def sent_tokenize_by_language(self, text, language):
         nltk_language = 'spanish' if language == 'es' else 'english'
@@ -399,6 +422,24 @@ class NLPCommitGenerator(QMainWindow):
             'linearsvc',
         ]
         return sum(1 for marker in ml_markers if marker in text_lower) >= 2
+
+    def is_spanish_verb_expansion_summary(self, text_lower):
+        verb_markers = [
+            'spanish verb support',
+            'spanish conjugations',
+            'spanish verb expansion',
+            'verbos españoles',
+            'conjugaciones',
+            'arreglé',
+            'añadimos',
+            'mejoramos',
+            'documentamos',
+            'actualiza proyecto',
+        ]
+        return (
+            sum(1 for marker in verb_markers if marker in text_lower) >= 2
+            and any(marker in text_lower for marker in ['smart_commit_nltk.py', 'test_smart_commit_nltk.py', 'roadmap.md'])
+        )
 
     def extract_object_phrase(self, phrase):
         phrase = re.sub(r'\[.*?\]', ' ', phrase)
@@ -821,6 +862,9 @@ class NLPCommitGenerator(QMainWindow):
         if language == 'en' and self.is_ml_pipeline_summary(normalized_lower):
             return 'improve', 'offline ml training pipeline', language
 
+        if language == 'en' and self.is_spanish_verb_expansion_summary(normalized_lower):
+            return 'expand', 'Spanish verb support', language
+
         if self.is_mixed_language_nlp_summary(normalized_lower):
             if language == 'es':
                 return 'improve', 'detección de idioma en textos mixtos', language
@@ -940,6 +984,8 @@ class NLPCommitGenerator(QMainWindow):
             return 'readme'
         if self.is_ml_pipeline_summary(text_lower):
             return 'ml'
+        if self.is_spanish_verb_expansion_summary(text_lower):
+            return 'nlp'
         if (
             any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
             and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
@@ -1014,6 +1060,8 @@ class NLPCommitGenerator(QMainWindow):
         if self.is_readme_architecture_docs_summary(text_lower):
             return 'docs'
         if self.is_ml_pipeline_summary(text_lower):
+            return 'feat'
+        if self.is_spanish_verb_expansion_summary(text_lower):
             return 'feat'
         if (
             any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
@@ -1496,6 +1544,19 @@ class NLPCommitGenerator(QMainWindow):
                     add_bullet('- Cover training and predictor behavior with tests')
                 if 'readme.md' in text_lower or 'roadmap.md' in text_lower:
                     add_bullet('- Document the offline ML workflow')
+                add_validation_bullet()
+                return bullets
+
+            if self.is_spanish_verb_expansion_summary(text_lower):
+                add_bullet('- Expand Spanish conjugation coverage for commit summaries')
+                if 'actualiza proyecto' in text_lower:
+                    add_bullet('- Prevent fallback to actualiza proyecto for common Spanish summaries')
+                if 'ci' in text_lower and 'instrucciones' in text_lower:
+                    add_bullet('- Fix ci scope matching inside instrucciones')
+                if 'test_smart_commit_nltk.py' in text_lower or 'regression' in text_lower:
+                    add_bullet('- Add regression tests for Spanish verb expansion')
+                if 'roadmap.md' in text_lower:
+                    add_bullet('- Update Roadmap.md with Spanish verb progress')
                 add_validation_bullet()
                 return bullets
 

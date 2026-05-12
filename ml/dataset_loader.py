@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -113,3 +114,27 @@ def load_training_examples(include_seed: bool = True) -> list[TrainingExample]:
 def as_training_arrays(examples: list[TrainingExample]) -> tuple[list[str], list[str]]:
     return [example.text for example in examples], [example.label for example in examples]
 
+
+def label_counts(examples: list[TrainingExample]) -> dict[str, int]:
+    counts = Counter(example.label for example in examples)
+    return {label: counts.get(label, 0) for label in sorted(SUPPORTED_TYPES)}
+
+
+def summarize_label_balance(examples: list[TrainingExample]) -> dict:
+    counts = label_counts(examples)
+    nonzero_counts = [count for count in counts.values() if count > 0]
+    total = sum(counts.values())
+    largest_label = max(counts, key=counts.get) if counts else None
+    smallest_label = min(counts, key=counts.get) if counts else None
+    max_count = counts.get(largest_label, 0) if largest_label else 0
+    min_nonzero = min(nonzero_counts) if nonzero_counts else 0
+
+    return {
+        "total": total,
+        "counts": counts,
+        "largest_label": largest_label,
+        "largest_count": max_count,
+        "smallest_label": smallest_label,
+        "smallest_count": counts.get(smallest_label, 0) if smallest_label else 0,
+        "imbalance_ratio": round(max_count / min_nonzero, 2) if min_nonzero else None,
+    }

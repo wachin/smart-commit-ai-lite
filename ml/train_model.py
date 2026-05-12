@@ -10,7 +10,7 @@ from pathlib import Path
 
 import joblib
 
-from ml.dataset_loader import as_training_arrays, load_training_examples
+from ml.dataset_loader import as_training_arrays, load_training_examples, summarize_label_balance
 from utils.language import detect_language
 from utils.preprocessing import preprocess_text
 
@@ -22,12 +22,19 @@ DEFAULT_METADATA_PATH = ROOT / "ml" / "model_metadata.json"
 MODEL_FORMAT_VERSION = 1
 
 
-def build_metadata(example_count: int, label_counts: dict[str, int], model_path: Path, vectorizer_path: Path) -> dict:
+def build_metadata(
+    example_count: int,
+    label_counts: dict[str, int],
+    model_path: Path,
+    vectorizer_path: Path,
+    label_balance: dict | None = None,
+) -> dict:
     return {
         "format_version": MODEL_FORMAT_VERSION,
         "created_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "training_examples": example_count,
         "labels": dict(sorted(label_counts.items())),
+        "label_balance": label_balance or {},
         "model_path": str(model_path),
         "vectorizer_path": str(vectorizer_path),
         "trainer": "TfidfVectorizer(ngram_range=(1, 2)) + LinearSVC(class_weight='balanced')",
@@ -63,7 +70,13 @@ def train(
     joblib.dump(vectorizer, vectorizer_path)
 
     counts = Counter(labels)
-    metadata = build_metadata(len(labels), dict(counts), model_path, vectorizer_path)
+    metadata = build_metadata(
+        len(labels),
+        dict(counts),
+        model_path,
+        vectorizer_path,
+        summarize_label_balance(examples),
+    )
     metadata_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return metadata | {"metadata_path": str(metadata_path)}
 
@@ -78,6 +91,8 @@ def main() -> int:
     stats = train(args.model, args.vectorizer, args.metadata)
     print(f"Trained commit model with {stats['training_examples']} examples")
     print(f"Labels: {stats['labels']}")
+    if stats.get("label_balance"):
+        print(f"Label balance: {stats['label_balance']}")
     print(f"Model: {stats['model_path']}")
     print(f"Vectorizer: {stats['vectorizer_path']}")
     print(f"Metadata: {stats['metadata_path']}")

@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 37 registered tests, 36 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 40 registered tests, 39 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -246,6 +246,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Test to prioritize detected-language summaries over Roadmap mentions.
 - [x] Test to manually force the generation language.
 - [x] Test to manually edit type/scope and regenerate the command.
+- [x] Test for compact startup window geometry.
 - [x] Test to prioritize type/scope summaries over test/Roadmap mentions.
 - [x] Test to confirm copy state in the button without a modal message.
 - [x] Test for noise warnings from code blocks and pasted commits.
@@ -264,10 +265,12 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Regression for original prompt examples: crash/audio, MIDI karaoke, installation instructions, and deprecated code.
 - [x] Regression for mixed English/Spanish NLP summaries.
 - [x] Regression for several modified files in the offline ML pipeline.
+- [x] Regression for English summaries that contain Spanish examples or commit snippets.
 - [x] Tests for model artifact status reporting and UI model status text.
 - [x] Tests for model metadata generation without requiring sklearn at runtime.
 - [x] Tests for valid and invalid model metadata status.
-- [x] Successful suite run: 36 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
+- [x] Successful suite run: 39 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -295,7 +298,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Improve historical dataset metrics without losing recent bilingual cases.
 
 ### [ ] ML Engine and Data
-- [ ] Evaluate dataset balance: the historical examples currently favor `feat`.
+- [x] Evaluate dataset balance: the historical examples currently favor `feat`.
 - [ ] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [ ] Measure local model accuracy without increasing weight or complexity.
 - [ ] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
@@ -322,6 +325,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Allow manual language override.
 - [x] Allow editing type/scope from the UI before copying.
 - [x] Show warnings when input contains heavy noise or many code blocks.
+- [x] Start the window at a compact, top-left geometry that fits above the desktop panel.
 
 ### [ ] Commit Quality
 - [x] Improve bullet ranking by importance.

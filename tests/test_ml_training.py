@@ -3,7 +3,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ml.dataset_loader import SUPPORTED_TYPES, label_from_subject, load_training_examples
+from ml.dataset_loader import (
+    SUPPORTED_TYPES,
+    TrainingExample,
+    label_from_subject,
+    load_training_examples,
+    summarize_label_balance,
+)
 from ml.train_model import MODEL_FORMAT_VERSION, build_metadata
 
 
@@ -23,14 +29,34 @@ class MLTrainingTests(unittest.TestCase):
             label_counts={"feat": 8, "fix": 4},
             model_path=Path("ml/commit_model.pkl"),
             vectorizer_path=Path("ml/vectorizer.pkl"),
+            label_balance={"largest_label": "feat", "imbalance_ratio": 2.0},
         )
 
         self.assertEqual(metadata["format_version"], MODEL_FORMAT_VERSION)
         self.assertEqual(metadata["training_examples"], 12)
         self.assertEqual(metadata["labels"], {"feat": 8, "fix": 4})
+        self.assertEqual(metadata["label_balance"]["largest_label"], "feat")
+        self.assertEqual(metadata["label_balance"]["imbalance_ratio"], 2.0)
         self.assertEqual(metadata["model_path"], "ml/commit_model.pkl")
         self.assertEqual(metadata["vectorizer_path"], "ml/vectorizer.pkl")
         self.assertIn("LinearSVC", metadata["trainer"])
+
+    def test_summarize_label_balance_reports_dataset_skew(self):
+        examples = [
+            TrainingExample("add feature", "feat", "test"),
+            TrainingExample("add another feature", "feat", "test"),
+            TrainingExample("fix crash", "fix", "test"),
+            TrainingExample("update docs", "docs", "test"),
+        ]
+
+        summary = summarize_label_balance(examples)
+
+        self.assertEqual(summary["total"], 4)
+        self.assertEqual(summary["counts"]["feat"], 2)
+        self.assertEqual(summary["counts"]["fix"], 1)
+        self.assertEqual(summary["counts"]["chore"], 0)
+        self.assertEqual(summary["largest_label"], "feat")
+        self.assertEqual(summary["imbalance_ratio"], 2.0)
 
     @unittest.skipUnless(importlib.util.find_spec("sklearn"), "python3-sklearn is not installed")
     def test_training_writes_model_and_vectorizer(self):

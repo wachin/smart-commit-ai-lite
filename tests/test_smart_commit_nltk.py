@@ -201,6 +201,49 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
                 self.assertIn(f'git commit -m "{expected_subject}"', command)
                 self.assertNotIn('actualiza proyecto', command)
 
+    def test_english_summary_with_spanish_examples_stays_english(self):
+        text = """Continued development with expanded Spanish verb support.
+
+I fixed common Spanish summaries that were falling back to `actualiza proyecto`, including:
+
+```text
+Arreglé el fallo al abrir archivos de audio.
+Añadimos soporte para karaoke MIDI.
+Mejoramos la detección de idioma mixto.
+Documentamos las instrucciones de instalación.
+```
+
+These now produce specific Conventional Commits such as:
+
+```bash
+git commit -m "fix(app): corrige fallo al abrir archivos de audio"
+git commit -m "feat(app): agrega soporte para karaoke midi"
+git commit -m "docs(docs): documenta instrucciones de instalación"
+```
+
+I updated [smart_commit_nltk.py](/home/wachin/Dev/smart-commit-ai-lite/smart_commit_nltk.py:314) with the new Spanish conjugations, fixed `ci` scope matching so it no longer fires inside `instrucciones`, and added regressions in [tests/test_smart_commit_nltk.py](/home/wachin/Dev/smart-commit-ai-lite/tests/test_smart_commit_nltk.py:173). [Roadmap.md](/home/wachin/Dev/smart-commit-ai-lite/Roadmap.md:53) now marks Spanish verb expansion complete.
+
+Verification passed:
+
+```bash
+QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
+```
+
+Result: `37` tests ran, `36` passed, `1` skipped because `python3-sklearn` is not installed here.
+"""
+        command = self.render_command(text)
+
+        self.assertEqual(self.generator.language_status_label.text(), 'Idioma detectado: Inglés')
+        self.assertIn('git commit -m "feat(nlp): expand spanish verb support"', command.lower())
+        self.assertIn('-m "- Expand Spanish conjugation coverage for commit summaries"', command)
+        self.assertIn('-m "- Prevent fallback to actualiza proyecto for common Spanish summaries"', command)
+        self.assertIn('-m "- Fix ci scope matching inside instrucciones"', command)
+        self.assertIn('-m "- Add regression tests for Spanish verb expansion"', command)
+        self.assertIn('-m "- Update Roadmap.md with Spanish verb progress"', command)
+        self.assertIn('-m "- Validation: 36/37 tests pass, 1 skipped"', command)
+        self.assertNotIn('agrega suite de regresión', command)
+        self.assertNotIn('-m "- Actualiza lógica de código mencionada en el resumen"', command)
+
     def test_clear_input_button_resets_input_output_and_copy_state(self):
         self.generator.input_text.setPlainText('He creado Roadmap.md.')
         self.generator.output_text.setPlainText('git commit -m "docs(repo): test"')
@@ -221,6 +264,17 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
         self.assertEqual(self.generator.ml_status_label.text(), self.generator.model_status_text())
         self.assertEqual(self.generator.type_override_combo.currentData(), 'auto')
         self.assertEqual(self.generator.scope_override_combo.currentData(), 'auto')
+
+    def test_default_window_geometry_starts_compact_and_resizable(self):
+        x, y, width, height = self.generator.DEFAULT_WINDOW_GEOMETRY
+        min_width, min_height = self.generator.MINIMUM_WINDOW_SIZE
+        geometry = self.generator.geometry()
+        minimum_size = self.generator.minimumSize()
+
+        self.assertEqual((geometry.x(), geometry.y(), geometry.width(), geometry.height()), (x, y, width, height))
+        self.assertEqual((minimum_size.width(), minimum_size.height()), (min_width, min_height))
+        self.assertLessEqual(width, 700)
+        self.assertLessEqual(height, 700)
 
     def test_model_status_text_reports_missing_artifacts(self):
         self.assertIn('ML model:', self.generator.model_status_text())
