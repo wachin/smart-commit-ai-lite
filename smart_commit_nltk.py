@@ -130,6 +130,11 @@ class NLPCommitGenerator(QMainWindow):
         language_layout.addWidget(self.language_override_combo)
         layout.addLayout(language_layout)
 
+        self.ml_status_label = QLabel(self.model_status_text())
+        self.ml_status_label.setFont(QFont("Arial", 9))
+        self.ml_status_label.setStyleSheet("color: #555; padding: 4px 0;")
+        layout.addWidget(self.ml_status_label)
+
         commit_meta_layout = QHBoxLayout()
 
         type_label = QLabel("Tipo:")
@@ -678,6 +683,15 @@ class NLPCommitGenerator(QMainWindow):
     def selected_language_override(self):
         selected = self.language_override_combo.currentData()
         return selected if selected in {'es', 'en'} else None
+
+    def model_status_text(self):
+        if not self.ml_predictor:
+            return "ML model: sklearn predictor unavailable"
+
+        status = self.ml_predictor.status(try_load=False)
+        if status.ready:
+            return "ML model: ready"
+        return f"ML model: {status.message}; run python3 -m ml.train_model"
 
     def analyze_with_nltk(self, text, forced_language=None):
         language = forced_language or self.detect_language(text)
@@ -1493,6 +1507,7 @@ class NLPCommitGenerator(QMainWindow):
         self.type_override_combo.setCurrentIndex(0)
         self.scope_override_combo.setCurrentIndex(0)
         self.language_status_label.setText("Idioma detectado: pendiente")
+        self.ml_status_label.setText(self.model_status_text())
         self.input_text.setFocus()
 
 if __name__ == "__main__":

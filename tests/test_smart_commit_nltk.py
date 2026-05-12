@@ -161,6 +161,7 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
         self.generator.output_text.setPlainText('git commit -m "docs(repo): test"')
         self.generator.copy_btn.setEnabled(True)
         self.generator.language_status_label.setText('Idioma detectado: Español')
+        self.generator.ml_status_label.setText('ML model: stale')
         self.generator.noise_warning_label.setText('Aviso: ruido.')
         self.generator.noise_warning_label.setVisible(True)
 
@@ -172,8 +173,13 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
         self.assertEqual(self.generator.copy_btn.text(), 'Copiar al Portapapeles')
         self.assertFalse(self.generator.noise_warning_label.isVisible())
         self.assertEqual(self.generator.language_status_label.text(), 'Idioma detectado: pendiente')
+        self.assertEqual(self.generator.ml_status_label.text(), self.generator.model_status_text())
         self.assertEqual(self.generator.type_override_combo.currentData(), 'auto')
         self.assertEqual(self.generator.scope_override_combo.currentData(), 'auto')
+
+    def test_model_status_text_reports_missing_artifacts(self):
+        self.assertIn('ML model:', self.generator.model_status_text())
+        self.assertIn('ml.train_model', self.generator.model_status_text())
 
     def test_language_status_updates_after_generating_commit(self):
         self.render_command('He creado Roadmap.md con tareas completadas.')

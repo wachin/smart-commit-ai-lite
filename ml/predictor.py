@@ -1,4 +1,4 @@
-"""Optional sklearn predictor with heuristic-safe failure behavior."""
+"""Local sklearn predictor and artifact validation."""
 
 from __future__ import annotations
 
@@ -27,6 +27,20 @@ class PredictionResult:
     engine: str = "sklearn"
 
 
+@dataclass(frozen=True)
+class ModelStatus:
+    model_path: Path
+    vectorizer_path: Path
+    model_exists: bool
+    vectorizer_exists: bool
+    loadable: bool
+    message: str
+
+    @property
+    def ready(self) -> bool:
+        return self.model_exists and self.vectorizer_exists and self.loadable
+
+
 class SklearnCommitPredictor:
     """Load local joblib artifacts and predict Conventional Commit types."""
 
@@ -39,6 +53,7 @@ class SklearnCommitPredictor:
         self.vectorizer_path = Path(vectorizer_path)
         self._model: Any | None = None
         self._vectorizer: Any | None = None
+        self._load_error: str | None = None
 
     @property
     def available(self) -> bool:
@@ -48,15 +63,46 @@ class SklearnCommitPredictor:
         if self._model is not None and self._vectorizer is not None:
             return True
         if not self.available:
+            self._load_error = "model or vectorizer artifact is missing"
             return False
         try:
             self._model = joblib.load(self.model_path)
             self._vectorizer = joblib.load(self.vectorizer_path)
+            self._load_error = None
             return True
-        except Exception:
+        except Exception as exc:
             self._model = None
             self._vectorizer = None
+            self._load_error = str(exc)
             return False
+
+    def status(self, try_load: bool = False) -> ModelStatus:
+        model_exists = self.model_path.exists()
+        vectorizer_exists = self.vectorizer_path.exists()
+        loadable = False
+
+        if model_exists and vectorizer_exists:
+            loadable = self.load() if try_load else True
+
+        if not model_exists and not vectorizer_exists:
+            message = "missing model and vectorizer artifacts"
+        elif not model_exists:
+            message = "missing model artifact"
+        elif not vectorizer_exists:
+            message = "missing vectorizer artifact"
+        elif loadable:
+            message = "model artifacts are ready"
+        else:
+            message = f"model artifacts could not be loaded: {self._load_error or 'unknown error'}"
+
+        return ModelStatus(
+            model_path=self.model_path,
+            vectorizer_path=self.vectorizer_path,
+            model_exists=model_exists,
+            vectorizer_exists=vectorizer_exists,
+            loadable=loadable,
+            message=message,
+        )
 
     def predict(self, text: str, language: str | None = None) -> PredictionResult | None:
         if not text or not text.strip() or not self.load():
@@ -103,4 +149,3 @@ class SklearnCommitPredictor:
 
 def predict_commit_type(text: str, language: str | None = None) -> PredictionResult | None:
     return SklearnCommitPredictor().predict(text, language)
-

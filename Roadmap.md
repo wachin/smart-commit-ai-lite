@@ -50,12 +50,12 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 27 registered tests, 26 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 29 registered tests, 28 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
 - [x] The sklearn engine is modular and part of the standard architecture.
-- [ ] Add startup validation for the distributed `ml/commit_model.pkl` and `ml/vectorizer.pkl` artifacts.
+- [x] Add startup validation for the distributed `ml/commit_model.pkl` and `ml/vectorizer.pkl` artifacts.
 - [x] Training reuses `commit_examples_data/examples.json`, `commit_examples_data/examples.db`, and `commit_examples_data/entries/`.
 - [x] The predictor returns a type and approximate confidence when the model supports it.
 - [x] The system supports English and Spanish input.
@@ -201,11 +201,12 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Created `ml/train_model.py` with `TfidfVectorizer` and `LinearSVC`.
 - [x] Saved `commit_model.pkl` and `vectorizer.pkl` locally with `joblib`.
 - [x] Created `ml/predictor.py` with fast local model loading.
+- [x] Added explicit model artifact status reporting for model/vectorizer presence and loadability.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
 - [x] Documented Debian installation and local training.
 - [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
-- [ ] Tighten runtime validation so missing official model artifacts are surfaced clearly in Debian installs.
+- [x] Surface missing official model artifacts in the UI with a retraining command hint.
 
 ### [x] Offline and Extensible Architecture
 - [x] Kept the existing heuristic engine as the subject/body and scope orchestration layer.
@@ -255,7 +256,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Direct tests for `select_commit_type()` with core categories.
 - [x] Direct tests for `detect_scope()` with common project areas.
 - [x] Regression for rich README architecture summaries compared against an AI-generated commit.
-- [x] Successful suite run: 26 tests pass and 1 is skipped without `python3-sklearn`.
+- [x] Tests for model artifact status reporting and UI model status text.
+- [x] Successful suite run: 28 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.

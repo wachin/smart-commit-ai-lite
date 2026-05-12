@@ -120,6 +120,8 @@ The project distributes a pre-trained model for these default filenames. Users c
 
 The model is trained and loaded locally with `joblib`. It does not use network access, online inference, or external services.
 
+The UI shows the local model status at startup. If the distributed artifacts are not present yet, it points users to `python3 -m ml.train_model`.
+
 ## Testing and Evaluation
 
 Run the regression tests:
