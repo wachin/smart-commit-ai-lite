@@ -1,3 +1,5 @@
 __pycache__/
 *.py[cod]
 ml/*.pkl
+!ml/commit_model.pkl
+!ml/vectorizer.pkl

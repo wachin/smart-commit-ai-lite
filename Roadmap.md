@@ -59,7 +59,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] The predictor returns a type and approximate confidence when the model supports it.
 - [x] The system supports English and Spanish input.
 - [x] The project includes `ml/`, `utils/`, and dedicated tests for the new architecture.
-- [x] `ml/*.pkl` artifacts are treated as locally generated files and are not versioned by default.
+- [x] Product decision: distribute a pre-trained model while keeping local retraining available for users who need it.
 - [ ] Validate real training and predictions on Debian 12 with `python3-sklearn` installed.
 - [ ] A pre-trained model will be distributed, and if the user wishes, they will have the instructions to train it locally as needed.
 
@@ -299,7 +299,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Create a dedicated class or module for input cleanup.
 - [ ] Create a dedicated module for type/scope detection.
 - [ ] Create reusable fixtures with real examples.
-- [ ] Decide whether `ml/*.pkl` artifacts should be pre-trained and distributed or kept as local generated files.
+- [ ] Define the packaging/versioning policy for the distributed pre-trained model and locally retrained `ml/*.pkl` artifacts.
 - [ ] Define a common engine interface for `heuristic`, `sklearn`, and future optional engines.
 - [ ] Remove any already-tracked `__pycache__` files from the Git index.
 

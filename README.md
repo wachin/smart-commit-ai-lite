@@ -112,7 +112,7 @@ It writes:
 - `ml/commit_model.pkl`
 - `ml/vectorizer.pkl`
 
-These files are local generated artifacts and are ignored by Git. If they are missing, corrupted, or incompatible, prediction silently falls back to the heuristic type detector.
+The project will distribute a pre-trained model for these default filenames. Users can also retrain locally and replace them as needed. If the files are missing, corrupted, or incompatible, prediction silently falls back to the heuristic type detector.
 
 The model is trained and loaded locally with `joblib`. It does not use network access, online inference, or external services.
 
