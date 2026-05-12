@@ -1,93 +1,93 @@
 # Roadmap: NLTK + Lightweight ML Git Commit Generator
 
-Este roadmap documenta el progreso del generador de commits inteligente basado en NLTK, extendido con un motor ML clásico y opcional basado en scikit-learn. El objetivo del proyecto es mejorar la predicción de Conventional Commits sin convertirlo en una aplicación pesada de IA: todo debe seguir siendo local, ligero, explicable, mantenible y compatible con Debian 12.
+This roadmap tracks the progress of the NLTK-based smart commit generator, now extended with an optional classic scikit-learn ML engine. The goal is to improve Conventional Commit prediction without turning the project into a heavy AI application: everything should stay local, lightweight, explainable, maintainable, and Debian 12 friendly.
 
-## Contrato del Proyecto
+## Project Contract
 
-### Filosofía
-- [x] Mantener el proyecto ligero, offline-first, open source, Linux friendly y Debian 12 friendly.
-- [x] Priorizar estabilidad, compatibilidad offline, compatibilidad Debian, bajo uso de memoria y luego precisión.
-- [x] Mantener `smart_commit_nltk.py` funcional como motor heurístico existente.
-- [x] Extender la arquitectura actual en vez de reemplazarla.
-- [x] Evitar complejidad innecesaria y dependencias pesadas.
+### Philosophy
+- [x] Keep the project lightweight, offline-first, open source, Linux friendly, Debian 12 friendly, and low-resource friendly.
+- [x] Prioritize stability, offline compatibility, Debian compatibility, low memory usage, and then accuracy.
+- [x] Keep `smart_commit_nltk.py` functional as the existing heuristic engine.
+- [x] Extend the current architecture instead of replacing it.
+- [x] Avoid unnecessary complexity and heavy dependencies.
 
-### Límites Técnicos
-- [x] No usar transformers, torch, tensorflow, spaCy, Hugging Face, redes neuronales, APIs cloud, frameworks LLM, inferencia online ni telemetría.
-- [x] Usar dependencias disponibles en repositorios Debian 12: `python3-nltk`, `python3-sklearn`, `python3-joblib`, `python3-langdetect`, `python3-regex`.
-- [x] Mantener `python3-gensim` como opcional, no requerido.
-- [x] No depender de paquetes pesados instalables solo por pip para la ruta principal.
-- [x] Conservar funcionamiento completo sin internet una vez presentes los datos locales de NLTK y, si se usa, el modelo local.
+### Technical Boundaries
+- [x] Do not use transformers, torch, tensorflow, spaCy, Hugging Face, neural networks, cloud APIs, LLM frameworks, online inference, or telemetry.
+- [x] Use dependencies available in Debian 12 repositories: `python3-nltk`, `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex`.
+- [x] Keep `python3-gensim` optional, not required.
+- [x] Do not depend on heavy pip-only packages for the main path.
+- [x] Keep the application fully usable without internet access once local NLTK data and, if used, the local model are present.
 
-### Responsabilidades por Motor
-- [x] NLTK y utilidades locales: normalización, limpieza, tokenización, stemming, stopword removal y preprocessing.
-- [x] scikit-learn: vectorización TF-IDF, clasificación ML y predicción del tipo de commit.
-- [x] Heurísticas existentes: fallback, generación de subject/body, scope y comportamiento compatible con la UI actual.
-- [x] `python3-langdetect`: apoyo para detección de idioma cuando sea útil, con fallback determinista.
-- [x] `python3-regex`: mejoras de regex donde aporten valor, con fallback prudente si falta el paquete.
+### Engine Responsibilities
+- [x] NLTK and local utilities: normalization, cleanup, tokenization, stemming, stopword removal, and preprocessing.
+- [x] scikit-learn: TF-IDF vectorization, ML classification, and commit type prediction.
+- [x] Existing heuristics: fallback, subject/body generation, scope detection, and compatibility with the current UI behavior.
+- [x] `python3-langdetect`: support language detection when useful, with deterministic fallback behavior.
+- [x] `python3-regex`: improve regular-expression handling where useful, with a cautious fallback if the package is missing.
 
-### Objetivo ML
-- [x] Predecir tipos Conventional Commit desde texto de usuario.
-- [x] Soportar tipos: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`.
-- [x] Usar `TfidfVectorizer` y `LinearSVC`.
-- [x] Guardar modelo local con `joblib`.
-- [x] Guardar vectorizer separado.
-- [x] Cargar rápido y fallar sin romper la aplicación.
-- [x] No usar inferencia online ni servicios externos.
+### ML Objective
+- [x] Predict Conventional Commit types from user text.
+- [x] Support these types: `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
+- [x] Use `TfidfVectorizer` and `LinearSVC`.
+- [x] Save the model locally with `joblib`.
+- [x] Save the vectorizer separately.
+- [x] Load quickly and fail without breaking the application.
+- [x] Avoid online inference and external services.
 
-## Estado Actual para Retomar
+## Current State
 
-El programa ya es funcional para uso diario: toma texto pegado en español o inglés, limpia ruido de Markdown/comandos, detecta idioma, propone `type(scope)`, genera subject y body localizado, permite corregir manualmente idioma/type/scope y copia el comando sin ventana modal.
+The program is already usable for daily work: it accepts pasted English or Spanish text, removes Markdown/command noise, detects language, proposes `type(scope)`, generates a localized subject and body, lets the user manually correct language/type/scope, and copies the command without a modal dialog.
 
-La línea de mejora actual no es integrar con Git, sino mejorar la calidad semántica desde el texto pegado. La mejora ML debe permanecer como una capa opcional, clásica y local encima del motor NLTK, no como reemplazo.
+The current improvement track is not Git integration. It is better semantic quality from pasted text. The ML layer must remain optional, classic, and local on top of the NLTK engine, not a replacement.
 
-### Últimos Avances Importantes
-- [x] Eliminada la vista previa separada de subject/body porque no aportaba al flujo.
-- [x] Añadido truncado inteligente de subject con límites de palabra.
-- [x] Corregida la priorización para que cambios semánticos no queden ocultos por menciones secundarias de tests o documentación.
-- [x] Añadida detección general de validaciones indirectas como `Resultado: 20 tests OK`, `suite completa pasa`, `py_compile`, `compileall`, `unittest` y `pytest`.
-- [x] Añadida detección de menciones de archivos para clasificar código, tests, documentación, reportes y configuración.
-- [x] Ampliado el body de 5 a 7 bullets para conservar detalles importantes.
-- [x] Añadido ranking de bullets para poner primero cambios principales, luego tests/docs/reportes y dejar validación al final.
-- [x] Añadida arquitectura ML opcional con scikit-learn, TF-IDF, LinearSVC y fallback a heurísticas NLTK.
-- [x] Suite actual: 26 tests registrados: 25 pasan y 1 entrenamiento se omite si `python3-sklearn` no está instalado.
+### Latest Important Progress
+- [x] Removed the separate subject/body preview because it did not improve the workflow.
+- [x] Added word-boundary-aware subject truncation.
+- [x] Fixed prioritization so semantic changes are not hidden by secondary test or documentation mentions.
+- [x] Added detection for indirect validation phrases such as `Result: 20 tests OK`, `full suite passes`, `py_compile`, `compileall`, `unittest`, and `pytest`.
+- [x] Added file mention detection to classify code, tests, documentation, reports, and configuration.
+- [x] Expanded the body from 5 to 7 bullets to preserve important details.
+- [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
+- [x] Added an optional ML architecture with scikit-learn, TF-IDF, LinearSVC, and fallback to NLTK heuristics.
+- [x] Current suite: 26 registered tests, 25 passing, and 1 training test skipped when `python3-sklearn` is not installed.
 
-### Estado de Cumplimiento del Prompt ML
-- [x] `smart_commit_nltk.py` permanece y sigue siendo funcional.
-- [x] El motor sklearn es modular y opcional.
-- [x] La aplicación funciona aunque falten `ml/commit_model.pkl` y `ml/vectorizer.pkl`.
-- [x] El entrenamiento reutiliza `commit_examples_data/examples.json`, `commit_examples_data/examples.db` y `commit_examples_data/entries/`.
-- [x] El predictor devuelve tipo y confianza aproximada cuando el modelo lo permite.
-- [x] El sistema soporta entrada en inglés y español.
-- [x] El proyecto incluye `ml/`, `utils/` y tests dedicados para la nueva arquitectura.
-- [x] Los artefactos `ml/*.pkl` se tratan como generados localmente y no se versionan por defecto.
-- [ ] Validar entrenamiento real y predicciones con `python3-sklearn` instalado en Debian 12.
-- [ ] Se distribuirá un modelo preentrenado, y si el usuario lo desea tendrá las instrucciones para que lo entrene localmente según el lo necesite
+### ML Prompt Compliance Status
+- [x] `smart_commit_nltk.py` remains present and functional.
+- [x] The sklearn engine is modular and optional.
+- [x] The application works even if `ml/commit_model.pkl` and `ml/vectorizer.pkl` are missing.
+- [x] Training reuses `commit_examples_data/examples.json`, `commit_examples_data/examples.db`, and `commit_examples_data/entries/`.
+- [x] The predictor returns a type and approximate confidence when the model supports it.
+- [x] The system supports English and Spanish input.
+- [x] The project includes `ml/`, `utils/`, and dedicated tests for the new architecture.
+- [x] `ml/*.pkl` artifacts are treated as locally generated files and are not versioned by default.
+- [ ] Validate real training and predictions on Debian 12 with `python3-sklearn` installed.
+- [ ] Decide whether to distribute a pre-trained model or keep training as a local user action with clear instructions.
 
-### Ejemplo de Calidad Actual
+### Current Quality Example
 
-Entrada resumida:
+Input summary:
 
 ```text
-Mejoré la detección de menciones de archivos dentro del texto pegado.
-Actualicé smart_commit_nltk.py, tests/test_smart_commit_nltk.py, README.md,
-Roadmap.md y commit_examples_data/comparison_report.json.
-Resultado: 19 tests OK.
+I improved file mention detection in pasted text.
+I updated smart_commit_nltk.py, tests/test_smart_commit_nltk.py, README.md,
+Roadmap.md, and commit_examples_data/comparison_report.json.
+Result: 19 tests OK.
 ```
 
-Salida esperada actual:
+Current expected output:
 
 ```bash
-git commit -m "feat(nlp): mejora detección de menciones de archivos" \
-  -m "- Actualiza lógica de código mencionada en el resumen" \
-  -m "- Cubre cambios con tests de regresión" \
-  -m "- Actualiza documentación mencionada en el resumen" \
-  -m "- Actualiza datos o reportes de evaluación" \
-  -m "- Validación: 19 tests pass"
+git commit -m "feat(nlp): improve file mention detection" \
+  -m "- Update code paths mentioned in the summary" \
+  -m "- Cover changes with regression tests" \
+  -m "- Update documentation mentioned in the summary" \
+  -m "- Update evaluation data or reports" \
+  -m "- Validation: 19 tests pass"
 ```
 
-### Comandos Útiles
+### Useful Commands
 
-Instalar dependencias Debian:
+Install Debian dependencies:
 
 ```bash
 sudo apt install \
@@ -99,225 +99,225 @@ sudo apt install \
     python3-regex
 ```
 
-Dependencia opcional:
+Optional dependency:
 
 ```bash
 sudo apt install python3-gensim
 ```
 
-Entrenar o reentrenar el modelo ML local:
+Train or retrain the local ML model:
 
 ```bash
 python3 -m ml.train_model
 ```
 
-Ejecutar la suite de regresión:
+Run the regression suite:
 
 ```bash
 QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
 ```
 
-Recalcular el reporte de comparación:
+Recalculate the comparison report:
 
 ```bash
 QT_QPA_PLATFORM=offscreen python3 commit_examples_data/compare_generator.py
 ```
 
-Nota: `__pycache__/smart_commit_nltk.cpython-311.pyc` puede aparecer modificado porque ya está trackeado por Git. `.gitignore` evita nuevos artefactos, pero queda pendiente sacarlo del índice.
+Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified because it is already tracked by Git. `.gitignore` prevents new generated artifacts, but removing that tracked bytecode from the index remains pending.
 
-## Funcionalidades Completadas
+## Completed Features
 
-### [x] Configuración Inicial del Proyecto
-- [x] Creación del repositorio y estructura básica.
-- [x] Instalación de dependencias principales: NLTK y PyQt6.
-- [x] Verificación inicial de datos NLTK requeridos al arrancar la aplicación.
-- [x] Descarga automática de paquetes NLTK faltantes en el primer uso.
-- [x] Documentación de paquetes Debian requeridos para el motor ML opcional.
-- [x] Documentación de `python3-gensim` como dependencia opcional.
+### [x] Initial Project Setup
+- [x] Created the repository and basic structure.
+- [x] Installed the main dependencies: NLTK and PyQt6.
+- [x] Added startup checks for required NLTK data.
+- [x] Added first-run download support for missing NLTK packages.
+- [x] Documented Debian packages required for the optional ML engine.
+- [x] Documented `python3-gensim` as an optional dependency.
 
-### [x] Interfaz de Escritorio
-- [x] Ventana principal en PyQt6 para pegar resúmenes de cambios.
-- [x] Botón para generar commits con NLTK.
-- [x] Botón para limpiar el texto de entrada del usuario.
-- [x] Indicador de idioma detectado: pendiente, Español o Inglés.
-- [x] Selector manual de idioma: Automático, Español o Inglés.
-- [x] Selectores manuales para ajustar type y scope antes de copiar.
-- [x] Advertencia no intrusiva cuando el input tiene mucho ruido o bloques de código.
-- [x] Área de salida con comando `git commit` multilinea.
-- [x] Botón para copiar el comando al portapapeles.
-- [x] Confirmación de copiado en el propio botón, sin mensaje modal.
+### [x] Desktop Interface
+- [x] Main PyQt6 window for pasting change summaries.
+- [x] Button for generating commits with NLTK.
+- [x] Button for clearing user input.
+- [x] Detected-language indicator: pending, Spanish, or English.
+- [x] Manual language selector: Automatic, Spanish, or English.
+- [x] Manual selectors for type and scope before copying.
+- [x] Non-intrusive warning when input contains heavy noise or code blocks.
+- [x] Output area with multiline `git commit` command.
+- [x] Button for copying the command to the clipboard.
+- [x] Copy confirmation in the button itself, without a modal message.
 
-### [x] Generador Base con NLTK
-- [x] Tokenización y POS tagging para textos en inglés.
-- [x] Extracción inicial de verbo y objeto para construir el subject.
-- [x] Scoring de oraciones para elegir la frase más representativa.
-- [x] Formato Conventional Commits: `type(scope): subject`.
-- [x] Límite de longitud para subject y body lines.
+### [x] Base NLTK Generator
+- [x] Tokenization and POS tagging for English text.
+- [x] Initial verb/object extraction for subject construction.
+- [x] Sentence scoring to choose the most representative phrase.
+- [x] Conventional Commit format: `type(scope): subject`.
+- [x] Length limits for subjects and body lines.
 
-### [x] Dataset de Ejemplos de Commits
-- [x] Creación de `COMMIT_GENERATION_EXAMPLES.md` con casos reales.
-- [x] Desarrollo de `parse_commit_examples.py` para parsear ejemplos.
-- [x] Exportación de ejemplos a JSON y SQLite.
-- [x] Validación de 45 entradas procesadas correctamente.
+### [x] Commit Example Dataset
+- [x] Created `COMMIT_GENERATION_EXAMPLES.md` with real cases.
+- [x] Created `parse_commit_examples.py` to parse examples.
+- [x] Exported examples to JSON and SQLite.
+- [x] Validated 45 processed entries.
 
-### [x] Sistema de Comparación y Evaluación
-- [x] Creación de `compare_generator.py`.
-- [x] Comparación entre commits generados y commits esperados.
-- [x] Reporte JSON con métricas de similitud.
-- [x] Mejora inicial de similitud de 0.453 a 0.528.
-- [x] Aumento posterior de similitud del subject a 0.509.
-- [x] Actualización de `compare_generator.py` para la firma bilingüe actual.
-- [x] Recalculo de `comparison_report.json` tras las mejoras bilingües.
-- [x] Registro de línea base actual: 45 ejemplos, subject similarity 0.446, body ratio 0.000.
+### [x] Comparison and Evaluation System
+- [x] Created `compare_generator.py`.
+- [x] Compared generated commits against expected commits.
+- [x] Produced a JSON report with similarity metrics.
+- [x] Improved initial similarity from 0.453 to 0.528.
+- [x] Later improved subject similarity to 0.509.
+- [x] Updated `compare_generator.py` for the current bilingual signature.
+- [x] Recalculated `comparison_report.json` after bilingual improvements.
+- [x] Recorded current baseline: 45 examples, subject similarity 0.446, body ratio 0.000.
 
-### [x] Filtrado de Ruido
-- [x] Eliminación de comandos de terminal y frases conversacionales irrelevantes.
-- [x] Limpieza de líneas generadas por herramientas o asistentes.
-- [x] Filtrado de bloques Markdown con triple backtick.
-- [x] Ignorar comandos `git commit -m` pegados dentro del resumen.
-- [x] Ignorar líneas `-m` incrustadas para evitar que contaminen el body.
-- [x] Limpieza de enlaces Markdown, conservando el texto visible del enlace.
-- [x] Conservación de validaciones útiles como `py_compile` cuando aparecen dentro de bloques de código.
+### [x] Noise Filtering
+- [x] Removed terminal commands and irrelevant conversational phrases.
+- [x] Cleaned lines generated by tools or assistants.
+- [x] Filtered Markdown triple-backtick blocks.
+- [x] Ignored pasted `git commit -m` commands inside summaries.
+- [x] Ignored embedded `-m` lines to avoid polluting the body.
+- [x] Cleaned Markdown links while preserving visible link text.
+- [x] Preserved useful validations such as `py_compile` when they appear inside code blocks.
 
-### [x] Soporte Bilingüe Español/Inglés
-- [x] Detección simple de idioma de entrada (`es` / `en`).
-- [x] Tokenización por idioma usando Punkt en inglés o español.
-- [x] Generación del subject y body en el mismo idioma del resumen.
-- [x] Soporte para verbos españoles comunes: `creado`, `actualizado`, `incluye`, `resume`, `corrige`, `mejora`.
-- [x] Extracción de objetos en español mediante reglas lingüísticas propias.
-- [x] Casos específicos para resúmenes de roadmap en español e inglés.
-- [x] Casos específicos para mejoras bilingües/NLP.
+### [x] Bilingual English/Spanish Support
+- [x] Simple input language detection (`es` / `en`).
+- [x] Language-specific tokenization using English or Spanish Punkt.
+- [x] Subject and body generation in the same language as the summary.
+- [x] Support for common Spanish verbs: `creado`, `actualizado`, `incluye`, `resume`, `corrige`, and `mejora`.
+- [x] Spanish object extraction through local linguistic rules.
+- [x] Specific cases for roadmap summaries in English and Spanish.
+- [x] Specific cases for bilingual/NLP improvements.
 
-### [x] Detección de Type y Scope
-- [x] Detección automática de tipos: `feat`, `fix`, `docs`, `test`, `build`, `ci`, `style`, `refactor`, `perf`.
-- [x] Detección automática de scopes: `app`, `ui`, `docs`, `repo`, `dict`, `tools`, `nlp`.
-- [x] Corrección del falso positivo de `ci` dentro de palabras como `funcionalidades` o `secciones`.
-- [x] Priorización de cambios NLP/bilingües como `feat(nlp)`.
-- [x] Clasificación de roadmaps creados como `docs(repo)`.
+### [x] Type and Scope Detection
+- [x] Automatic type detection: `feat`, `fix`, `docs`, `test`, `build`, `ci`, `style`, `refactor`, `perf`.
+- [x] Automatic scope detection: `app`, `ui`, `docs`, `repo`, `dict`, `tools`, `nlp`.
+- [x] Fixed false-positive `ci` detection inside words such as `funcionalidades` and `secciones`.
+- [x] Prioritized NLP/bilingual changes as `feat(nlp)`.
+- [x] Classified newly created roadmaps as `docs(repo)`.
 
-### [x] Motor ML Ligero y Opcional
-- [x] Creación de `ml/dataset_loader.py` para reutilizar `examples.json`, `examples.db` y `commit_examples_data/entries/`.
-- [x] Creación de `ml/train_model.py` con `TfidfVectorizer` y `LinearSVC`.
-- [x] Guardado local de `commit_model.pkl` y `vectorizer.pkl` mediante `joblib`.
-- [x] Creación de `ml/predictor.py` con carga rápida y fallo silencioso hacia heurísticas.
-- [x] Semillas offline para cubrir `feat`, `fix`, `docs`, `refactor`, `test` y `chore`.
-- [x] Utilidades compartidas en `utils/` para preprocessing NLTK, detección de idioma y `python3-regex`.
-- [x] Documentación de instalación Debian, entrenamiento local y comportamiento sin modelo.
-- [x] Separación inicial entre responsabilidades NLTK/preprocessing y sklearn/clasificación.
-- [x] Fallback automático al motor heurístico cuando falla la predicción ML.
+### [x] Lightweight Optional ML Engine
+- [x] Created `ml/dataset_loader.py` to reuse `examples.json`, `examples.db`, and `commit_examples_data/entries/`.
+- [x] Created `ml/train_model.py` with `TfidfVectorizer` and `LinearSVC`.
+- [x] Saved `commit_model.pkl` and `vectorizer.pkl` locally with `joblib`.
+- [x] Created `ml/predictor.py` with fast loading and silent fallback to heuristics.
+- [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
+- [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
+- [x] Documented Debian installation, local training, and behavior without a model.
+- [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
+- [x] Added automatic fallback to the heuristic engine when ML prediction fails.
 
-### [x] Arquitectura Offline y Extensible
-- [x] Mantener motor heurístico existente como fallback.
-- [x] Añadir motor sklearn sin romper el flujo de UI actual.
-- [x] Preparar estructura para futuros motores: heurístico, sklearn y posible motor futuro opcional.
-- [x] Evitar cualquier dependencia de red, API externa, telemetría o inferencia online.
-- [x] Mantener artefactos de modelo como archivos locales generados por `joblib`.
+### [x] Offline and Extensible Architecture
+- [x] Kept the existing heuristic engine as fallback.
+- [x] Added the sklearn engine without breaking the current UI flow.
+- [x] Prepared the structure for future engines: heuristic, sklearn, and possible future optional engines.
+- [x] Avoided any dependency on network access, external APIs, telemetry, or online inference.
+- [x] Kept model artifacts as local files generated by `joblib`.
 
-### [x] Generación de Body Lines
-- [x] Generación de hasta 7 bullets relevantes.
-- [x] Bullets localizados en español o inglés según el texto de entrada.
-- [x] Bullets específicos para roadmap con seguimiento de progreso.
-- [x] Bullets específicos para soporte bilingüe/NLP.
-- [x] Bullets de validación para `compileall`, pruebas y `py_compile`.
-- [x] Dedupe básico para evitar bullets repetidos.
+### [x] Body Line Generation
+- [x] Generated up to 7 relevant bullets.
+- [x] Localized bullets in English or Spanish according to the input text.
+- [x] Specific bullets for roadmap progress tracking.
+- [x] Specific bullets for bilingual/NLP support.
+- [x] Validation bullets for `compileall`, tests, and `py_compile`.
+- [x] Basic deduplication to avoid repeated bullets.
 
-### [x] Documentación
-- [x] README actualizado con capacidades actuales.
-- [x] Ejemplos de salida en español e inglés.
-- [x] Roadmap actualizado con funcionalidades completadas y pendientes.
-- [x] README actualizado con comandos de testing y evaluación.
+### [x] Documentation
+- [x] Updated README with current capabilities.
+- [x] Added output examples in English and Spanish.
+- [x] Updated Roadmap with completed and pending features.
+- [x] Updated README with testing and evaluation commands.
 
-### [x] Evaluación y Testing Inicial
-- [x] Creación de suite `unittest` para regresiones principales.
-- [x] Tests para `strip_markdown_noise()`.
-- [x] Tests para detección de idioma.
-- [x] Tests para generación bilingüe `feat(nlp)` en español e inglés.
-- [x] Test para roadmap en español como `docs(repo)`.
-- [x] Test para evitar falso positivo de `ci` dentro de palabras comunes.
-- [x] Test para priorizar summaries de testing/evaluación sobre términos bilingües.
-- [x] Test para limpiar entrada, salida y estado del botón copiar.
-- [x] Test para priorizar summaries del botón Limpiar entrada sobre menciones de tests/Roadmap.
-- [x] Test para mostrar y reiniciar el idioma detectado en la interfaz.
-- [x] Test para priorizar summaries de idioma detectado sobre menciones de Roadmap.
-- [x] Test para forzar manualmente el idioma de generación.
-- [x] Test para editar manualmente type/scope y regenerar el comando.
-- [x] Test para priorizar summaries de type/scope sobre menciones de tests/Roadmap.
-- [x] Test para confirmar copiado en el botón sin mensaje modal.
-- [x] Test para advertencias de ruido por bloques de código y commits pegados.
-- [x] Test para truncar el subject sin cortar palabras.
-- [x] Test para priorizar summaries de eliminación de vista previa y truncado sobre menciones de tests.
-- [x] Test para detectar validaciones indirectas como `suite completa pasa: 18 tests OK`.
-- [x] Test para detectar menciones de código, tests, documentación y reportes.
-- [x] Test para ordenar bullets por importancia y podar documentación genérica duplicada.
-- [x] Tests para dataset loader y fallback del predictor ML cuando no hay modelo.
-- [x] Tests unitarios para extracción de acciones comunes en español.
-- [x] Tests directos para `select_commit_type()` con categorías core.
-- [x] Tests directos para `detect_scope()` con áreas comunes del proyecto.
-- [x] Ejecución exitosa de la suite: 25 tests pasan y 1 se omite sin `python3-sklearn`.
+### [x] Initial Evaluation and Testing
+- [x] Created a `unittest` regression suite.
+- [x] Tests for `strip_markdown_noise()`.
+- [x] Tests for language detection.
+- [x] Tests for bilingual `feat(nlp)` generation in Spanish and English.
+- [x] Test for Spanish roadmap input as `docs(repo)`.
+- [x] Test to avoid false-positive `ci` inside common words.
+- [x] Test to prioritize testing/evaluation summaries over bilingual terms.
+- [x] Test for clearing input, output, and copy button state.
+- [x] Test to prioritize Clear Input summaries over test/Roadmap mentions.
+- [x] Test to show and reset detected language in the interface.
+- [x] Test to prioritize detected-language summaries over Roadmap mentions.
+- [x] Test to manually force the generation language.
+- [x] Test to manually edit type/scope and regenerate the command.
+- [x] Test to prioritize type/scope summaries over test/Roadmap mentions.
+- [x] Test to confirm copy state in the button without a modal message.
+- [x] Test for noise warnings from code blocks and pasted commits.
+- [x] Test for subject truncation without cutting words.
+- [x] Test to prioritize preview removal and truncation summaries over test mentions.
+- [x] Test to detect indirect validations such as `full suite passes: 18 tests OK`.
+- [x] Test to detect code, test, documentation, and report mentions.
+- [x] Test to rank bullets by importance and remove duplicate generic documentation.
+- [x] Tests for dataset loading and predictor fallback when no model exists.
+- [x] Unit tests for common Spanish action extraction.
+- [x] Direct tests for `select_commit_type()` with core categories.
+- [x] Direct tests for `detect_scope()` with common project areas.
+- [x] Successful suite run: 25 tests pass and 1 is skipped without `python3-sklearn`.
 
-### [x] Higiene de Artefactos Generados
-- [x] Creación de `.gitignore` para `__pycache__/` y archivos `*.py[cod]`.
+### [x] Generated Artifact Hygiene
+- [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
 
-## Mejoras Futuras Pendientes
+## Future Improvements
 
-### Siguiente Sesión Recomendada
-- [ ] Probar el programa con el texto del último resumen generado por Codex y comparar contra el commit que daría una IA.
-- [ ] Si el subject sale demasiado genérico, añadir una regla específica de subject antes de tocar el body.
-- [ ] Si el body sale con bullets buenos pero mal ordenados, ajustar `rank_body_lines()`.
-- [ ] Si se pierde información útil del texto pegado, revisar primero `clean_input()`.
-- [ ] Después de cada mejora, añadir o ajustar un test de regresión en `tests/test_smart_commit_nltk.py`.
-- [ ] Ejecutar siempre `QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v`.
+### Recommended Next Session
+- [ ] Test the program with the latest Codex-generated summary and compare it against the commit a richer AI would produce.
+- [ ] If the subject is too generic, add a specific subject rule before touching the body.
+- [ ] If the body has good bullets but poor ordering, adjust `rank_body_lines()`.
+- [ ] If useful information is lost from pasted text, inspect `clean_input()` first.
+- [ ] After each improvement, add or adjust a regression test in `tests/test_smart_commit_nltk.py`.
+- [ ] Always run `QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v`.
 
-### [ ] Evaluación y Testing
-- [x] Añadir más tests unitarios para extracción de acciones en español.
-- [x] Añadir más tests unitarios para `select_commit_type()` y `detect_scope()`.
-- [ ] Añadir tests de predicción ML con un modelo entrenado cuando `python3-sklearn` esté disponible.
-- [ ] Probar en Debian 12 con `python3-sklearn`, `python3-joblib`, `python3-langdetect` y `python3-regex` instalados desde apt.
-- [ ] Verificar ejemplos prompt: crash/audio -> `fix`, MIDI karaoke -> `feat`, instrucciones -> `docs`, código deprecated -> `refactor`.
-- [ ] Añadir casos de regresión para textos mixtos español/inglés.
-- [ ] Añadir casos de regresión para resúmenes con varios archivos modificados.
-- [ ] Definir nuevas métricas que no penalicen el límite actual de 7 bullets.
-- [ ] Mejorar métricas del dataset histórico sin perder los casos bilingües recientes.
+### [ ] Evaluation and Testing
+- [x] Add more unit tests for Spanish action extraction.
+- [x] Add more unit tests for `select_commit_type()` and `detect_scope()`.
+- [ ] Add ML prediction tests with a trained model when `python3-sklearn` is available.
+- [ ] Test on Debian 12 with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
+- [ ] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
+- [ ] Add regression cases for mixed English/Spanish texts.
+- [ ] Add regression cases for summaries with several modified files.
+- [ ] Define new metrics that do not penalize the current 7-bullet limit.
+- [ ] Improve historical dataset metrics without losing recent bilingual cases.
 
-### [ ] Motor ML y Datos
-- [ ] Evaluar balance del dataset: actualmente los ejemplos históricos favorecen `feat`.
-- [ ] Añadir más ejemplos reales para `fix`, `docs`, `refactor`, `test` y `chore`.
-- [ ] Medir precisión del modelo entrenado localmente sin aumentar peso ni complejidad.
-- [ ] Documentar criterio para regenerar `commit_model.pkl` y `vectorizer.pkl`.
-- [ ] Mantener semillas offline solo como apoyo mientras el dataset real crece.
+### [ ] ML Engine and Data
+- [ ] Evaluate dataset balance: the historical examples currently favor `feat`.
+- [ ] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
+- [ ] Measure local model accuracy without increasing weight or complexity.
+- [ ] Document when to regenerate `commit_model.pkl` and `vectorizer.pkl`.
+- [ ] Keep offline seed examples only as support while the real dataset grows.
 
-### [ ] Soporte Lingüístico
-- [ ] Ampliar verbos y patrones en español.
-- [ ] Mejorar detección de idioma para textos mixtos.
-- [ ] Separar reglas por idioma en estructuras más mantenibles.
-- [ ] Evaluar un etiquetador POS en español si se desea más precisión gramatical.
-- [ ] Soportar variantes regionales y frases más coloquiales.
+### [ ] Language Support
+- [ ] Expand Spanish verbs and patterns.
+- [ ] Improve language detection for mixed-language texts.
+- [ ] Separate language-specific rules into more maintainable structures.
+- [ ] Evaluate a Spanish POS tagger if more grammatical precision is desired.
+- [ ] Support regional variants and more colloquial phrases.
 
-### [ ] Arquitectura y Mantenibilidad
-- [x] Añadir módulos externos para preprocessing, idioma y motor ML sin reescribir `smart_commit_nltk.py`.
-- [ ] Separar completamente la lógica NLP heurística de la interfaz PyQt6.
-- [ ] Crear una clase o módulo dedicado para limpieza de input.
-- [ ] Crear un módulo dedicado para type/scope detection.
-- [ ] Crear fixtures reutilizables con ejemplos reales.
-- [ ] Decidir si los artefactos `ml/*.pkl` deben distribuirse preentrenados o mantenerse como generación local.
-- [ ] Definir una interfaz común de motores para `heuristic`, `sklearn` y futuros motores opcionales.
-- [ ] Sacar del índice de Git cualquier `__pycache__` ya trackeado.
+### [ ] Architecture and Maintainability
+- [x] Add external modules for preprocessing, language, and ML without rewriting `smart_commit_nltk.py`.
+- [ ] Fully separate heuristic NLP logic from the PyQt6 interface.
+- [ ] Create a dedicated class or module for input cleanup.
+- [ ] Create a dedicated module for type/scope detection.
+- [ ] Create reusable fixtures with real examples.
+- [ ] Decide whether `ml/*.pkl` artifacts should be pre-trained and distributed or kept as local generated files.
+- [ ] Define a common engine interface for `heuristic`, `sklearn`, and future optional engines.
+- [ ] Remove any already-tracked `__pycache__` files from the Git index.
 
-### [ ] Interfaz de Usuario
-- [x] Permitir cambiar manualmente el idioma detectado.
-- [x] Permitir editar type/scope desde la UI antes de copiar.
-- [x] Mostrar advertencias cuando el input tenga mucho ruido o muchos bloques de código.
+### [ ] User Interface
+- [x] Allow manual language override.
+- [x] Allow editing type/scope from the UI before copying.
+- [x] Show warnings when input contains heavy noise or many code blocks.
 
-### [ ] Calidad del Commit
-- [x] Mejorar ranking de bullets por importancia.
-- [x] Detectar validaciones y pruebas aunque aparezcan en frases indirectas.
-- [x] Detectar menciones de documentación, tests y código dentro del texto pegado.
-- [x] Mejorar truncado de subject para que no corte palabras.
-- [x] Ampliar el body hasta 7 bullets para conservar cambios relevantes y validación.
-- [x] Priorizar mejoras semánticas combinadas sobre menciones secundarias de tests/documentación.
-- [ ] Generar alternativas cuando haya varias interpretaciones posibles.
+### [ ] Commit Quality
+- [x] Improve bullet ranking by importance.
+- [x] Detect validations and tests even when they appear in indirect phrases.
+- [x] Detect documentation, test, and code mentions inside pasted text.
+- [x] Improve subject truncation so it does not cut words.
+- [x] Expand the body up to 7 bullets to preserve relevant changes and validation.
+- [x] Prioritize combined semantic improvements over secondary test/documentation mentions.
+- [ ] Generate alternatives when several interpretations are possible.
 
 ---
 
-**Última actualización:** 12 de mayo de 2026  
-**Estado:** Funcional para uso básico e iteración diaria; ya cuenta con regresiones iniciales, evaluación del dataset y motor ML opcional offline. La prioridad siguiente es mejorar la calidad semántica desde el texto pegado sin perder ligereza ni compatibilidad Debian.
+**Last updated:** May 12, 2026  
+**Status:** Functional for basic use and daily iteration. It now has initial regressions, dataset evaluation, and an optional offline ML engine. The next priority is improving semantic quality from pasted text without losing lightness or Debian compatibility.

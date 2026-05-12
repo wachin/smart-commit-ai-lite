@@ -72,8 +72,8 @@ python3 -c "import nltk; nltk.download('punkt'); nltk.download('averaged_percept
    ```
 
 2. Paste a summary from your own notes, an assistant response, or a changelog-style paragraph.
-3. Leave **Modo de idioma** on **Automático**, or choose **Español** / **Inglés** manually if the text is mixed.
-4. Click **Generar Commit con NLTK**.
+3. Leave the language mode on automatic, or choose Spanish / English manually if the text is mixed.
+4. Click the NLTK commit generation button.
 5. Review the generated command, detected language status, and any non-blocking noise warning.
 6. Adjust **Tipo** or **Scope** if the automatic choice needs a manual correction.
 7. Copy it to the clipboard and run it in your repository. The copy button confirms the action in-place, without opening a popup.
@@ -134,18 +134,7 @@ The comparison report is written to `commit_examples_data/comparison_report.json
 
 ## Examples
 
-Spanish input about the bilingual NLP improvements can produce:
-
-```bash
-git commit -m "feat(nlp): agrega soporte bilingüe y corrige tipo ci" \
-  -m "- Detecta el idioma de entrada para tokenización localizada" \
-  -m "- Soporta verbos españoles como creado, actualizado e incluye" \
-  -m "- Genera subject y body en el idioma del resumen" \
-  -m "- Corrige falsos positivos de ci dentro de palabras comunes" \
-  -m "- Valida la sintaxis con py_compile"
-```
-
-English input about the same kind of work can produce:
+English input about bilingual NLP improvements can produce:
 
 ```bash
 git commit -m "feat(nlp): add bilingual support and fix type detection" \
@@ -156,15 +145,24 @@ git commit -m "feat(nlp): add bilingual support and fix type detection" \
   -m "- Validate syntax with py_compile"
 ```
 
-Spanish roadmap input can produce:
+Input about roadmap work can produce:
 
 ```bash
-git commit -m "docs(repo): agrega roadmap con seguimiento de progreso" \
-  -m "- Documenta funcionalidades completadas y progreso del proyecto" \
-  -m "- Resume mejoras futuras para Git, ML, UI, pruebas y multilenguaje" \
-  -m "- Organiza el roadmap con secciones claras de estado" \
-  -m "- Incluye áreas de documentación, comunidad y testing" \
-  -m "- Usa checkboxes para visualizar tareas completadas y pendientes"
+git commit -m "docs(repo): add roadmap with progress tracking" \
+  -m "- Document completed features and project progress" \
+  -m "- Outline future work for Git, ML, UI, tests, and multilingual support" \
+  -m "- Organize the roadmap with clear status sections" \
+  -m "- Include documentation, community, and testing areas" \
+  -m "- Use checkbox format for completed and pending tasks"
+```
+
+Short change summaries map to Conventional Commit types:
+
+```text
+fixed crash when opening audio files -> fix
+added MIDI karaoke support -> feat
+updated installation instructions -> docs
+cleaned deprecated code -> refactor
 ```
 
 ## How It Works
