@@ -17,6 +17,7 @@ from utils.preprocessing import preprocess_text
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MODEL_PATH = ROOT / "ml" / "commit_model.pkl"
 DEFAULT_VECTORIZER_PATH = ROOT / "ml" / "vectorizer.pkl"
+DEFAULT_METADATA_PATH = ROOT / "ml" / "model_metadata.json"
 
 
 @dataclass(frozen=True)
@@ -31,14 +32,16 @@ class PredictionResult:
 class ModelStatus:
     model_path: Path
     vectorizer_path: Path
+    metadata_path: Path
     model_exists: bool
     vectorizer_exists: bool
+    metadata_exists: bool
     loadable: bool
     message: str
 
     @property
     def ready(self) -> bool:
-        return self.model_exists and self.vectorizer_exists and self.loadable
+        return self.model_exists and self.vectorizer_exists and self.metadata_exists and self.loadable
 
 
 class SklearnCommitPredictor:
@@ -48,9 +51,11 @@ class SklearnCommitPredictor:
         self,
         model_path: Path | str = DEFAULT_MODEL_PATH,
         vectorizer_path: Path | str = DEFAULT_VECTORIZER_PATH,
+        metadata_path: Path | str = DEFAULT_METADATA_PATH,
     ) -> None:
         self.model_path = Path(model_path)
         self.vectorizer_path = Path(vectorizer_path)
+        self.metadata_path = Path(metadata_path)
         self._model: Any | None = None
         self._vectorizer: Any | None = None
         self._load_error: str | None = None
@@ -79,6 +84,7 @@ class SklearnCommitPredictor:
     def status(self, try_load: bool = False) -> ModelStatus:
         model_exists = self.model_path.exists()
         vectorizer_exists = self.vectorizer_path.exists()
+        metadata_exists = self.metadata_path.exists()
         loadable = False
 
         if model_exists and vectorizer_exists:
@@ -90,6 +96,8 @@ class SklearnCommitPredictor:
             message = "missing model artifact"
         elif not vectorizer_exists:
             message = "missing vectorizer artifact"
+        elif not metadata_exists:
+            message = "model artifacts are ready; metadata is missing"
         elif loadable:
             message = "model artifacts are ready"
         else:
@@ -98,8 +106,10 @@ class SklearnCommitPredictor:
         return ModelStatus(
             model_path=self.model_path,
             vectorizer_path=self.vectorizer_path,
+            metadata_path=self.metadata_path,
             model_exists=model_exists,
             vectorizer_exists=vectorizer_exists,
+            metadata_exists=metadata_exists,
             loadable=loadable,
             message=message,
         )

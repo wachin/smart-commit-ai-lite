@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 29 registered tests, 28 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 30 registered tests, 29 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -62,7 +62,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] The project includes `ml/`, `utils/`, and dedicated tests for the new architecture.
 - [x] Product decision: distribute a pre-trained model while keeping local retraining available for users who need it.
 - [ ] Validate real training and predictions on Debian 12 with `python3-sklearn` installed.
-- [ ] Distribute a pre-trained model and document how users can retrain it locally as needed.
+- [ ] Distribute a pre-trained model, vectorizer, and metadata file; document how users can retrain locally as needed.
 
 ### Current Quality Example
 
@@ -200,6 +200,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Created `ml/dataset_loader.py` to reuse `examples.json`, `examples.db`, and `commit_examples_data/entries/`.
 - [x] Created `ml/train_model.py` with `TfidfVectorizer` and `LinearSVC`.
 - [x] Saved `commit_model.pkl` and `vectorizer.pkl` locally with `joblib`.
+- [x] Added `model_metadata.json` generation for model format, label counts, and artifact paths.
 - [x] Created `ml/predictor.py` with fast local model loading.
 - [x] Added explicit model artifact status reporting for model/vectorizer presence and loadability.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
@@ -257,7 +258,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Direct tests for `detect_scope()` with common project areas.
 - [x] Regression for rich README architecture summaries compared against an AI-generated commit.
 - [x] Tests for model artifact status reporting and UI model status text.
-- [x] Successful suite run: 28 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for model metadata generation without requiring sklearn at runtime.
+- [x] Successful suite run: 29 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -287,7 +289,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Evaluate dataset balance: the historical examples currently favor `feat`.
 - [ ] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [ ] Measure local model accuracy without increasing weight or complexity.
-- [ ] Document when to regenerate `commit_model.pkl` and `vectorizer.pkl`.
+- [ ] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
 - [ ] Keep offline seed examples only as support while the real dataset grows.
 
 ### [ ] Language Support
@@ -303,7 +305,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Create a dedicated class or module for input cleanup.
 - [ ] Create a dedicated module for type/scope detection.
 - [ ] Create reusable fixtures with real examples.
-- [ ] Define the packaging/versioning policy for the distributed pre-trained model and locally retrained `ml/*.pkl` artifacts.
+- [ ] Define the packaging/versioning policy for the distributed pre-trained model, vectorizer, metadata, and locally retrained artifacts.
 - [ ] Define a common internal interface for the hybrid NLTK/utils, sklearn, and heuristic components.
 - [ ] Remove any already-tracked `__pycache__` files from the Git index.
 

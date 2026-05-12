@@ -11,6 +11,7 @@ class SklearnPredictorTests(unittest.TestCase):
             predictor = SklearnCommitPredictor(
                 model_path=Path(tmp) / "missing-model.pkl",
                 vectorizer_path=Path(tmp) / "missing-vectorizer.pkl",
+                metadata_path=Path(tmp) / "missing-metadata.json",
             )
 
             self.assertFalse(predictor.available)
@@ -21,6 +22,7 @@ class SklearnPredictorTests(unittest.TestCase):
             predictor = SklearnCommitPredictor(
                 model_path=Path(tmp) / "missing-model.pkl",
                 vectorizer_path=Path(tmp) / "missing-vectorizer.pkl",
+                metadata_path=Path(tmp) / "missing-metadata.json",
             )
 
             status = predictor.status()
@@ -28,6 +30,7 @@ class SklearnPredictorTests(unittest.TestCase):
             self.assertFalse(status.ready)
             self.assertFalse(status.model_exists)
             self.assertFalse(status.vectorizer_exists)
+            self.assertFalse(status.metadata_exists)
             self.assertEqual(status.message, "missing model and vectorizer artifacts")
 
 

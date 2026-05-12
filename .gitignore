@@ -12,6 +12,7 @@ __pycache__/
 ml/*.pkl
 !ml/commit_model.pkl
 !ml/vectorizer.pkl
+!ml/model_metadata.json
 
 # However, we TRACK the distributed pre-trained model and vectorizer.
 # The lines above (!ml/commit_model.pkl) ensure they are included.

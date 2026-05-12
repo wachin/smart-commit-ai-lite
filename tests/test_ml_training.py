@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from ml.dataset_loader import SUPPORTED_TYPES, label_from_subject, load_training_examples
+from ml.train_model import MODEL_FORMAT_VERSION, build_metadata
 
 
 class MLTrainingTests(unittest.TestCase):
@@ -16,6 +17,21 @@ class MLTrainingTests(unittest.TestCase):
         self.assertEqual(label_from_subject("feat(ui): add control"), "feat")
         self.assertEqual(label_from_subject("docs: update readme"), "docs")
 
+    def test_build_metadata_describes_training_artifacts(self):
+        metadata = build_metadata(
+            example_count=12,
+            label_counts={"feat": 8, "fix": 4},
+            model_path=Path("ml/commit_model.pkl"),
+            vectorizer_path=Path("ml/vectorizer.pkl"),
+        )
+
+        self.assertEqual(metadata["format_version"], MODEL_FORMAT_VERSION)
+        self.assertEqual(metadata["training_examples"], 12)
+        self.assertEqual(metadata["labels"], {"feat": 8, "fix": 4})
+        self.assertEqual(metadata["model_path"], "ml/commit_model.pkl")
+        self.assertEqual(metadata["vectorizer_path"], "ml/vectorizer.pkl")
+        self.assertIn("LinearSVC", metadata["trainer"])
+
     @unittest.skipUnless(importlib.util.find_spec("sklearn"), "python3-sklearn is not installed")
     def test_training_writes_model_and_vectorizer(self):
         from ml.train_model import train
@@ -23,11 +39,17 @@ class MLTrainingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             model_path = Path(tmp) / "commit_model.pkl"
             vectorizer_path = Path(tmp) / "vectorizer.pkl"
-            stats = train(model_path=model_path, vectorizer_path=vectorizer_path)
+            metadata_path = Path(tmp) / "model_metadata.json"
+            stats = train(
+                model_path=model_path,
+                vectorizer_path=vectorizer_path,
+                metadata_path=metadata_path,
+            )
 
             self.assertTrue(model_path.exists())
             self.assertTrue(vectorizer_path.exists())
-            self.assertGreaterEqual(stats["examples"], 12)
+            self.assertTrue(metadata_path.exists())
+            self.assertGreaterEqual(stats["training_examples"], 12)
 
 
 if __name__ == "__main__":

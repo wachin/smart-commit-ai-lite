@@ -115,12 +115,13 @@ It writes:
 
 - `ml/commit_model.pkl`
 - `ml/vectorizer.pkl`
+- `ml/model_metadata.json`
 
 The project distributes a pre-trained model for these default filenames. Users can retrain locally and replace them as needed.
 
-The model is trained and loaded locally with `joblib`. It does not use network access, online inference, or external services.
+The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, and model format version. No network access, online inference, or external services are used.
 
-The UI shows the local model status at startup. If the distributed artifacts are not present yet, it points users to `python3 -m ml.train_model`.
+The UI shows the local model status at startup. If the distributed artifacts or metadata are not present yet, it points users to `python3 -m ml.train_model`.
 
 ## Testing and Evaluation
 
