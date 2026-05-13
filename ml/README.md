@@ -32,6 +32,15 @@ The metadata file records the model format version, training example count,
 label counts, label-balance summary, artifact paths, and whether built-in seed
 examples were included.
 
+Entry file validation:
+
+- each JSON entry under `commit_examples_data/entries/` must be a JSON object
+- required fields: `title`, `original_text`, `expected_subject`, and
+  `expected_body_lines`
+- `expected_subject` must use a supported Conventional Commit type
+- body lines must be non-empty strings
+- `tests/test_ml_training.py` runs this validation before release
+
 Artifact policy:
 
 - `ml/artifact_policy.py` defines the official distributed artifact paths.

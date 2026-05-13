@@ -10,6 +10,7 @@ from ml.dataset_loader import (
     label_from_subject,
     load_training_examples,
     summarize_label_balance,
+    validate_entry_files,
 )
 from ml.train_model import MODEL_FORMAT_VERSION, build_metadata
 
@@ -81,6 +82,11 @@ class MLTrainingTests(unittest.TestCase):
         self.assertTrue(any("confidence gate" in text for text in texts))
         self.assertTrue(any("gtk-platformtheme" in text or "gtk theme" in text for text in texts))
         self.assertTrue({"feat", "docs", "test"}.issubset(labels))
+
+    def test_entry_files_validate_for_training_use(self):
+        errors = validate_entry_files()
+
+        self.assertEqual(errors, [])
 
     def test_official_artifact_policy_tracks_distributed_files(self):
         paths = official_artifact_paths()

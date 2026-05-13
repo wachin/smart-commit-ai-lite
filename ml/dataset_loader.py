@@ -22,6 +22,12 @@ class TrainingExample:
     source: str
 
 
+@dataclass(frozen=True)
+class EntryValidationError:
+    path: Path
+    message: str
+
+
 SEED_EXAMPLES = [
     ("added MIDI karaoke support", "feat"),
     ("implemented language detection for Spanish summaries", "feat"),
@@ -52,6 +58,51 @@ def _entry_to_example(entry: dict, source: str) -> TrainingExample | None:
     if not label or not text:
         return None
     return TrainingExample(text=text, label=label, source=source)
+
+
+def validate_entry(entry: dict, path: Path) -> list[EntryValidationError]:
+    errors: list[EntryValidationError] = []
+    required_fields = {
+        "title": str,
+        "original_text": str,
+        "expected_subject": str,
+        "expected_body_lines": list,
+    }
+    for field, expected_type in required_fields.items():
+        value = entry.get(field)
+        if not isinstance(value, expected_type) or (isinstance(value, str) and not value.strip()):
+            errors.append(EntryValidationError(path, f"missing or invalid {field}"))
+
+    label = label_from_subject(entry.get("expected_subject", ""))
+    if not label:
+        errors.append(EntryValidationError(path, "expected_subject must use a supported Conventional Commit type"))
+
+    body_lines = entry.get("expected_body_lines", [])
+    if isinstance(body_lines, list):
+        for index, line in enumerate(body_lines, start=1):
+            if not isinstance(line, str) or not line.strip():
+                errors.append(EntryValidationError(path, f"expected_body_lines[{index}] must be non-empty text"))
+
+    return errors
+
+
+def validate_entry_files(path: Path | None = None) -> list[EntryValidationError]:
+    path = path or ROOT / "commit_examples_data" / "entries"
+    if not path.exists():
+        return [EntryValidationError(path, "entries directory does not exist")]
+
+    errors: list[EntryValidationError] = []
+    for entry_path in sorted(path.glob("*.json")):
+        try:
+            entry = json.loads(entry_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            errors.append(EntryValidationError(entry_path, f"invalid JSON: {exc}"))
+            continue
+        if not isinstance(entry, dict):
+            errors.append(EntryValidationError(entry_path, "entry must be a JSON object"))
+            continue
+        errors.extend(validate_entry(entry, entry_path))
+    return errors
 
 
 def load_examples_json(path: Path | None = None) -> list[TrainingExample]:

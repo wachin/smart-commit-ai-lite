@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 64 registered tests, all passing in this Debian apt sklearn environment.
+- [x] Current suite: 65 registered tests, all passing in this Debian apt sklearn environment.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -214,6 +214,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Surface missing official model artifacts in the UI with a retraining command hint.
 - [x] Generated official local model artifacts with 68 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
 - [x] Added 5 user-supplied training examples for UI, ML, tests, and docs cases.
+- [x] Added entry-file validation for required training fields and supported commit types.
 - [x] Added a confidence gate so low-confidence ML predictions do not override stronger heuristic decisions.
 - [x] Updated README and ML README for distributed artifacts, confidence-gated ML use, and current Debian sklearn validation.
 
@@ -279,6 +280,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
 - [x] Tests for optional built-in seed examples in local training.
 - [x] Tests that user-supplied training examples are loaded from entry files.
+- [x] Tests that all entry files are valid for training use.
 - [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
 - [x] Tests for type/scope/text breakdown in the historical comparison report.
 - [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
@@ -299,7 +301,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Type/scope/text metrics in `comparison_report.json` for easier historical analysis.
 - [x] Regression for low-confidence ML predictions preserving heuristic commit types.
 - [x] Documentation reflects the shipped model artifacts, predictor CLI, and Debian apt validation.
-- [x] Successful suite run: 64 tests pass with `python3-sklearn` installed from apt.
+- [x] Successful suite run: 65 tests pass with `python3-sklearn` installed from apt.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
