@@ -10,15 +10,21 @@ from pathlib import Path
 
 import joblib
 
+from ml.artifact_policy import (
+    ARTIFACT_POLICY_VERSION,
+    OFFICIAL_METADATA_PATH,
+    OFFICIAL_MODEL_PATH,
+    OFFICIAL_VECTORIZER_PATH,
+)
 from ml.dataset_loader import as_training_arrays, load_training_examples, summarize_label_balance
 from utils.language import detect_language
 from utils.preprocessing import preprocess_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_MODEL_PATH = ROOT / "ml" / "commit_model.pkl"
-DEFAULT_VECTORIZER_PATH = ROOT / "ml" / "vectorizer.pkl"
-DEFAULT_METADATA_PATH = ROOT / "ml" / "model_metadata.json"
+DEFAULT_MODEL_PATH = OFFICIAL_MODEL_PATH
+DEFAULT_VECTORIZER_PATH = OFFICIAL_VECTORIZER_PATH
+DEFAULT_METADATA_PATH = OFFICIAL_METADATA_PATH
 MODEL_FORMAT_VERSION = 1
 
 
@@ -32,6 +38,7 @@ def build_metadata(
 ) -> dict:
     return {
         "format_version": MODEL_FORMAT_VERSION,
+        "artifact_policy_version": ARTIFACT_POLICY_VERSION,
         "created_at_utc": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "training_examples": example_count,
         "labels": dict(sorted(label_counts.items())),

@@ -3,6 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from ml.artifact_policy import ARTIFACT_POLICY_VERSION, is_official_artifact, official_artifact_paths
 from ml.dataset_loader import (
     SUPPORTED_TYPES,
     TrainingExample,
@@ -36,6 +37,7 @@ class MLTrainingTests(unittest.TestCase):
         )
 
         self.assertEqual(metadata["format_version"], MODEL_FORMAT_VERSION)
+        self.assertEqual(metadata["artifact_policy_version"], ARTIFACT_POLICY_VERSION)
         self.assertEqual(metadata["training_examples"], 12)
         self.assertEqual(metadata["labels"], {"feat": 8, "fix": 4})
         self.assertEqual(metadata["label_balance"]["largest_label"], "feat")
@@ -69,6 +71,15 @@ class MLTrainingTests(unittest.TestCase):
         self.assertGreaterEqual(len(with_seed), len(without_seed))
         self.assertFalse(any(example.source == "built-in-seed" for example in without_seed))
         self.assertTrue(any(example.source == "built-in-seed" for example in with_seed))
+
+    def test_official_artifact_policy_tracks_distributed_files(self):
+        paths = official_artifact_paths()
+
+        self.assertEqual(len(paths), 3)
+        self.assertTrue(is_official_artifact("ml/commit_model.pkl"))
+        self.assertTrue(is_official_artifact("ml/vectorizer.pkl"))
+        self.assertTrue(is_official_artifact("ml/model_metadata.json"))
+        self.assertFalse(is_official_artifact("ml/local_experiment.pkl"))
 
     @unittest.skipUnless(importlib.util.find_spec("sklearn"), "python3-sklearn is not installed")
     def test_training_writes_model_and_vectorizer(self):

@@ -142,7 +142,7 @@ It writes:
 
 The project distributes a pre-trained model for these default filenames. Users can retrain locally and replace them as needed.
 
-The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, and model format version. No network access, online inference, or external services are used.
+The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, model format version, and artifact policy version. No network access, online inference, or external services are used.
 
 Use the default training command for official artifacts. For dataset-only experiments without built-in seed examples:
 
@@ -151,6 +151,8 @@ python3 -m ml.train_model --no-seed
 ```
 
 Regenerate the model, vectorizer, and metadata after adding balanced examples, changing preprocessing, changing supported labels, or preparing a Debian validation release.
+
+The official distributed artifact paths are versioned in `ml/artifact_policy.py`. Local experimental `.pkl` files should use different names; `.gitignore` keeps them out of the repository while allowing the official artifacts to be tracked.
 
 The UI shows the local model status at startup. If the distributed artifacts or metadata are not present yet, it points users to `python3 -m ml.train_model`.
 

@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 44 registered tests, 43 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 45 registered tests, 44 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -276,7 +276,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
 - [x] Tests for offline ML predictor accuracy evaluation without requiring sklearn at runtime.
 - [x] Tests for the shared lightweight predictor interface.
-- [x] Successful suite run: 43 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for distributed artifact path and policy versioning.
+- [x] Successful suite run: 44 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -323,7 +324,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Create a dedicated class or module for input cleanup.
 - [ ] Create a dedicated module for type/scope detection.
 - [ ] Create reusable fixtures with real examples.
-- [ ] Define the packaging/versioning policy for the distributed pre-trained model, vectorizer, metadata, and locally retrained artifacts.
+- [x] Define the packaging/versioning policy for the distributed pre-trained model, vectorizer, metadata, and locally retrained artifacts.
 - [x] Define a common internal interface for the hybrid NLTK/utils, sklearn, and heuristic components.
 - [ ] Remove any already-tracked `__pycache__` files from the Git index.
 

@@ -28,6 +28,16 @@ The metadata file records the model format version, training example count,
 label counts, label-balance summary, artifact paths, and whether built-in seed
 examples were included.
 
+Artifact policy:
+
+- `ml/artifact_policy.py` defines the official distributed artifact paths.
+- `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`
+  are the only tracked default artifact filenames.
+- Local experiments should use different `.pkl` names under `ml/`; `.gitignore`
+  keeps those experimental files out of the repository.
+- `model_metadata.json` records `artifact_policy_version` so future artifact
+  policy changes can be detected.
+
 To train only from repository datasets, without built-in seed examples:
 
 ```bash
