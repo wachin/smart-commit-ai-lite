@@ -26,6 +26,11 @@ from utils.input_cleanup import (
     detect_input_noise_warnings as detect_pasted_input_noise_warnings,
     strip_markdown_noise as strip_pasted_markdown_noise,
 )
+from utils.type_scope import (
+    DetectionContext,
+    detect_scope as detect_commit_scope,
+    select_commit_type as select_conventional_commit_type,
+)
 
 # ==========================================
 # 🔄 MEJORA: Descarga con Spinner y Feedback
@@ -944,138 +949,27 @@ class NLPCommitGenerator(QMainWindow):
             self.copy_btn.setText("Copiar al Portapapeles")
             self.copy_btn.setEnabled(True)
 
+    def detection_context(self, text_lower):
+        return DetectionContext(
+            readme_architecture_docs=self.is_readme_architecture_docs_summary(text_lower),
+            ml_metadata_validation=self.is_ml_metadata_validation_summary(text_lower),
+            mixed_language_nlp=self.is_mixed_language_nlp_summary(text_lower),
+            ml_pipeline=self.is_ml_pipeline_summary(text_lower),
+            spanish_verb_expansion=self.is_spanish_verb_expansion_summary(text_lower),
+        )
+
     def detect_scope(self, text):
         text_lower = text.lower()
-        if self.is_ml_metadata_validation_summary(text_lower):
-            return 'ml'
-        if self.is_mixed_language_nlp_summary(text_lower):
-            return 'nlp'
-        if self.is_readme_architecture_docs_summary(text_lower):
-            return 'readme'
-        if self.is_ml_pipeline_summary(text_lower):
-            return 'ml'
-        if self.is_spanish_verb_expansion_summary(text_lower):
-            return 'nlp'
-        if (
-            any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
-            and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
-        ):
-            return 'nlp'
-        if any(k in text_lower for k in ['menciones de archivos', 'archivos mencionados', 'file mentions', 'mentioned files', 'file classification']):
-            return 'nlp'
-        if any(k in text_lower for k in ['type/scope', 'type y scope', 'type and scope', 'selectores', 'tipo:', 'scope:', 'manual override', 'ajuste manual']):
-            return 'ui'
-        if any(k in text_lower for k in ['idioma detectado', 'detected language', 'language status', 'etiqueta de estado', 'status label']):
-            return 'ui'
-        if any(k in text_lower for k in ['limpiar entrada', 'clear input', 'botón limpiar', 'boton limpiar', 'borrar el texto de entrada', 'borra el texto', 'copy button', 'botón de copiar', 'cuadro de entrada']):
-            return 'ui'
-        if re.search(r'\b(tests?|pruebas?)\b', text_lower) and re.search(r'\b(predictor|regresi[oó]n|regression)\b', text_lower):
-            return 'test'
-        if any(k in text_lower for k in ['test_smart_commit_nltk.py', 'compare_generator.py', 'comparison_report.json', '.gitignore', 'baseline', 'línea base', 'linea base']):
-            return 'repo'
-        if any(k in text_lower for k in ['smart_commit_nltk.py', 'nltk', 'tokenization', 'tokenización', 'idioma', 'bilingüe', 'bilingue', 'spanish verbs', 'verbos españoles']):
-            return 'nlp'
-        if re.search(r'\b(dict|dictionary|wps|libreoffice)\b', text_lower):
-            return 'dict'
-        if 'repo' in text_lower or '.gitignore' in text_lower or 'clone' in text_lower or 'repository' in text_lower:
-            return 'repo'
-        if ('roadmap.md' in text_lower or 'roadmap' in text_lower) and re.search(r'\b(created|creado|creé|creamos|new file|nuevo archivo)\b', text_lower):
-            return 'repo'
-        if 'converter' in text_lower or ('tool' in text_lower and 'dictionary' in text_lower):
-            return 'tools'
-
-        has_docs = any(k in text_lower for k in ['roadmap', 'readme', '.md', 'docs', 'guide', 'help', 'documentation', 'documentación', 'documentacion', 'guía', 'guia', 'instructions', 'installation instructions', 'instrucciones', 'instalación', 'instalacion'])
-        has_ui = any(k in text_lower for k in ['view', 'dialog', 'window', 'action', 'toolbar', 'button', 'checkbox', 'slider', 'meter', 'combo', 'program', 'lock', 'lyrics', 'channels', 'fullscreen', 'pianola', 'piano player'])
-        has_app = any(k in text_lower for k in ['settings.py', 'player.py', 'sequence.py', 'app.py', 'widgets.py', 'settings', 'playback', 'midi', 'validation', 'tests', 'application', 'module', 'service'])
-        has_tests = any(k in text_lower for k in ['test_', 'unittest', 'pytest', 'coverage', 'validation', 'suite passed'])
-        has_tests = has_tests or re.search(r'\bci\b', text_lower) is not None
-
-        if has_ui and not has_docs:
-            return 'ui'
-        if has_app and not has_ui and not has_docs:
-            return 'app'
-        if has_docs and not has_ui and not has_app:
-            return 'docs'
-        if has_tests and not has_ui and not has_app and not has_docs:
-            return 'test'
-        if has_ui and has_docs:
-            return 'ui'
-        if has_app and has_docs:
-            return 'app'
-        return 'app'
+        return detect_commit_scope(text, self.detection_context(text_lower))
 
     def select_commit_type(self, text, subject_verb, subject_obj):
         text_lower = text.lower()
-        docs_keywords = ['readme', 'roadmap', 'docs', 'documentation', 'documentación', 'documentacion', '.md', '.rst', 'guide', 'guía', 'guia', 'help', 'instructions', 'installation instructions', 'instrucciones', 'instalación', 'instalacion', 'docstring', 'comment']
-        test_keywords = ['test', 'tests', 'unittest', 'pytest', 'coverage', 'qa', 'spec', 'mock', 'prueba', 'pruebas']
-        ci_keywords = ['ci', 'continuous integration', 'github action', 'workflow', 'pipeline', 'circleci', 'travis', 'jenkins', 'gitlab-ci', 'azure-pipelines']
-        build_keywords = ['build', 'docker', 'dockerfile', 'dependency', 'dependencies', 'npm', 'package.json', 'yarn.lock', 'pip', 'requirements', 'maven', 'gradle', 'pom.xml', 'pyproject.toml']
-        perf_keywords = ['perf', 'performance', 'speed', 'latency', 'memory', 'optimiz', 'cache', 'caching', 'rendimiento']
-        style_keywords = ['style', 'format', 'formatted', 'lint', 'whitespace', 'indent', 'prettier', 'eslint', 'formato']
-        refactor_keywords = ['refactor', 'cleanup', 'cleaned', 'restructure', 'rename', 'split', 'extract', 'simplify', 'refactoriza', 'limpia']
-        fix_keywords = ['fix', 'fixed', 'correct', 'corrected', 'resolve', 'resolved', 'bug', 'crash', 'error', 'fallo', 'corrige', 'corregido', 'corregí', 'arregla', 'arreglado', 'arreglé']
-        has_evaluation_baseline_context = any(k in text_lower for k in [
-            'testing/evaluación', 'testing/evaluation', 'línea base', 'linea base',
-            'baseline', '45 ejemplos', '45 examples', '0.446', '6 regresiones',
-            '6 tests', 'compare_generator.py', '.gitignore'
-        ])
-        substantive_test_change = any(k in text_lower for k in [
-            'test_smart_commit_nltk.py', 'regression test', 'regression tests', 'regresiones',
-            'testing/evaluación', 'testing/evaluation', 'test suite', 'suite de regresión',
-            'unittest suite', 'pytest suite'
-        ])
-
-        if self.is_ml_metadata_validation_summary(text_lower):
-            return 'feat'
-        if self.is_mixed_language_nlp_summary(text_lower):
-            return 'feat'
-        if self.is_readme_architecture_docs_summary(text_lower):
-            return 'docs'
-        if self.is_ml_pipeline_summary(text_lower):
-            return 'feat'
-        if self.is_spanish_verb_expansion_summary(text_lower):
-            return 'feat'
-        if (
-            any(k in text_lower for k in ['vista previa', 'preview ui', 'legacy preview'])
-            and any(k in text_lower for k in ['truncate_subject', 'truncado', 'word-aware', 'límites de palabra', 'limites de palabra'])
-        ):
-            return 'refactor'
-        if any(k in text_lower for k in ['menciones de archivos', 'archivos mencionados', 'file mentions', 'mentioned files', 'file classification']):
-            return 'feat'
-        if any(k in text_lower for k in ['type/scope', 'type y scope', 'type and scope', 'selectores', 'tipo:', 'scope:', 'manual override', 'ajuste manual']):
-            return 'feat'
-        if any(k in text_lower for k in ['idioma detectado', 'detected language', 'language status', 'etiqueta de estado', 'status label']):
-            return 'feat'
-        if any(k in text_lower for k in ['limpiar entrada', 'clear input', 'botón limpiar', 'boton limpiar', 'borrar el texto de entrada', 'borra el texto', 'copy button', 'botón de copiar', 'cuadro de entrada']):
-            return 'feat'
-        if re.search(r'\ble\s+puse\s+tests?\b|\bañad(?:e|í|imos)\s+pruebas?\b', text_lower):
-            return 'test'
-        if (
-            any(k in text_lower for k in ['test_smart_commit_nltk.py', 'regresiones', 'regression tests', 'testing/evaluación', 'testing/evaluation', 'comparison_report.json', 'baseline', 'línea base', 'linea base'])
-            and has_evaluation_baseline_context
-        ):
-            return 'test'
-        if any(k in text_lower for k in ['bilingüe', 'bilingue', 'bilingual', 'tokenización', 'tokenization', 'verbos españoles', 'spanish verbs']):
-            return 'feat'
-        if any(re.search(rf'\b{re.escape(k)}\b', text_lower) for k in ci_keywords):
-            return 'ci'
-        if any(k in text_lower for k in build_keywords):
-            return 'build'
-        if any(k in text_lower for k in test_keywords) and substantive_test_change and not any(k in text_lower for k in docs_keywords):
-            return 'test'
-        if any(k in text_lower for k in perf_keywords) or subject_verb in ['perf', 'optimize', 'optimize', 'improve', 'improved']:
-            return 'perf'
-        if any(k in text_lower for k in style_keywords) or subject_verb in ['style', 'format', 'formatted', 'lint']:
-            return 'style'
-        if any(k in text_lower for k in refactor_keywords) or subject_verb in ['refactor', 'cleanup', 'clean', 'rename', 'restructure', 'simplify']:
-            return 'refactor'
-        if any(k in text_lower for k in docs_keywords) and subject_verb not in ['fix', 'perf', 'refactor', 'test', 'build', 'ci', 'style']:
-            return 'docs'
-        if any(k in text_lower for k in fix_keywords) or subject_verb in ['fix', 'correct', 'resolve', 'resolve', 'corrected', 'resolved']:
-            return 'fix'
-        if subject_verb in ['doc', 'document', 'documentation', 'documenta', 'documentado']:
-            return 'docs'
-        return 'feat'
+        return select_conventional_commit_type(
+            text,
+            subject_verb,
+            subject_obj,
+            self.detection_context(text_lower),
+        )
 
     def predict_commit_type(self, text, subject_verb, subject_obj, language=None):
         heuristic_type = self.select_commit_type(text, subject_verb, subject_obj)
