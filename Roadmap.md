@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 41 registered tests, 40 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 42 registered tests, 41 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -271,7 +271,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for valid and invalid model metadata status.
 - [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
 - [x] Tests for optional built-in seed examples in local training.
-- [x] Successful suite run: 40 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
+- [x] Successful suite run: 41 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -295,7 +296,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [x] Add regression cases for mixed English/Spanish texts.
 - [x] Add regression cases for summaries with several modified files.
-- [ ] Define new metrics that do not penalize the current 7-bullet limit.
+- [x] Define new metrics that do not penalize the current 7-bullet limit.
 - [ ] Improve historical dataset metrics without losing recent bilingual cases.
 
 ### [ ] ML Engine and Data
