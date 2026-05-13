@@ -274,6 +274,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
 - [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
 - [x] Tests for offline ML predictor accuracy evaluation without requiring sklearn at runtime.
+- [x] Tests for the shared lightweight predictor interface.
 - [x] Successful suite run: 42 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
@@ -322,7 +323,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [ ] Create a dedicated module for type/scope detection.
 - [ ] Create reusable fixtures with real examples.
 - [ ] Define the packaging/versioning policy for the distributed pre-trained model, vectorizer, metadata, and locally retrained artifacts.
-- [ ] Define a common internal interface for the hybrid NLTK/utils, sklearn, and heuristic components.
+- [x] Define a common internal interface for the hybrid NLTK/utils, sklearn, and heuristic components.
 - [ ] Remove any already-tracked `__pycache__` files from the Git index.
 
 ### [ ] User Interface

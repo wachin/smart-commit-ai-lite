@@ -2,6 +2,7 @@ import unittest
 
 from ml.dataset_loader import TrainingExample
 from ml.evaluate_model import evaluate_predictor
+from ml.interfaces import CommitTypePredictor
 from ml.predictor import PredictionResult
 
 
@@ -27,6 +28,7 @@ class MLEvaluationTests(unittest.TestCase):
         ]
         predictor = StubPredictor(["feat", "docs", None])
 
+        self.assertIsInstance(predictor, CommitTypePredictor)
         result = evaluate_predictor(examples, predictor)
 
         self.assertEqual(result.total_examples, 3)

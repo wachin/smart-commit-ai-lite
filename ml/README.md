@@ -43,6 +43,13 @@ python3 -m ml.evaluate_model
 Use `--json` for machine-readable output and `--no-seed` to evaluate only
 repository datasets. If artifacts are missing, examples are counted as skipped.
 
+Internal predictor interface:
+
+- `ml/interfaces.py` defines the minimal `CommitTypePredictor` protocol.
+- Current implementation: `ml/predictor.py`.
+- Future local engines should expose `predict(text, language=None)` and return
+  an object with a `commit_type` field.
+
 Regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json` when:
 
 - new balanced examples are added to `commit_examples_data/`

@@ -6,15 +6,10 @@ import argparse
 import json
 from collections import Counter
 from dataclasses import dataclass
-from typing import Protocol
 
 from ml.dataset_loader import TrainingExample, load_training_examples
-from ml.predictor import PredictionResult, SklearnCommitPredictor
-
-
-class CommitTypePredictor(Protocol):
-    def predict(self, text: str, language: str | None = None) -> PredictionResult | None:
-        ...
+from ml.interfaces import CommitTypePredictor
+from ml.predictor import SklearnCommitPredictor
 
 
 @dataclass(frozen=True)
