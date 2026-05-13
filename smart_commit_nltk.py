@@ -82,6 +82,7 @@ def ensure_nltk_data():
 ensure_nltk_data()
 
 class NLPCommitGenerator(QMainWindow):
+    # Geometry order: x position, y position, width, height.
     DEFAULT_WINDOW_GEOMETRY = (90, 30, 660, 690)
     MINIMUM_WINDOW_SIZE = (620, 620)
 
