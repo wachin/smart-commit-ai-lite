@@ -17,9 +17,11 @@ class MLTrainingTests(unittest.TestCase):
     def test_dataset_loader_reuses_local_examples_and_seed_labels(self):
         examples = load_training_examples(include_seed=True)
         labels = {example.label for example in examples}
+        dataset_only_labels = {example.label for example in load_training_examples(include_seed=False)}
 
         self.assertGreaterEqual(len(examples), 12)
         self.assertTrue(SUPPORTED_TYPES.issubset(labels))
+        self.assertTrue(SUPPORTED_TYPES.issubset(dataset_only_labels))
         self.assertEqual(label_from_subject("feat(ui): add control"), "feat")
         self.assertEqual(label_from_subject("docs: update readme"), "docs")
 

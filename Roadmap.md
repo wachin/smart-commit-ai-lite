@@ -272,6 +272,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
 - [x] Tests for optional built-in seed examples in local training.
 - [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
+- [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
 - [x] Successful suite run: 41 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
@@ -301,7 +302,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 
 ### [ ] ML Engine and Data
 - [x] Evaluate dataset balance: the historical examples currently favor `feat`.
-- [ ] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
+- [x] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [ ] Measure local model accuracy without increasing weight or complexity.
 - [x] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
 - [x] Keep offline seed examples only as support while the real dataset grows.
