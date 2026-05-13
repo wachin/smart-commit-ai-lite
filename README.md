@@ -141,7 +141,7 @@ It writes:
 - `ml/vectorizer.pkl`
 - `ml/model_metadata.json`
 
-The project distributes a pre-trained model for these default filenames. The current official artifacts were trained locally with Debian-packaged sklearn/joblib from 63 offline examples. Users can retrain locally and replace them as needed.
+The project distributes a pre-trained model for these default filenames. The current official artifacts were trained locally with Debian-packaged sklearn/joblib from 68 offline examples. Users can retrain locally and replace them as needed.
 
 The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, model format version, and artifact policy version. No network access, online inference, or external services are used.
 

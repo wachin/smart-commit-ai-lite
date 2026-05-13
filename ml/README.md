@@ -25,7 +25,7 @@ Generated artifacts:
 - `ml/model_metadata.json`
 
 The repository ships official distributed artifacts at those paths. The current
-artifacts were trained locally with Debian-packaged sklearn/joblib from 63
+artifacts were trained locally with Debian-packaged sklearn/joblib from 68
 offline examples, including the built-in seed examples.
 
 The metadata file records the model format version, training example count,

@@ -72,6 +72,16 @@ class MLTrainingTests(unittest.TestCase):
         self.assertFalse(any(example.source == "built-in-seed" for example in without_seed))
         self.assertTrue(any(example.source == "built-in-seed" for example in with_seed))
 
+    def test_user_supplied_training_examples_are_loaded(self):
+        examples = load_training_examples(include_seed=False)
+        texts = [example.text.lower() for example in examples]
+        labels = {example.label for example in examples}
+
+        self.assertTrue(any("dropzonewidget" in text for text in texts))
+        self.assertTrue(any("confidence gate" in text for text in texts))
+        self.assertTrue(any("gtk-platformtheme" in text or "gtk theme" in text for text in texts))
+        self.assertTrue({"feat", "docs", "test"}.issubset(labels))
+
     def test_official_artifact_policy_tracks_distributed_files(self):
         paths = official_artifact_paths()
 
