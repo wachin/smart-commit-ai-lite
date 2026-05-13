@@ -3,11 +3,37 @@ import unittest
 import json
 from pathlib import Path
 
+import ml
 from ml.predictor import SklearnCommitPredictor
 from ml.train_model import MODEL_FORMAT_VERSION
 
 
 class SklearnPredictorTests(unittest.TestCase):
+    def test_package_exports_common_predictor_api(self):
+        self.assertIs(ml.SklearnCommitPredictor, SklearnCommitPredictor)
+        self.assertTrue(callable(ml.predict_commit_type))
+
+    def test_distributed_model_predicts_core_prompt_examples(self):
+        predictor = SklearnCommitPredictor()
+        status = predictor.status(try_load=True)
+
+        self.assertTrue(status.ready, status.message)
+        cases = [
+            ("fixed crash when opening audio files", "fix"),
+            ("added MIDI karaoke support", "feat"),
+            ("updated installation instructions", "docs"),
+            ("cleaned deprecated code", "refactor"),
+            ("added regression tests for predictor", "test"),
+            ("generated official local ML model artifacts", "chore"),
+        ]
+
+        for text, expected_type in cases:
+            with self.subTest(text=text):
+                prediction = predictor.predict(text)
+
+                self.assertIsNotNone(prediction)
+                self.assertEqual(prediction.commit_type, expected_type)
+
     def test_missing_model_returns_none_instead_of_failing(self):
         with tempfile.TemporaryDirectory() as tmp:
             predictor = SklearnCommitPredictor(
