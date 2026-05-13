@@ -1,6 +1,6 @@
 import unittest
 
-from commit_examples_data.compare_generator import MAX_BODY_LINES, compare_entry
+from commit_examples_data.compare_generator import MAX_BODY_LINES, compare_entry, parse_commit_header
 
 
 class StubGenerator:
@@ -24,6 +24,13 @@ class StubGenerator:
 
 
 class CompareGeneratorTests(unittest.TestCase):
+    def test_parse_commit_header_extracts_type_scope_and_subject(self):
+        commit_type, scope, subject = parse_commit_header("feat(app): add feature")
+
+        self.assertEqual(commit_type, "feat")
+        self.assertEqual(scope, "app")
+        self.assertEqual(subject, "add feature")
+
     def test_compare_entry_reports_capped_body_metrics(self):
         expected_body = [f"- Body {index}" for index in range(1, 10)]
         entry = {
@@ -36,6 +43,9 @@ class CompareGeneratorTests(unittest.TestCase):
         result = compare_entry(entry, StubGenerator())
 
         self.assertFalse(result["body_count_match"])
+        self.assertTrue(result["type_match"])
+        self.assertTrue(result["scope_match"])
+        self.assertEqual(result["subject_text_similarity"], 1.0)
         self.assertTrue(result["capped_body_count_match"])
         self.assertEqual(result["expected_body_count"], 9)
         self.assertEqual(result["capped_expected_body_count"], MAX_BODY_LINES)

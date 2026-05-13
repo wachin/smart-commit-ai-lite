@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 57 registered tests, 56 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 59 registered tests, all passing in this Debian apt sklearn environment.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -62,8 +62,9 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] The system supports English and Spanish input.
 - [x] The project includes `ml/`, `utils/`, and dedicated tests for the new architecture.
 - [x] Product decision: distribute a pre-trained model while keeping local retraining available for users who need it.
-- [ ] Validate real training and predictions on Debian 12 with `python3-sklearn` installed.
-- [ ] Distribute a pre-trained model, vectorizer, and metadata file; document how users can retrain locally as needed.
+- [x] Validate real training with `python3-sklearn` installed from Debian repositories.
+- [x] Validate real predictions with the distributed pre-trained model artifacts.
+- [x] Distribute a pre-trained model, vectorizer, and metadata file; document how users can retrain locally as needed.
 
 ### Current Quality Example
 
@@ -170,7 +171,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Later improved subject similarity to 0.509.
 - [x] Updated `compare_generator.py` for the current bilingual signature.
 - [x] Recalculated `comparison_report.json` after bilingual improvements.
-- [x] Recorded current baseline: 45 examples, subject similarity 0.446, body ratio 0.000.
+- [x] Recorded current baseline: 45 examples, subject similarity 0.444, subject text similarity 0.395, 7 type matches, and 26 scope matches.
 
 ### [x] Noise Filtering
 - [x] Removed terminal commands and irrelevant conversational phrases.
@@ -210,6 +211,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Documented Debian installation and local training.
 - [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
 - [x] Surface missing official model artifacts in the UI with a retraining command hint.
+- [x] Generated official local model artifacts with 63 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
+- [x] Added a confidence gate so low-confidence ML predictions do not override stronger heuristic decisions.
 
 ### [x] Offline and Extensible Architecture
 - [x] Kept the existing heuristic engine as the subject/body and scope orchestration layer.
@@ -273,6 +276,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
 - [x] Tests for optional built-in seed examples in local training.
 - [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
+- [x] Tests for type/scope/text breakdown in the historical comparison report.
 - [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
 - [x] Tests for offline ML predictor accuracy evaluation without requiring sklearn at runtime.
 - [x] Tests for the shared lightweight predictor interface.
@@ -285,7 +289,9 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for structured English/Spanish language marker scoring.
 - [x] Test for repository bytecode ignore rules.
 - [x] Per-label ML evaluation metrics for targeting weak commit-type classes.
-- [x] Successful suite run: 56 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Type/scope/text metrics in `comparison_report.json` for easier historical analysis.
+- [x] Regression for low-confidence ML predictions preserving heuristic commit types.
+- [x] Successful suite run: 59 tests pass with `python3-sklearn` installed from apt.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -304,13 +310,15 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ### [ ] Evaluation and Testing
 - [x] Add more unit tests for Spanish action extraction.
 - [x] Add more unit tests for `select_commit_type()` and `detect_scope()`.
-- [ ] Add ML prediction tests with the distributed trained model in a Debian 12 apt environment.
-- [ ] Test on Debian 12 with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
+- [x] Add ML prediction tests with the distributed trained model in a Debian apt environment.
+- [x] Test local training with `python3-sklearn` and `python3-joblib` installed from apt.
+- [x] Test distributed model prediction with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
 - [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [x] Add regression cases for mixed English/Spanish texts.
 - [x] Add regression cases for summaries with several modified files.
 - [x] Define new metrics that do not penalize the current 7-bullet limit.
-- [ ] Improve historical dataset metrics without losing recent bilingual cases.
+- [x] Improve historical dataset diagnostics without losing recent bilingual cases.
+- [ ] Improve historical dataset scores without losing recent bilingual cases.
 
 ### [ ] ML Engine and Data
 - [x] Evaluate dataset balance: the historical examples currently favor `feat`.

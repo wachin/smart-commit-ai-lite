@@ -13,6 +13,7 @@ sys.path.insert(0, str(TESTS_ROOT))
 from PyQt6.QtWidgets import QApplication
 
 from smart_commit_nltk import NLPCommitGenerator
+from ml.predictor import PredictionResult
 from fixtures import (
     ML_METADATA_SUMMARY,
     ML_PIPELINE_SUMMARY,
@@ -23,6 +24,11 @@ from fixtures import (
 
 
 APP = QApplication.instance() or QApplication([])
+
+
+class StubLowConfidencePredictor:
+    def predict(self, _text, language=None):
+        return PredictionResult('chore', confidence=0.2, language=language or 'en')
 
 
 class SmartCommitGeneratorTests(unittest.TestCase):
@@ -134,6 +140,21 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
         for text, verb, obj, expected_type in cases:
             with self.subTest(text=text):
                 self.assertEqual(self.generator.select_commit_type(text, verb, obj), expected_type)
+
+    def test_low_confidence_ml_prediction_does_not_override_heuristic_type(self):
+        original_predictor = self.generator.ml_predictor
+        self.generator.ml_predictor = StubLowConfidencePredictor()
+        try:
+            commit_type = self.generator.predict_commit_type(
+                'Updated README.md with installation instructions.',
+                'update',
+                'README.md',
+                'en',
+            )
+        finally:
+            self.generator.ml_predictor = original_predictor
+
+        self.assertEqual(commit_type, 'docs')
 
     def test_prompt_examples_generate_expected_commit_types(self):
         cases = [
@@ -258,9 +279,11 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
         self.assertLessEqual(width, 700)
         self.assertLessEqual(height, 700)
 
-    def test_model_status_text_reports_missing_artifacts(self):
-        self.assertIn('ML model:', self.generator.model_status_text())
-        self.assertIn('ml.train_model', self.generator.model_status_text())
+    def test_model_status_text_reports_artifact_state(self):
+        status = self.generator.model_status_text()
+
+        self.assertIn('ML model:', status)
+        self.assertTrue('ready' in status or 'ml.train_model' in status)
 
     def test_language_status_updates_after_generating_commit(self):
         self.render_command('He creado Roadmap.md con tareas completadas.')

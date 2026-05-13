@@ -103,6 +103,7 @@ class NLPCommitGenerator(QMainWindow):
     # Geometry order: x position, y position, width, height.
     DEFAULT_WINDOW_GEOMETRY = (90, 30, 660, 690)
     MINIMUM_WINDOW_SIZE = (620, 620)
+    MIN_ML_TYPE_CONFIDENCE = 0.6
 
     def __init__(self):
         super().__init__()
@@ -944,7 +945,12 @@ class NLPCommitGenerator(QMainWindow):
         heuristic_type = self.select_commit_type(text, subject_verb, subject_obj)
         if self.ml_predictor:
             prediction = self.ml_predictor.predict(text, language)
-            if prediction and prediction.commit_type:
+            if (
+                prediction
+                and prediction.commit_type
+                and prediction.confidence is not None
+                and prediction.confidence >= self.MIN_ML_TYPE_CONFIDENCE
+            ):
                 return prediction.commit_type
         return heuristic_type
 
