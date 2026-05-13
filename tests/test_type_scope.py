@@ -1,9 +1,21 @@
 import unittest
 
-from utils.type_scope import DetectionContext, detect_scope, select_commit_type
+from utils.type_scope import (
+    COMMIT_TYPE_OPTIONS,
+    SCOPE_OPTIONS,
+    DetectionContext,
+    detect_scope,
+    select_commit_type,
+)
 
 
 class TypeScopeTests(unittest.TestCase):
+    def test_ui_option_constants_include_supported_values(self):
+        self.assertEqual(COMMIT_TYPE_OPTIONS[:4], ("feat", "fix", "docs", "test"))
+        self.assertIn("refactor", COMMIT_TYPE_OPTIONS)
+        self.assertIn("nlp", SCOPE_OPTIONS)
+        self.assertIn("ml", SCOPE_OPTIONS)
+
     def test_select_commit_type_handles_core_categories(self):
         cases = [
             ("Fixed crash when opening audio files.", "fix", "fix"),

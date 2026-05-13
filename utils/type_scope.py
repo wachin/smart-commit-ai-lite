@@ -7,6 +7,10 @@ from dataclasses import dataclass
 from utils.regex_utils import regex
 
 
+COMMIT_TYPE_OPTIONS = ("feat", "fix", "docs", "test", "build", "ci", "style", "refactor", "perf")
+SCOPE_OPTIONS = ("app", "ui", "docs", "repo", "dict", "tools", "nlp", "ml", "test")
+
+
 @dataclass(frozen=True)
 class DetectionContext:
     """Shared summary flags computed by the heuristic orchestrator."""

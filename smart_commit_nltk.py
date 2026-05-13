@@ -27,7 +27,9 @@ from utils.input_cleanup import (
     strip_markdown_noise as strip_pasted_markdown_noise,
 )
 from utils.type_scope import (
+    COMMIT_TYPE_OPTIONS,
     DetectionContext,
+    SCOPE_OPTIONS,
     detect_scope as detect_commit_scope,
     select_commit_type as select_conventional_commit_type,
 )
@@ -160,7 +162,7 @@ class NLPCommitGenerator(QMainWindow):
 
         self.type_override_combo = QComboBox()
         self.type_override_combo.addItem("Automático", "auto")
-        for commit_type in ['feat', 'fix', 'docs', 'test', 'build', 'ci', 'style', 'refactor', 'perf']:
+        for commit_type in COMMIT_TYPE_OPTIONS:
             self.type_override_combo.addItem(commit_type, commit_type)
         self.type_override_combo.setFont(QFont("Arial", 9))
         self.type_override_combo.currentIndexChanged.connect(self.refresh_commit_command_from_controls)
@@ -172,7 +174,7 @@ class NLPCommitGenerator(QMainWindow):
 
         self.scope_override_combo = QComboBox()
         self.scope_override_combo.addItem("Automático", "auto")
-        for scope in ['app', 'ui', 'docs', 'repo', 'dict', 'tools', 'nlp', 'ml', 'test']:
+        for scope in SCOPE_OPTIONS:
             self.scope_override_combo.addItem(scope, scope)
         self.scope_override_combo.setFont(QFont("Arial", 9))
         self.scope_override_combo.currentIndexChanged.connect(self.refresh_commit_command_from_controls)
