@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 45 registered tests, 44 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 48 registered tests, 47 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -277,7 +277,9 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for offline ML predictor accuracy evaluation without requiring sklearn at runtime.
 - [x] Tests for the shared lightweight predictor interface.
 - [x] Tests for distributed artifact path and policy versioning.
-- [x] Successful suite run: 44 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for the dedicated input cleanup module.
+- [x] Reusable fixtures for real AI-comparison summaries used in regressions.
+- [x] Successful suite run: 47 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -321,9 +323,9 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ### [ ] Architecture and Maintainability
 - [x] Add external modules for preprocessing, language, and ML without rewriting `smart_commit_nltk.py`.
 - [ ] Fully separate heuristic NLP logic from the PyQt6 interface.
-- [ ] Create a dedicated class or module for input cleanup.
+- [x] Create a dedicated class or module for input cleanup.
 - [ ] Create a dedicated module for type/scope detection.
-- [ ] Create reusable fixtures with real examples.
+- [x] Create reusable fixtures with real examples.
 - [x] Define the packaging/versioning policy for the distributed pre-trained model, vectorizer, metadata, and locally retrained artifacts.
 - [x] Define a common internal interface for the hybrid NLTK/utils, sklearn, and heuristic components.
 - [ ] Remove any already-tracked `__pycache__` files from the Git index.

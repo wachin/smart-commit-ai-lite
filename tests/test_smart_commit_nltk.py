@@ -6,11 +6,20 @@ from pathlib import Path
 os.environ.setdefault('QT_QPA_PLATFORM', 'offscreen')
 
 ROOT = Path(__file__).resolve().parents[1]
+TESTS_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(TESTS_ROOT))
 
 from PyQt6.QtWidgets import QApplication
 
 from smart_commit_nltk import NLPCommitGenerator
+from fixtures import (
+    ML_METADATA_SUMMARY,
+    ML_PIPELINE_SUMMARY,
+    README_ARCHITECTURE_SUMMARY,
+    SPANISH_BILINGUAL_SUMMARY,
+    SPANISH_VERB_EXPANSION_SUMMARY,
+)
 
 
 APP = QApplication.instance() or QApplication([])
@@ -67,21 +76,7 @@ Ahora detecta idioma y genera commits mejores.
         self.assertEqual(self.generator.detect_language(english), 'en')
 
     def test_spanish_bilingual_summary_generates_feat_nlp(self):
-        text = """Listo, le metí una mejora fuerte a [smart_commit_nltk.py](/tmp/smart_commit_nltk.py).
-Ahora detecta si el texto está en español o inglés, usa tokenización por idioma,
-entiende verbos españoles como `he creado`, `actualizado`, `incluye`, `resume`,
-y genera el subject/body en el mismo idioma del texto de entrada.
-
-```bash
-git commit -m "docs(repo): agrega roadmap con seguimiento de progreso" \\
-  -m "- Documenta funcionalidades completadas"
-python3 -m py_compile smart_commit_nltk.py
-```
-
-También corregí el bug que hacía que saliera `ci(docs)` por encontrar las letras
-`ci` dentro de palabras como “funcionalidades” o “secciones”.
-"""
-        command = self.render_command(text)
+        command = self.render_command(SPANISH_BILINGUAL_SUMMARY)
 
         self.assertIn('git commit -m "feat(nlp): agrega soporte bilingüe y corrige tipo ci"', command)
         self.assertIn('-m "- Detecta el idioma de entrada para tokenización localizada"', command)
@@ -218,36 +213,7 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
                 self.assertNotIn('feat(dict):', command)
 
     def test_english_summary_with_spanish_examples_stays_english(self):
-        text = """Continued development with expanded Spanish verb support.
-
-I fixed common Spanish summaries that were falling back to `actualiza proyecto`, including:
-
-```text
-Arreglé el fallo al abrir archivos de audio.
-Añadimos soporte para karaoke MIDI.
-Mejoramos la detección de idioma mixto.
-Documentamos las instrucciones de instalación.
-```
-
-These now produce specific Conventional Commits such as:
-
-```bash
-git commit -m "fix(app): corrige fallo al abrir archivos de audio"
-git commit -m "feat(app): agrega soporte para karaoke midi"
-git commit -m "docs(docs): documenta instrucciones de instalación"
-```
-
-I updated [smart_commit_nltk.py](/home/wachin/Dev/smart-commit-ai-lite/smart_commit_nltk.py:314) with the new Spanish conjugations, fixed `ci` scope matching so it no longer fires inside `instrucciones`, and added regressions in [tests/test_smart_commit_nltk.py](/home/wachin/Dev/smart-commit-ai-lite/tests/test_smart_commit_nltk.py:173). [Roadmap.md](/home/wachin/Dev/smart-commit-ai-lite/Roadmap.md:53) now marks Spanish verb expansion complete.
-
-Verification passed:
-
-```bash
-QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
-```
-
-Result: `37` tests ran, `36` passed, `1` skipped because `python3-sklearn` is not installed here.
-"""
-        command = self.render_command(text)
+        command = self.render_command(SPANISH_VERB_EXPANSION_SUMMARY)
 
         self.assertEqual(self.generator.language_status_label.text(), 'Idioma detectado: Inglés')
         self.assertIn('git commit -m "feat(nlp): expand spanish verb support"', command.lower())
@@ -423,20 +389,7 @@ Resultado: 19 tests OK.
         )
 
     def test_readme_architecture_summary_generates_rich_docs_commit(self):
-        text = """Updated [README.md](/home/wachin/Dev/smart-commit-ai-lite/README.md) where it was still a bit thin.
-
-Added:
-- clearer project title with the lightweight ML layer
-- explicit project principles and “do not use” constraints
-- supported ML labels
-- NLTK/utils vs scikit-learn vs heuristic responsibility split
-- local `joblib` artifact behavior
-- Debian validation note
-- contribution guidance for balanced ML examples and ML prediction tests
-
-No tests needed; documentation-only change.
-"""
-        command = self.render_command(text)
+        command = self.render_command(README_ARCHITECTURE_SUMMARY)
 
         self.assertIn('git commit -m "docs(readme): expand project principles and architecture"', command)
         self.assertIn('-m "- Clarify lightweight ML layer and core design constraints"', command)
@@ -447,21 +400,7 @@ No tests needed; documentation-only change.
         self.assertNotIn('refactor(nlp): update readme.md', command)
 
     def test_ml_metadata_summary_generates_feat_ml_commit(self):
-        text = """Continued development on the ML layer.
-
-I added stricter model metadata validation in [ml/predictor.py](/home/wachin/Dev/smart-commit-ai-lite/ml/predictor.py:33): the predictor now checks `model_metadata.json` for required fields and the supported format version before reporting the distributed ML model as ready.
-
-I also added predictor tests in [tests/test_predictor.py](/home/wachin/Dev/smart-commit-ai-lite/tests/test_predictor.py:39) for valid metadata and invalid metadata, then updated [Roadmap.md](/home/wachin/Dev/smart-commit-ai-lite/Roadmap.md:53) with the new progress and current suite count.
-
-Verification passed:
-
-```bash
-QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v
-```
-
-Result: `32` tests ran, `31` passed, `1` skipped because `python3-sklearn` is not installed in this environment.
-"""
-        command = self.render_command(text)
+        command = self.render_command(ML_METADATA_SUMMARY)
 
         self.assertIn('git commit -m "feat(ml): add strict metadata validation in predictor"', command)
         self.assertIn('-m "- Validate model metadata fields before reporting model ready"', command)
@@ -473,19 +412,7 @@ Result: `32` tests ran, `31` passed, `1` skipped because `python3-sklearn` is no
         self.assertNotIn('-m "- Outline future work for Git, ML, UI, tests, and multilingual support"', command)
 
     def test_multi_file_ml_pipeline_summary_generates_feat_ml_commit(self):
-        text = """Improved the offline ML training pipeline across several files.
-
-Changed:
-- ml/dataset_loader.py loads examples from JSON, SQLite, and entries.
-- ml/train_model.py writes joblib artifacts and metadata.
-- ml/predictor.py reports artifact readiness.
-- utils/preprocessing.py normalizes text before vectorization.
-- tests/test_ml_training.py and tests/test_predictor.py cover training and predictor behavior.
-- README.md and Roadmap.md document the workflow.
-
-Result: 35 tests OK.
-"""
-        command = self.render_command(text)
+        command = self.render_command(ML_PIPELINE_SUMMARY)
 
         self.assertIn('git commit -m "feat(ml): improve offline ml training pipeline"', command)
         self.assertIn('-m "- Load training examples from local dataset sources"', command)
