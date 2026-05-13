@@ -271,7 +271,8 @@ class NLPCommitGenerator(QMainWindow):
             ' que ', ' para ', ' con ', ' sin ', ' desde ', ' hasta ', ' también ',
             ' he ', ' hemos ', ' creado', ' añad', ' agreg', ' actualiz', ' correg',
             ' mejora', ' incluye', ' resume', ' documento', ' funcionalidades',
-            ' completadas', ' pendientes', ' pruebas', ' multilenguaje'
+            ' completadas', ' pendientes', ' pruebas', ' multilenguaje',
+            ' le ', ' metí', ' puse', ' arregló', ' quedó'
         ]
         english_markers = [
             ' the ', ' a ', ' an ', ' this ', ' that ', ' with ', ' without ',
@@ -342,9 +343,9 @@ class NLPCommitGenerator(QMainWindow):
                 r'supports|support|generates|generate|validated|validate|'
                 r'he|hemos|creado|creé|creamos|añadido|añadí|añadimos|agregado|implementado|implementé|implemente|actualizado|'
                 r'actualicé|actualice|actualizamos|recalculé|recalcule|afiné|afine|cambiado|corregido|'
-                r'arreglado|arreglé|arreglamos|mejorado|mejoré|mejore|mejoramos|documenta|documentado|documentamos|incluye|resume|'
+                r'arreglado|arreglé|arreglamos|arregló|mejorado|mejoré|mejore|mejoramos|documenta|documentado|documentada|documentamos|incluye|resume|'
                 r'detecta|usa|entiende|genera|corrige|corregí|corregi|verifiqué|verifique|validé|valide|'
-                r'puedes|selectores|tipo|scope|regenera|manteniendo|ajuste|manual|'
+                r'le metí|metí|le puse|puse|puedes|selectores|tipo|scope|regenera|manteniendo|ajuste|manual|'
                 r'añadí|anadi|quité|quite|quitada|eliminé|elimine|elimina|borra|borrar|desactiva|devuelve|foco|resultado|tests|'
                 r'continué|continue|trunca|truncado|truncate_subject|vista previa|límites de palabra|limites de palabra|'
                 r'limpiado|ajustado|clarify|clearer|explicit|supported|local|debian|contribution|guidance|'
@@ -708,6 +709,46 @@ class NLPCommitGenerator(QMainWindow):
         if re.search(r'\b(falso positivo|false-positive)\b.*\bci\b|\bci\b.*\b(falso positivo|false-positive)\b', sentence_lower):
             return 'fix', 'detección de tipo ci'
 
+        colloquial_support_match = re.search(
+            r'\ble\s+met[íi]\s+soporte\s+para\s+(.+?)(?:\s+en|\s+con|\s+y|\.|$)',
+            sentence_lower,
+            re.IGNORECASE,
+        )
+        if colloquial_support_match:
+            obj = self.extract_spanish_object_phrase(colloquial_support_match.group(1))
+            if obj:
+                return 'add', f'soporte para {obj}'
+
+        colloquial_tests_match = re.search(
+            r'\ble\s+puse\s+tests?\s+(?:a|al|para)\s+(.+?)(?:\s+en|\s+con|\s+y|\.|$)',
+            sentence_lower,
+            re.IGNORECASE,
+        )
+        if colloquial_tests_match:
+            obj = self.extract_spanish_object_phrase(colloquial_tests_match.group(1))
+            if obj:
+                return 'add', f'tests para {obj}'
+
+        passive_fix_match = re.search(
+            r'\bse\s+arregl[oó]\s+(.+?)(?:\s+en|\s+con|\s+y|\.|$)',
+            sentence_lower,
+            re.IGNORECASE,
+        )
+        if passive_fix_match:
+            obj = self.extract_spanish_object_phrase(passive_fix_match.group(1))
+            if obj:
+                return 'fix', obj
+
+        passive_docs_match = re.search(
+            r'\bqued[oó]\s+documentad[ao]\s+(.+?)(?:\s+en|\s+con|\s+y|\.|$)',
+            sentence_lower,
+            re.IGNORECASE,
+        )
+        if passive_docs_match:
+            obj = self.extract_spanish_object_phrase(passive_docs_match.group(1))
+            if obj:
+                return 'doc', obj
+
         support_match = re.search(
             r'\b(?:he|hemos)?\s*(?:añadido|añadí|añadimos|agregado|agregué|agregamos|incorporado|incorporamos)\s+soporte\s+para\s+(.+?)(?:\s+en|\s+con|\s+y|\.|$)',
             sentence_lower,
@@ -1000,11 +1041,13 @@ class NLPCommitGenerator(QMainWindow):
             return 'ui'
         if any(k in text_lower for k in ['limpiar entrada', 'clear input', 'botón limpiar', 'boton limpiar', 'borrar el texto de entrada', 'borra el texto', 'copy button', 'botón de copiar', 'cuadro de entrada']):
             return 'ui'
+        if re.search(r'\b(tests?|pruebas?)\b', text_lower) and re.search(r'\b(predictor|regresi[oó]n|regression)\b', text_lower):
+            return 'test'
         if any(k in text_lower for k in ['test_smart_commit_nltk.py', 'compare_generator.py', 'comparison_report.json', '.gitignore', 'baseline', 'línea base', 'linea base']):
             return 'repo'
         if any(k in text_lower for k in ['smart_commit_nltk.py', 'nltk', 'tokenization', 'tokenización', 'idioma', 'bilingüe', 'bilingue', 'spanish verbs', 'verbos españoles']):
             return 'nlp'
-        if 'dict' in text_lower or 'dictionary' in text_lower or 'wps' in text_lower or 'libreoffice' in text_lower:
+        if re.search(r'\b(dict|dictionary|wps|libreoffice)\b', text_lower):
             return 'dict'
         if 'repo' in text_lower or '.gitignore' in text_lower or 'clone' in text_lower or 'repository' in text_lower:
             return 'repo'
@@ -1077,6 +1120,8 @@ class NLPCommitGenerator(QMainWindow):
             return 'feat'
         if any(k in text_lower for k in ['limpiar entrada', 'clear input', 'botón limpiar', 'boton limpiar', 'borrar el texto de entrada', 'borra el texto', 'copy button', 'botón de copiar', 'cuadro de entrada']):
             return 'feat'
+        if re.search(r'\ble\s+puse\s+tests?\b|\bañad(?:e|í|imos)\s+pruebas?\b', text_lower):
+            return 'test'
         if (
             any(k in text_lower for k in ['test_smart_commit_nltk.py', 'regresiones', 'regression tests', 'testing/evaluación', 'testing/evaluation', 'comparison_report.json', 'baseline', 'línea base', 'linea base'])
             and has_evaluation_baseline_context

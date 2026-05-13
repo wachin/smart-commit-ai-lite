@@ -201,6 +201,22 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
                 self.assertIn(f'git commit -m "{expected_subject}"', command)
                 self.assertNotIn('actualiza proyecto', command)
 
+    def test_colloquial_spanish_summaries_generate_specific_commits(self):
+        cases = [
+            ('Le metí soporte para karaoke MIDI.', 'feat(app): agrega soporte para karaoke midi'),
+            ('Le puse tests al predictor de commits.', 'test(test): agrega tests para predictor de commits'),
+            ('Se arregló el fallo al abrir archivos de audio.', 'fix(app): corrige fallo al abrir archivos de audio'),
+            ('Quedó documentada la instalación en README.md.', 'docs(docs): documenta instalación'),
+        ]
+
+        for text, expected_subject in cases:
+            with self.subTest(text=text):
+                command = self.render_command(text)
+
+                self.assertIn(f'git commit -m "{expected_subject}"', command)
+                self.assertNotIn('actualiza proyecto', command)
+                self.assertNotIn('feat(dict):', command)
+
     def test_english_summary_with_spanish_examples_stays_english(self):
         text = """Continued development with expanded Spanish verb support.
 
