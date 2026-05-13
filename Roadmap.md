@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 52 registered tests, 51 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 54 registered tests, 53 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -281,7 +281,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Reusable fixtures for real AI-comparison summaries used in regressions.
 - [x] Direct tests for the dedicated type/scope detection module.
 - [x] Centralized UI type/scope option lists in the type/scope detection module.
-- [x] Successful suite run: 51 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for shared language detection and signal-text cleanup.
+- [x] Successful suite run: 53 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -318,6 +319,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ### [ ] Language Support
 - [x] Expand Spanish verbs and patterns.
 - [x] Improve language detection for mixed-language texts.
+- [x] Share language detection cleanup between the GUI and ML preprocessing path.
 - [ ] Separate language-specific rules into more maintainable structures.
 - [ ] Evaluate a Spanish POS tagger if more grammatical precision is desired.
 - [x] Support regional variants and more colloquial phrases.

@@ -26,6 +26,10 @@ from utils.input_cleanup import (
     detect_input_noise_warnings as detect_pasted_input_noise_warnings,
     strip_markdown_noise as strip_pasted_markdown_noise,
 )
+from utils.language import (
+    detect_language as detect_input_language,
+    language_signal_text as get_language_signal_text,
+)
 from utils.type_scope import (
     COMMIT_TYPE_OPTIONS,
     DetectionContext,
@@ -241,47 +245,10 @@ class NLPCommitGenerator(QMainWindow):
             self.noise_warning_label.setVisible(False)
 
     def detect_language(self, text):
-        text_lower = self.language_signal_text(text).lower()
-        spanish_markers = [
-            ' el ', ' la ', ' los ', ' las ', ' un ', ' una ', ' este ', ' esta ',
-            ' que ', ' para ', ' con ', ' sin ', ' desde ', ' hasta ', ' también ',
-            ' he ', ' hemos ', ' creado', ' añad', ' agreg', ' actualiz', ' correg',
-            ' mejora', ' incluye', ' resume', ' documento', ' funcionalidades',
-            ' completadas', ' pendientes', ' pruebas', ' multilenguaje',
-            ' le ', ' metí', ' puse', ' arregló', ' quedó'
-        ]
-        english_markers = [
-            ' the ', ' a ', ' an ', ' this ', ' that ', ' with ', ' without ',
-            ' from ', ' to ', ' also ', ' i ', ' we ', ' created', ' added',
-            ' updated', ' fixed', ' improved', ' includes', ' document',
-            ' completed', ' pending', ' tests', ' multilingual'
-        ]
-
-        padded = f" {text_lower} "
-        spanish_score = sum(2 for marker in spanish_markers if marker in padded)
-        english_score = sum(2 for marker in english_markers if marker in padded)
-        spanish_score += len(re.findall(r'[áéíóúñü¿¡]', text_lower)) * 3
-
-        return 'es' if spanish_score > english_score else 'en'
+        return detect_input_language(text)
 
     def language_signal_text(self, text):
-        signal_lines = []
-        in_fence = False
-        for raw_line in text.splitlines():
-            line = raw_line.strip()
-            if line.startswith("```"):
-                in_fence = not in_fence
-                continue
-            if in_fence:
-                continue
-            if re.search(r'^\s*git\s+commit\b', line):
-                continue
-            signal_lines.append(raw_line)
-
-        signal = "\n".join(signal_lines)
-        signal = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', signal)
-        signal = re.sub(r'`[^`]+`', ' ', signal)
-        return signal
+        return get_language_signal_text(text)
 
     def sent_tokenize_by_language(self, text, language):
         nltk_language = 'spanish' if language == 'es' else 'english'
