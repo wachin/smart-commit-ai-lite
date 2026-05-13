@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 from dataclasses import dataclass
@@ -204,3 +205,54 @@ class SklearnCommitPredictor:
 
 def predict_commit_type(text: str, language: str | None = None) -> PredictionResult | None:
     return SklearnCommitPredictor().predict(text, language)
+
+
+def prediction_payload(prediction: PredictionResult | None) -> dict[str, Any]:
+    if prediction is None:
+        return {
+            "commit_type": None,
+            "confidence": None,
+            "language": None,
+            "engine": "sklearn",
+        }
+    return {
+        "commit_type": prediction.commit_type,
+        "confidence": prediction.confidence,
+        "language": prediction.language,
+        "engine": prediction.engine,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Predict a Conventional Commit type offline.")
+    parser.add_argument("text", nargs="*", help="Change summary text to classify.")
+    parser.add_argument("--language", choices=("en", "es"), help="Force input language.")
+    parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
+    parser.add_argument("--status", action="store_true", help="Print model artifact status and exit.")
+    args = parser.parse_args()
+
+    predictor = SklearnCommitPredictor()
+    if args.status:
+        status = predictor.status(try_load=True)
+        if args.json:
+            print(json.dumps({"ready": status.ready, "message": status.message}, indent=2, sort_keys=True))
+        else:
+            print(f"Ready: {status.ready}")
+            print(f"Status: {status.message}")
+        return 0 if status.ready else 1
+
+    text = " ".join(args.text).strip()
+    prediction = predictor.predict(text, args.language)
+    if args.json:
+        print(json.dumps(prediction_payload(prediction), indent=2, sort_keys=True))
+    elif prediction is None:
+        print("No prediction")
+        return 1
+    else:
+        confidence = "n/a" if prediction.confidence is None else prediction.confidence
+        print(f"{prediction.commit_type} (confidence={confidence}, language={prediction.language})")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -165,6 +165,14 @@ python3 -m ml.evaluate_model
 
 With the distributed artifacts present, the evaluator reports accuracy and per-label metrics for all local examples. If model artifacts are missing, it reports skipped examples instead of contacting any external service.
 
+Predict a commit type directly from the distributed model:
+
+```bash
+python3 -m ml.predictor "fixed crash when opening audio files"
+python3 -m ml.predictor --json "added MIDI karaoke support"
+python3 -m ml.predictor --status
+```
+
 ## Testing and Evaluation
 
 Run the regression tests:

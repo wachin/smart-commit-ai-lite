@@ -2,9 +2,10 @@ import tempfile
 import unittest
 import json
 from pathlib import Path
+from unittest.mock import patch
 
 import ml
-from ml.predictor import SklearnCommitPredictor
+from ml.predictor import SklearnCommitPredictor, main, prediction_payload
 from ml.train_model import MODEL_FORMAT_VERSION
 
 
@@ -12,6 +13,17 @@ class SklearnPredictorTests(unittest.TestCase):
     def test_package_exports_common_predictor_api(self):
         self.assertIs(ml.SklearnCommitPredictor, SklearnCommitPredictor)
         self.assertTrue(callable(ml.predict_commit_type))
+
+    def test_prediction_payload_handles_missing_prediction(self):
+        self.assertEqual(
+            prediction_payload(None),
+            {
+                "commit_type": None,
+                "confidence": None,
+                "language": None,
+                "engine": "sklearn",
+            },
+        )
 
     def test_distributed_model_predicts_core_prompt_examples(self):
         predictor = SklearnCommitPredictor()
@@ -33,6 +45,16 @@ class SklearnPredictorTests(unittest.TestCase):
 
                 self.assertIsNotNone(prediction)
                 self.assertEqual(prediction.commit_type, expected_type)
+
+    def test_predictor_cli_prints_json_prediction(self):
+        with patch("sys.argv", ["ml.predictor", "--json", "fixed crash when opening audio files"]):
+            with patch("builtins.print") as mocked_print:
+                exit_code = main()
+
+        self.assertEqual(exit_code, 0)
+        payload = json.loads(mocked_print.call_args.args[0])
+        self.assertEqual(payload["commit_type"], "fix")
+        self.assertEqual(payload["engine"], "sklearn")
 
     def test_missing_model_returns_none_instead_of_failing(self):
         with tempfile.TemporaryDirectory() as tmp:

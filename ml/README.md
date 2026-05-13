@@ -59,6 +59,14 @@ repository datasets. With distributed artifacts present, evaluation reports
 overall accuracy plus per-label metrics. If artifacts are missing, examples are
 counted as skipped.
 
+To predict a single summary directly from the distributed model:
+
+```bash
+python3 -m ml.predictor "fixed crash when opening audio files"
+python3 -m ml.predictor --json "added MIDI karaoke support"
+python3 -m ml.predictor --status
+```
+
 Internal predictor interface:
 
 - `ml/__init__.py` exports `PredictionResult`, `SklearnCommitPredictor`, and

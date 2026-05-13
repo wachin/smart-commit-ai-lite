@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 61 registered tests, all passing in this Debian apt sklearn environment.
+- [x] Current suite: 63 registered tests, all passing in this Debian apt sklearn environment.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -204,6 +204,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Saved `commit_model.pkl` and `vectorizer.pkl` locally with `joblib`.
 - [x] Added `model_metadata.json` generation for model format, label counts, and artifact paths.
 - [x] Created `ml/predictor.py` with fast local model loading.
+- [x] Added `python3 -m ml.predictor` for direct offline CLI predictions and model status checks.
 - [x] Added explicit model artifact status reporting for model/vectorizer presence and loadability.
 - [x] Added metadata validation for required fields and model format version.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
@@ -284,6 +285,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for distributed artifact path and policy versioning.
 - [x] Tests for distributed model predictions on core prompt examples.
 - [x] Tests for public `ml` package predictor exports.
+- [x] Tests for predictor JSON CLI output and empty prediction payloads.
 - [x] Tests for the dedicated input cleanup module.
 - [x] Reusable fixtures for real AI-comparison summaries used in regressions.
 - [x] Direct tests for the dedicated type/scope detection module.
@@ -294,8 +296,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Per-label ML evaluation metrics for targeting weak commit-type classes.
 - [x] Type/scope/text metrics in `comparison_report.json` for easier historical analysis.
 - [x] Regression for low-confidence ML predictions preserving heuristic commit types.
-- [x] Documentation reflects the shipped model artifacts and 61-test Debian apt validation.
-- [x] Successful suite run: 61 tests pass with `python3-sklearn` installed from apt.
+- [x] Documentation reflects the shipped model artifacts, predictor CLI, and Debian apt validation.
+- [x] Successful suite run: 63 tests pass with `python3-sklearn` installed from apt.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
