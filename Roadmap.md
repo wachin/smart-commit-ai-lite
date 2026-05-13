@@ -284,6 +284,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for shared language detection and signal-text cleanup.
 - [x] Tests for structured English/Spanish language marker scoring.
 - [x] Test for repository bytecode ignore rules.
+- [x] Per-label ML evaluation metrics for targeting weak commit-type classes.
 - [x] Successful suite run: 56 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
@@ -315,6 +316,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Evaluate dataset balance: the historical examples currently favor `feat`.
 - [x] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Measure local model accuracy without increasing weight or complexity.
+- [x] Report per-label evaluation metrics so weak classes can be improved without heavy tooling.
 - [x] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
 - [x] Keep offline seed examples only as support while the real dataset grows.
 

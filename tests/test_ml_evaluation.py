@@ -38,6 +38,14 @@ class MLEvaluationTests(unittest.TestCase):
         self.assertEqual(result.accuracy, 0.5)
         self.assertEqual(result.expected_labels, {"docs": 1, "feat": 1, "fix": 1})
         self.assertEqual(result.predicted_labels, {"docs": 1, "feat": 1})
+        self.assertEqual(
+            result.label_metrics,
+            {
+                "docs": {"expected": 1, "evaluated": 0, "skipped": 1, "correct": 0, "accuracy": None},
+                "feat": {"expected": 1, "evaluated": 1, "skipped": 0, "correct": 1, "accuracy": 1.0},
+                "fix": {"expected": 1, "evaluated": 1, "skipped": 0, "correct": 0, "accuracy": 0.0},
+            },
+        )
 
 
 if __name__ == "__main__":

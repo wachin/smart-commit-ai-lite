@@ -21,6 +21,7 @@ class EvaluationResult:
     accuracy: float | None
     expected_labels: dict[str, int]
     predicted_labels: dict[str, int]
+    label_metrics: dict[str, dict[str, int | float | None]]
 
 
 def evaluate_predictor(
@@ -29,6 +30,8 @@ def evaluate_predictor(
 ) -> EvaluationResult:
     expected_counts = Counter(example.label for example in examples)
     predicted_counts: Counter[str] = Counter()
+    label_evaluated: Counter[str] = Counter()
+    label_correct: Counter[str] = Counter()
     correct = 0
     evaluated = 0
 
@@ -37,12 +40,26 @@ def evaluate_predictor(
         if prediction is None:
             continue
         evaluated += 1
+        label_evaluated[example.label] += 1
         predicted_counts[prediction.commit_type] += 1
         if prediction.commit_type == example.label:
             correct += 1
+            label_correct[example.label] += 1
 
     skipped = len(examples) - evaluated
     accuracy = round(correct / evaluated, 4) if evaluated else None
+    label_metrics = {}
+    for label, expected in sorted(expected_counts.items()):
+        label_eval_count = label_evaluated[label]
+        label_correct_count = label_correct[label]
+        label_metrics[label] = {
+            "expected": expected,
+            "evaluated": label_eval_count,
+            "skipped": expected - label_eval_count,
+            "correct": label_correct_count,
+            "accuracy": round(label_correct_count / label_eval_count, 4) if label_eval_count else None,
+        }
+
     return EvaluationResult(
         total_examples=len(examples),
         evaluated_examples=evaluated,
@@ -51,6 +68,7 @@ def evaluate_predictor(
         accuracy=accuracy,
         expected_labels=dict(sorted(expected_counts.items())),
         predicted_labels=dict(sorted(predicted_counts.items())),
+        label_metrics=label_metrics,
     )
 
 
@@ -71,6 +89,7 @@ def main() -> int:
         "accuracy": result.accuracy,
         "expected_labels": result.expected_labels,
         "predicted_labels": result.predicted_labels,
+        "label_metrics": result.label_metrics,
     }
 
     if args.json:
@@ -83,6 +102,7 @@ def main() -> int:
         print(f"Accuracy: {result.accuracy if result.accuracy is not None else 'n/a'}")
         print(f"Expected labels: {result.expected_labels}")
         print(f"Predicted labels: {result.predicted_labels}")
+        print(f"Label metrics: {result.label_metrics}")
 
     return 0
 
