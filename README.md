@@ -154,6 +154,14 @@ Regenerate the model, vectorizer, and metadata after adding balanced examples, c
 
 The UI shows the local model status at startup. If the distributed artifacts or metadata are not present yet, it points users to `python3 -m ml.train_model`.
 
+Evaluate the local predictor against offline examples:
+
+```bash
+python3 -m ml.evaluate_model
+```
+
+If model artifacts are missing, the evaluator reports skipped examples instead of contacting any external service.
+
 ## Testing and Evaluation
 
 Run the regression tests:

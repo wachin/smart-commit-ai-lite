@@ -50,7 +50,7 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 42 registered tests, 41 passing in this environment, and 1 training test reserved for Debian sklearn validation.
+- [x] Current suite: 43 registered tests, 42 passing in this environment, and 1 training test reserved for Debian sklearn validation.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
@@ -273,7 +273,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Tests for optional built-in seed examples in local training.
 - [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
 - [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
-- [x] Successful suite run: 41 tests pass and 1 is reserved for Debian sklearn validation.
+- [x] Tests for offline ML predictor accuracy evaluation without requiring sklearn at runtime.
+- [x] Successful suite run: 42 tests pass and 1 is reserved for Debian sklearn validation.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -303,7 +304,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ### [ ] ML Engine and Data
 - [x] Evaluate dataset balance: the historical examples currently favor `feat`.
 - [x] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
-- [ ] Measure local model accuracy without increasing weight or complexity.
+- [x] Measure local model accuracy without increasing weight or complexity.
 - [x] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
 - [x] Keep offline seed examples only as support while the real dataset grows.
 

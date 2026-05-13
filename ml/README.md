@@ -34,6 +34,15 @@ To train only from repository datasets, without built-in seed examples:
 python3 -m ml.train_model --no-seed
 ```
 
+To evaluate the local predictor against offline examples:
+
+```bash
+python3 -m ml.evaluate_model
+```
+
+Use `--json` for machine-readable output and `--no-seed` to evaluate only
+repository datasets. If artifacts are missing, examples are counted as skipped.
+
 Regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json` when:
 
 - new balanced examples are added to `commit_examples_data/`
