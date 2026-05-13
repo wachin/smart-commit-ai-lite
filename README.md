@@ -23,7 +23,8 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 - **Markdown noise filtering**: Ignores pasted fenced code blocks, embedded `git commit -m` examples, Markdown links, and quoted command output that would otherwise pollute the result.
 - **Smarter type detection**: Avoids false positives such as classifying a commit as `ci` just because the letters `ci` appear inside Spanish words like `funcionalidades` or `secciones`.
 - **Sklearn classifier**: Uses a local TF-IDF + LinearSVC model for `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, and related Conventional Commit type prediction.
-- **Distributed model**: Ships with `ml/commit_model.pkl` and `ml/vectorizer.pkl`, with local retraining available when needed.
+- **Distributed model**: Ships with `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`, with local retraining available when needed.
+- **Conservative ML orchestration**: Low-confidence ML predictions do not override stronger heuristic decisions.
 - **Structured body generation**: Builds up to seven high-signal bullet lines for roadmap work, bilingual NLP changes, UI work, validation, docs, and common project patterns.
 - **Clipboard workflow**: Shows a multiline `git commit` command ready to copy and paste into a terminal.
 
@@ -48,7 +49,7 @@ Optional:
 sudo apt install python3-gensim
 ```
 
-The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, and its TF-IDF vectorizer lives in `ml/vectorizer.pkl`.
+The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, its TF-IDF vectorizer lives in `ml/vectorizer.pkl`, and metadata lives in `ml/model_metadata.json`.
 
 This project is designed for Debian repository packages and offline use. Avoid heavy AI stacks such as transformers, torch, tensorflow, spaCy, Hugging Face tooling, cloud APIs, or online inference services.
 
@@ -118,7 +119,7 @@ Responsibility split:
 
 - **NLTK/utils**: normalization, cleanup, tokenization, stemming, stopword removal, language detection, and language-aware preprocessing.
 - **scikit-learn**: TF-IDF vectorization and ML classification of commit types.
-- **`smart_commit_nltk.py` orchestrator**: coordinates the flow: NLTK preprocessing -> sklearn classification -> NLTK/heuristic subject and body generation. It also handles scope detection and the UI workflow.
+- **`smart_commit_nltk.py` orchestrator**: coordinates the flow: NLTK preprocessing -> sklearn classification -> NLTK/heuristic subject and body generation. It also handles scope detection, confidence-gated ML overrides, and the UI workflow.
 
 ## Model Training
 
@@ -140,7 +141,7 @@ It writes:
 - `ml/vectorizer.pkl`
 - `ml/model_metadata.json`
 
-The project distributes a pre-trained model for these default filenames. Users can retrain locally and replace them as needed.
+The project distributes a pre-trained model for these default filenames. The current official artifacts were trained locally with Debian-packaged sklearn/joblib from 63 offline examples. Users can retrain locally and replace them as needed.
 
 The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, model format version, and artifact policy version. No network access, online inference, or external services are used.
 
@@ -162,7 +163,7 @@ Evaluate the local predictor against offline examples:
 python3 -m ml.evaluate_model
 ```
 
-If model artifacts are missing, the evaluator reports skipped examples instead of contacting any external service.
+With the distributed artifacts present, the evaluator reports accuracy and per-label metrics for all local examples. If model artifacts are missing, it reports skipped examples instead of contacting any external service.
 
 ## Testing and Evaluation
 
@@ -178,8 +179,11 @@ Recalculate the example-dataset comparison report:
 QT_QPA_PLATFORM=offscreen python3 commit_examples_data/compare_generator.py
 ```
 
-The comparison report is written to `commit_examples_data/comparison_report.json`. The current heuristics intentionally cap generated bodies at seven bullets, so the report includes cap-aware body metrics:
+The comparison report is written to `commit_examples_data/comparison_report.json`. The current heuristics intentionally cap generated bodies at seven bullets, so the report includes type/scope/text diagnostics and cap-aware body metrics:
 
+- `exact_type_matches`
+- `exact_scope_matches`
+- `average_subject_text_similarity`
 - `capped_body_count_matches`
 - `average_capped_body_line_ratio`
 - `average_capped_body_coverage`
@@ -248,7 +252,7 @@ cleaned deprecated code -> refactor
 - Spanish grammar support is rule-based. NLTK Punkt can split Spanish sentences, but this project does not currently use a full Spanish POS tagger.
 - The generator is hybrid NLTK + classic ML, not a large language model. It improves through specific patterns, examples, and evaluation data.
 - The current dataset is small and mostly feature-oriented, so the ML classifier uses a small offline seed set to represent all six supported types.
-- Real sklearn training and prediction should still be validated on a Debian 12 system with the required apt packages installed.
+- Keep distributed model artifacts validated on a Debian 12 system with the required apt packages installed.
 - It works best with summaries that describe concrete changes, files, features, validation, and user-visible behavior.
 
 ## Contributing

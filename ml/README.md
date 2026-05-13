@@ -24,6 +24,10 @@ Generated artifacts:
 - `ml/vectorizer.pkl`
 - `ml/model_metadata.json`
 
+The repository ships official distributed artifacts at those paths. The current
+artifacts were trained locally with Debian-packaged sklearn/joblib from 63
+offline examples, including the built-in seed examples.
+
 The metadata file records the model format version, training example count,
 label counts, label-balance summary, artifact paths, and whether built-in seed
 examples were included.
@@ -51,14 +55,21 @@ python3 -m ml.evaluate_model
 ```
 
 Use `--json` for machine-readable output and `--no-seed` to evaluate only
-repository datasets. If artifacts are missing, examples are counted as skipped.
+repository datasets. With distributed artifacts present, evaluation reports
+overall accuracy plus per-label metrics. If artifacts are missing, examples are
+counted as skipped.
 
 Internal predictor interface:
 
+- `ml/__init__.py` exports `PredictionResult`, `SklearnCommitPredictor`, and
+  `predict_commit_type`.
 - `ml/interfaces.py` defines the minimal `CommitTypePredictor` protocol.
 - Current implementation: `ml/predictor.py`.
 - Future local engines should expose `predict(text, language=None)` and return
   an object with a `commit_type` field.
+
+The GUI uses the sklearn prediction conservatively: low-confidence ML
+predictions do not override stronger heuristic type decisions.
 
 Regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json` when:
 

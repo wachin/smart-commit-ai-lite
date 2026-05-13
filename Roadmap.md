@@ -213,6 +213,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Surface missing official model artifacts in the UI with a retraining command hint.
 - [x] Generated official local model artifacts with 63 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
 - [x] Added a confidence gate so low-confidence ML predictions do not override stronger heuristic decisions.
+- [x] Updated README and ML README for distributed artifacts, confidence-gated ML use, and current Debian sklearn validation.
 
 ### [x] Offline and Extensible Architecture
 - [x] Kept the existing heuristic engine as the subject/body and scope orchestration layer.
@@ -293,6 +294,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Per-label ML evaluation metrics for targeting weak commit-type classes.
 - [x] Type/scope/text metrics in `comparison_report.json` for easier historical analysis.
 - [x] Regression for low-confidence ML predictions preserving heuristic commit types.
+- [x] Documentation reflects the shipped model artifacts and 61-test Debian apt validation.
 - [x] Successful suite run: 61 tests pass with `python3-sklearn` installed from apt.
 
 ### [x] Generated Artifact Hygiene
