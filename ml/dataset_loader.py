@@ -92,6 +92,8 @@ def validate_entry_files(path: Path | None = None) -> list[EntryValidationError]
         return [EntryValidationError(path, "entries directory does not exist")]
 
     errors: list[EntryValidationError] = []
+    seen_titles: dict[str, Path] = {}
+    seen_texts: dict[str, Path] = {}
     for entry_path in sorted(path.glob("*.json")):
         try:
             entry = json.loads(entry_path.read_text(encoding="utf-8"))
@@ -102,6 +104,20 @@ def validate_entry_files(path: Path | None = None) -> list[EntryValidationError]
             errors.append(EntryValidationError(entry_path, "entry must be a JSON object"))
             continue
         errors.extend(validate_entry(entry, entry_path))
+
+        title_key = regex.sub(r"\s+", " ", str(entry.get("title", "")).lower()).strip()
+        if title_key:
+            if title_key in seen_titles:
+                errors.append(EntryValidationError(entry_path, f"duplicate title also used by {seen_titles[title_key]}"))
+            else:
+                seen_titles[title_key] = entry_path
+
+        text_key = regex.sub(r"\s+", " ", str(entry.get("original_text", "")).lower()).strip()
+        if text_key:
+            if text_key in seen_texts:
+                errors.append(EntryValidationError(entry_path, f"duplicate original_text also used by {seen_texts[text_key]}"))
+            else:
+                seen_texts[text_key] = entry_path
     return errors
 
 

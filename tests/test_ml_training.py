@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -87,6 +88,44 @@ class MLTrainingTests(unittest.TestCase):
         errors = validate_entry_files()
 
         self.assertEqual(errors, [])
+
+    def test_entry_file_validation_rejects_duplicate_titles(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)
+            entry = {
+                "title": "Duplicate title",
+                "original_text": "Added a useful feature.",
+                "expected_subject": "feat(app): add useful feature",
+                "expected_body_lines": ["- Add useful feature"],
+            }
+            (path / "one.json").write_text(json.dumps(entry), encoding="utf-8")
+            (path / "two.json").write_text(
+                json.dumps(entry | {"original_text": "Added another useful feature."}),
+                encoding="utf-8",
+            )
+
+            errors = validate_entry_files(path)
+
+        self.assertTrue(any("duplicate title" in error.message for error in errors))
+
+    def test_entry_file_validation_rejects_duplicate_original_texts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)
+            entry = {
+                "title": "First title",
+                "original_text": "Added a useful feature.",
+                "expected_subject": "feat(app): add useful feature",
+                "expected_body_lines": ["- Add useful feature"],
+            }
+            (path / "one.json").write_text(json.dumps(entry), encoding="utf-8")
+            (path / "two.json").write_text(
+                json.dumps(entry | {"title": "Second title"}),
+                encoding="utf-8",
+            )
+
+            errors = validate_entry_files(path)
+
+        self.assertTrue(any("duplicate original_text" in error.message for error in errors))
 
     def test_official_artifact_policy_tracks_distributed_files(self):
         paths = official_artifact_paths()

@@ -153,7 +153,7 @@ python3 -m ml.train_model --no-seed
 
 Regenerate the model, vectorizer, and metadata after adding balanced examples, changing preprocessing, changing supported labels, or preparing a Debian validation release.
 
-Training entry files are validated by the test suite before release. Each JSON entry under `commit_examples_data/entries/` should include a non-empty `title`, `original_text`, `expected_subject`, and `expected_body_lines`, and the subject must use a supported Conventional Commit type.
+Training entry files are validated by the test suite before release. Each JSON entry under `commit_examples_data/entries/` should include a non-empty `title`, `original_text`, `expected_subject`, and `expected_body_lines`, and the subject must use a supported Conventional Commit type. Duplicate titles or duplicate original texts are reported as validation errors.
 
 The official distributed artifact paths are versioned in `ml/artifact_policy.py`. Local experimental `.pkl` files should use different names; `.gitignore` keeps them out of the repository while allowing the official artifacts to be tracked.
 

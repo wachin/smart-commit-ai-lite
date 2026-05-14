@@ -39,6 +39,7 @@ Entry file validation:
   `expected_body_lines`
 - `expected_subject` must use a supported Conventional Commit type
 - body lines must be non-empty strings
+- duplicate titles or duplicate original texts are reported as errors
 - `tests/test_ml_training.py` runs this validation before release
 
 Artifact policy:
