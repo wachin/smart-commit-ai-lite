@@ -119,9 +119,31 @@ class SklearnCommitPredictor:
                 f"unsupported metadata format version: {metadata.get('format_version')}"
             )
             return None
+        label_error = self._validate_metadata_labels(metadata)
+        if label_error:
+            self._metadata_error = label_error
+            return None
 
         self._metadata_error = None
         return metadata
+
+    def _validate_metadata_labels(self, metadata: dict[str, Any]) -> str | None:
+        labels = metadata.get("labels")
+        training_examples = metadata.get("training_examples")
+        if not isinstance(labels, dict) or not labels:
+            return "metadata labels must be a non-empty object"
+        if not isinstance(training_examples, int) or training_examples <= 0:
+            return "metadata training_examples must be a positive integer"
+
+        for label, count in labels.items():
+            if label not in SUPPORTED_TYPES:
+                return f"metadata labels include unsupported type: {label}"
+            if not isinstance(count, int) or count < 0:
+                return f"metadata label count must be a non-negative integer: {label}"
+
+        if sum(labels.values()) != training_examples:
+            return "metadata label counts must match training_examples"
+        return None
 
     def status(self, try_load: bool = False) -> ModelStatus:
         model_exists = self.model_path.exists()

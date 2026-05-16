@@ -13,7 +13,7 @@ from ml.dataset_loader import (
     summarize_label_balance,
     validate_entry_files,
 )
-from ml.train_model import MODEL_FORMAT_VERSION, build_metadata
+from ml.train_model import MODEL_FORMAT_VERSION, build_metadata, train
 
 
 class MLTrainingTests(unittest.TestCase):
@@ -127,6 +127,32 @@ class MLTrainingTests(unittest.TestCase):
 
         self.assertTrue(any("duplicate original_text" in error.message for error in errors))
 
+    def test_training_stops_before_model_write_when_entries_are_invalid(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)
+            (path / "broken.json").write_text(
+                json.dumps(
+                    {
+                        "title": "Broken training entry",
+                        "original_text": "",
+                        "expected_subject": "feature(app): invalid type",
+                        "expected_body_lines": ["- Broken entry"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            model_path = path / "commit_model.pkl"
+
+            with self.assertRaisesRegex(RuntimeError, "Training entry validation failed"):
+                train(
+                    model_path=model_path,
+                    vectorizer_path=path / "vectorizer.pkl",
+                    metadata_path=path / "model_metadata.json",
+                    entries_path=path,
+                )
+
+            self.assertFalse(model_path.exists())
+
     def test_official_artifact_policy_tracks_distributed_files(self):
         paths = official_artifact_paths()
 
@@ -138,8 +164,6 @@ class MLTrainingTests(unittest.TestCase):
 
     @unittest.skipUnless(importlib.util.find_spec("sklearn"), "python3-sklearn is not installed")
     def test_training_writes_model_and_vectorizer(self):
-        from ml.train_model import train
-
         with tempfile.TemporaryDirectory() as tmp:
             model_path = Path(tmp) / "commit_model.pkl"
             vectorizer_path = Path(tmp) / "vectorizer.pkl"

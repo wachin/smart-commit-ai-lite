@@ -22,6 +22,7 @@ class EvaluationResult:
     expected_labels: dict[str, int]
     predicted_labels: dict[str, int]
     label_metrics: dict[str, dict[str, int | float | None]]
+    misclassifications: list[dict[str, str | float | None]]
 
 
 def evaluate_predictor(
@@ -32,6 +33,7 @@ def evaluate_predictor(
     predicted_counts: Counter[str] = Counter()
     label_evaluated: Counter[str] = Counter()
     label_correct: Counter[str] = Counter()
+    misclassifications = []
     correct = 0
     evaluated = 0
 
@@ -45,6 +47,16 @@ def evaluate_predictor(
         if prediction.commit_type == example.label:
             correct += 1
             label_correct[example.label] += 1
+        else:
+            misclassifications.append(
+                {
+                    "source": example.source,
+                    "text": example.text,
+                    "expected": example.label,
+                    "predicted": prediction.commit_type,
+                    "confidence": prediction.confidence,
+                }
+            )
 
     skipped = len(examples) - evaluated
     accuracy = round(correct / evaluated, 4) if evaluated else None
@@ -69,6 +81,7 @@ def evaluate_predictor(
         expected_labels=dict(sorted(expected_counts.items())),
         predicted_labels=dict(sorted(predicted_counts.items())),
         label_metrics=label_metrics,
+        misclassifications=misclassifications,
     )
 
 
@@ -90,6 +103,7 @@ def main() -> int:
         "expected_labels": result.expected_labels,
         "predicted_labels": result.predicted_labels,
         "label_metrics": result.label_metrics,
+        "misclassifications": result.misclassifications,
     }
 
     if args.json:
@@ -103,6 +117,10 @@ def main() -> int:
         print(f"Expected labels: {result.expected_labels}")
         print(f"Predicted labels: {result.predicted_labels}")
         print(f"Label metrics: {result.label_metrics}")
+        if result.misclassifications:
+            print("Misclassifications:")
+            for item in result.misclassifications:
+                print(f"- expected {item['expected']}, predicted {item['predicted']}: {item['text']}")
 
     return 0
 

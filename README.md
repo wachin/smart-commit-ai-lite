@@ -143,7 +143,7 @@ It writes:
 
 The project distributes a pre-trained model for these default filenames. The current official artifacts were trained locally with Debian-packaged sklearn/joblib from 68 offline examples. Users can retrain locally and replace them as needed.
 
-The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, model format version, and artifact policy version. No network access, online inference, or external services are used.
+The model and vectorizer are trained and loaded locally with `joblib`. The metadata file records the training example count, label balance, artifact paths, model format version, and artifact policy version. At startup the predictor validates the metadata format, supported labels, and label counts before reporting the model as ready. No network access, online inference, or external services are used.
 
 Use the default training command for official artifacts. For dataset-only experiments without built-in seed examples:
 
@@ -153,7 +153,7 @@ python3 -m ml.train_model --no-seed
 
 Regenerate the model, vectorizer, and metadata after adding balanced examples, changing preprocessing, changing supported labels, or preparing a Debian validation release.
 
-Training entry files are validated by the test suite before release. Each JSON entry under `commit_examples_data/entries/` should include a non-empty `title`, `original_text`, `expected_subject`, and `expected_body_lines`, and the subject must use a supported Conventional Commit type. Duplicate titles or duplicate original texts are reported as validation errors.
+Training entry files are validated by the test suite and by `python3 -m ml.train_model` before model artifacts are written. Each JSON entry under `commit_examples_data/entries/` should include a non-empty `title`, `original_text`, `expected_subject`, and `expected_body_lines`, and the subject must use a supported Conventional Commit type. Duplicate titles or duplicate original texts are reported as validation errors.
 
 The official distributed artifact paths are versioned in `ml/artifact_policy.py`. Local experimental `.pkl` files should use different names; `.gitignore` keeps them out of the repository while allowing the official artifacts to be tracked.
 
@@ -165,7 +165,7 @@ Evaluate the local predictor against offline examples:
 python3 -m ml.evaluate_model
 ```
 
-With the distributed artifacts present, the evaluator reports accuracy and per-label metrics for all local examples. If model artifacts are missing, it reports skipped examples instead of contacting any external service.
+With the distributed artifacts present, the evaluator reports accuracy, per-label metrics, and any misclassified examples for all local examples. If model artifacts are missing, it reports skipped examples instead of contacting any external service.
 
 Predict a commit type directly from the distributed model:
 

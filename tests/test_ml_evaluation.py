@@ -39,6 +39,18 @@ class MLEvaluationTests(unittest.TestCase):
         self.assertEqual(result.expected_labels, {"docs": 1, "feat": 1, "fix": 1})
         self.assertEqual(result.predicted_labels, {"docs": 1, "feat": 1})
         self.assertEqual(
+            result.misclassifications,
+            [
+                {
+                    "source": "test",
+                    "text": "fix crash",
+                    "expected": "fix",
+                    "predicted": "docs",
+                    "confidence": 0.9,
+                }
+            ],
+        )
+        self.assertEqual(
             result.label_metrics,
             {
                 "docs": {"expected": 1, "evaluated": 0, "skipped": 1, "correct": 0, "accuracy": None},
@@ -46,6 +58,18 @@ class MLEvaluationTests(unittest.TestCase):
                 "fix": {"expected": 1, "evaluated": 1, "skipped": 0, "correct": 0, "accuracy": 0.0},
             },
         )
+
+    def test_evaluate_predictor_reports_empty_misclassifications_when_all_correct(self):
+        examples = [
+            TrainingExample("add feature", "feat", "test"),
+            TrainingExample("fix crash", "fix", "test"),
+        ]
+        predictor = StubPredictor(["feat", "fix"])
+
+        result = evaluate_predictor(examples, predictor)
+
+        self.assertEqual(result.accuracy, 1.0)
+        self.assertEqual(result.misclassifications, [])
 
 
 if __name__ == "__main__":

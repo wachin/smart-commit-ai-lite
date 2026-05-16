@@ -16,7 +16,13 @@ from ml.artifact_policy import (
     OFFICIAL_MODEL_PATH,
     OFFICIAL_VECTORIZER_PATH,
 )
-from ml.dataset_loader import as_training_arrays, load_training_examples, summarize_label_balance
+from ml.dataset_loader import (
+    EntryValidationError,
+    as_training_arrays,
+    load_training_examples,
+    summarize_label_balance,
+    validate_entry_files,
+)
 from utils.language import detect_language
 from utils.preprocessing import preprocess_text
 
@@ -26,6 +32,15 @@ DEFAULT_MODEL_PATH = OFFICIAL_MODEL_PATH
 DEFAULT_VECTORIZER_PATH = OFFICIAL_VECTORIZER_PATH
 DEFAULT_METADATA_PATH = OFFICIAL_METADATA_PATH
 MODEL_FORMAT_VERSION = 1
+
+
+def format_entry_validation_errors(errors: list[EntryValidationError]) -> str:
+    lines = ["Training entry validation failed:"]
+    for error in errors[:10]:
+        lines.append(f"- {error.path}: {error.message}")
+    if len(errors) > 10:
+        lines.append(f"- ... and {len(errors) - 10} more error(s)")
+    return "\n".join(lines)
 
 
 def build_metadata(
@@ -55,7 +70,12 @@ def train(
     vectorizer_path: Path = DEFAULT_VECTORIZER_PATH,
     metadata_path: Path = DEFAULT_METADATA_PATH,
     include_seed: bool = True,
+    entries_path: Path | None = None,
 ) -> dict:
+    entry_errors = validate_entry_files(entries_path)
+    if entry_errors:
+        raise RuntimeError(format_entry_validation_errors(entry_errors))
+
     try:
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.svm import LinearSVC

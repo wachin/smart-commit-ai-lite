@@ -107,6 +107,52 @@ class SklearnPredictorTests(unittest.TestCase):
             self.assertIsNotNone(metadata)
             self.assertEqual(metadata["training_examples"], 12)
 
+    def test_load_metadata_rejects_invalid_label_counts(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            metadata_path = Path(tmp) / "model_metadata.json"
+            metadata_path.write_text(
+                json.dumps(
+                    {
+                        "format_version": MODEL_FORMAT_VERSION,
+                        "training_examples": 12,
+                        "labels": {"feat": 8, "feature": 4},
+                        "model_path": "ml/commit_model.pkl",
+                        "vectorizer_path": "ml/vectorizer.pkl",
+                        "trainer": "test trainer",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            predictor = SklearnCommitPredictor(metadata_path=metadata_path)
+
+            metadata = predictor.load_metadata()
+
+            self.assertIsNone(metadata)
+            self.assertIn("unsupported type", predictor._metadata_error)
+
+    def test_load_metadata_rejects_mismatched_training_count(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            metadata_path = Path(tmp) / "model_metadata.json"
+            metadata_path.write_text(
+                json.dumps(
+                    {
+                        "format_version": MODEL_FORMAT_VERSION,
+                        "training_examples": 12,
+                        "labels": {"feat": 8, "fix": 3},
+                        "model_path": "ml/commit_model.pkl",
+                        "vectorizer_path": "ml/vectorizer.pkl",
+                        "trainer": "test trainer",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            predictor = SklearnCommitPredictor(metadata_path=metadata_path)
+
+            metadata = predictor.load_metadata()
+
+            self.assertIsNone(metadata)
+            self.assertIn("label counts", predictor._metadata_error)
+
     def test_status_reports_invalid_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
             model_path = Path(tmp) / "commit_model.pkl"

@@ -30,7 +30,8 @@ offline examples, including the built-in seed examples.
 
 The metadata file records the model format version, training example count,
 label counts, label-balance summary, artifact paths, and whether built-in seed
-examples were included.
+examples were included. The predictor validates the metadata format, supported
+labels, and label counts before reporting distributed artifacts as ready.
 
 Entry file validation:
 
@@ -40,7 +41,8 @@ Entry file validation:
 - `expected_subject` must use a supported Conventional Commit type
 - body lines must be non-empty strings
 - duplicate titles or duplicate original texts are reported as errors
-- `tests/test_ml_training.py` runs this validation before release
+- `tests/test_ml_training.py` and `python3 -m ml.train_model` run this
+  validation before model artifacts are written
 
 Artifact policy:
 
@@ -66,8 +68,8 @@ python3 -m ml.evaluate_model
 
 Use `--json` for machine-readable output and `--no-seed` to evaluate only
 repository datasets. With distributed artifacts present, evaluation reports
-overall accuracy plus per-label metrics. If artifacts are missing, examples are
-counted as skipped.
+overall accuracy, per-label metrics, and misclassified examples. If artifacts
+are missing, examples are counted as skipped.
 
 To predict a single summary directly from the distributed model:
 

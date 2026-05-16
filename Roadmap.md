@@ -50,13 +50,13 @@ The current improvement track is not Git integration. It is better semantic qual
 - [x] Expanded the body from 5 to 7 bullets to preserve important details.
 - [x] Added bullet ranking so main changes come first, tests/docs/reports follow, and validation stays last.
 - [x] Added a hybrid ML architecture with scikit-learn, TF-IDF, LinearSVC, and NLTK/heuristic orchestration.
-- [x] Current suite: 67 registered tests, all passing in this Debian apt sklearn environment.
+- [x] Current suite: 71 registered tests, all passing in this Debian apt sklearn environment.
 
 ### ML Prompt Compliance Status
 - [x] `smart_commit_nltk.py` remains present and functional.
 - [x] The sklearn engine is modular and part of the standard architecture.
 - [x] Add startup validation for the distributed `ml/commit_model.pkl` and `ml/vectorizer.pkl` artifacts.
-- [x] Validate `ml/model_metadata.json` format and required fields before treating the distributed model as ready.
+- [x] Validate `ml/model_metadata.json` format, required fields, supported labels, and label counts before treating the distributed model as ready.
 - [x] Training reuses `commit_examples_data/examples.json`, `commit_examples_data/examples.db`, and `commit_examples_data/entries/`.
 - [x] The predictor returns a type and approximate confidence when the model supports it.
 - [x] The system supports English and Spanish input.
@@ -207,6 +207,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Added `python3 -m ml.predictor` for direct offline CLI predictions and model status checks.
 - [x] Added explicit model artifact status reporting for model/vectorizer presence and loadability.
 - [x] Added metadata validation for required fields and model format version.
+- [x] Added metadata validation for supported labels and label counts matching the training total.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
 - [x] Documented Debian installation and local training.
@@ -216,6 +217,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Added 5 user-supplied training examples for UI, ML, tests, and docs cases.
 - [x] Added entry-file validation for required training fields and supported commit types.
 - [x] Added duplicate title/text validation for training entry files.
+- [x] Made `python3 -m ml.train_model` stop before writing artifacts when entry validation fails.
 - [x] Added a confidence gate so low-confidence ML predictions do not override stronger heuristic decisions.
 - [x] Updated README and ML README for distributed artifacts, confidence-gated ML use, and current Debian sklearn validation.
 
@@ -277,16 +279,18 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Regression for colloquial Spanish phrases such as `le metí`, `le puse`, `se arregló`, and `quedó documentada`.
 - [x] Tests for model artifact status reporting and UI model status text.
 - [x] Tests for model metadata generation without requiring sklearn at runtime.
-- [x] Tests for valid and invalid model metadata status.
+- [x] Tests for valid metadata, invalid metadata status, unsupported labels, and mismatched label counts.
 - [x] Tests for dataset label-balance summaries without requiring sklearn at runtime.
 - [x] Tests for optional built-in seed examples in local training.
 - [x] Tests that user-supplied training examples are loaded from entry files.
 - [x] Tests that all entry files are valid for training use.
 - [x] Tests that duplicate entry titles and original texts are rejected before training.
+- [x] Test that training stops before model writes when entry files are invalid.
 - [x] Tests for capped body comparison metrics that respect the 7-bullet limit.
 - [x] Tests for type/scope/text breakdown in the historical comparison report.
 - [x] Dataset-only ML examples now cover all supported labels without requiring seed examples.
 - [x] Tests for offline ML predictor accuracy evaluation without requiring sklearn at runtime.
+- [x] Tests for ML evaluation misclassification reporting.
 - [x] Tests for the shared lightweight predictor interface.
 - [x] Tests for distributed artifact path and policy versioning.
 - [x] Tests for distributed model predictions on core prompt examples.
@@ -303,7 +307,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Type/scope/text metrics in `comparison_report.json` for easier historical analysis.
 - [x] Regression for low-confidence ML predictions preserving heuristic commit types.
 - [x] Documentation reflects the shipped model artifacts, predictor CLI, and Debian apt validation.
-- [x] Successful suite run: 67 tests pass with `python3-sklearn` installed from apt.
+- [x] Successful suite run: 71 tests pass with `python3-sklearn` installed from apt.
 
 ### [x] Generated Artifact Hygiene
 - [x] Created `.gitignore` entries for `__pycache__/` and `*.py[cod]`.
@@ -337,6 +341,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Add more real examples for `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Measure local model accuracy without increasing weight or complexity.
 - [x] Report per-label evaluation metrics so weak classes can be improved without heavy tooling.
+- [x] Report misclassified examples during ML evaluation so weak examples can be inspected directly.
 - [x] Document when to regenerate `commit_model.pkl`, `vectorizer.pkl`, and `model_metadata.json`.
 - [x] Keep offline seed examples only as support while the real dataset grows.
 
