@@ -24,9 +24,19 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 - **Smarter type detection**: Avoids false positives such as classifying a commit as `ci` just because the letters `ci` appear inside Spanish words like `funcionalidades` or `secciones`.
 - **Sklearn classifier**: Uses a local TF-IDF + LinearSVC model for `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, and related Conventional Commit type prediction.
 - **Distributed model**: Ships with `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`, with local retraining available when needed.
-- **Conservative ML orchestration**: Low-confidence ML predictions do not override stronger heuristic decisions.
+- **Conservative ML orchestration**: Low-confidence ML predictions do not override stronger heuristic decisions. Confidence gate set to 0.4 to allow ML to contribute with expanded dataset.
 - **Structured body generation**: Builds up to seven high-signal bullet lines for roadmap work, bilingual NLP changes, UI work, validation, docs, and common project patterns.
 - **Clipboard workflow**: Shows a multiline `git commit` command ready to copy and paste into a terminal.
+
+## Model Training
+
+The distributed model is trained with 242 diverse examples covering web development, mobile, ML, DevOps, security, testing, refactoring, and documentation. To retrain the model with new examples:
+
+```bash
+python3 -m ml.train_model
+```
+
+This will regenerate `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json` from the examples in `commit_examples_data/entries/`.
 
 ## Installation
 
@@ -49,7 +59,7 @@ Optional:
 sudo apt install python3-gensim
 ```
 
-The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, its TF-IDF vectorizer lives in `ml/vectorizer.pkl`, and metadata lives in `ml/model_metadata.json`. The current model is trained with 182 diverse examples covering web development, mobile, ML, DevOps, security, and more.
+The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, its TF-IDF vectorizer lives in `ml/vectorizer.pkl`, and metadata lives in `ml/model_metadata.json`. The current model is trained with 242 diverse examples covering web development, mobile, ML, DevOps, security, and more.
 
 This project is designed for Debian repository packages and offline use. Avoid heavy AI stacks such as transformers, torch, tensorflow, spaCy, Hugging Face tooling, cloud APIs, or online inference services.
 

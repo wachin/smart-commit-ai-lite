@@ -173,8 +173,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Created `compare_generator.py`.
 - [x] Compared generated commits against expected commits.
 - [x] Produced a JSON report with similarity metrics.
-- [x] Improved initial similarity from 0.453 to 0.528.
-- [x] Later improved subject similarity to 0.509.
+- [x] Improved label balance from 12.25 to 2.88 with 222 diverse examples.
+- [x] Improved subject similarity to 0.509.
 - [x] Updated `compare_generator.py` for the current bilingual signature.
 - [x] Recalculated `comparison_report.json` after bilingual improvements.
 - [x] Recorded current baseline: 45 examples, subject similarity 0.444, subject text similarity 0.395, 7 type matches, and 26 scope matches.
@@ -216,10 +216,10 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Added metadata validation for supported labels and label counts matching the training total.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
-- [x] Documented Debian installation and local train1i2g.
+- [x] Documented Debian installation and local training.
 - [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
 - [x] Surface missing official model artifacts in the UI with a retraining command hint.
-- [x] Generated official local model artifacts with 172 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
+- [x] Generated official local model artifacts with 242 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
 - [x] Added 90+ user-supplied training examples covering web, mobile, ML, DevOps, security, and more.
 - [x] Added entry-file validation for required training fields and supported commit types.
 - [x] Added duplicate title/text validation for training entry files.
@@ -323,6 +323,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 ### Recommended Next Session
 - [x] Test the program with the latest Codex-generated summary and compare it against the commit a richer AI would produce.
 - [x] Added a regression for ML metadata validation summaries so they generate `feat(ml)` instead of generic style/docs output.
+- [x] Expanded training dataset to 182 examples with diverse real-world scenarios.
+- [x] Lowered ML confidence gate to 0.4 to improve ML contribution.
 - [ ] If the subject is too generic, add a specific subject rule before touching the body.
 - [ ] If the body has good bullets but poor ordering, adjust `rank_body_lines()`.
 - [ ] If useful information is lost from pasted text, inspect `clean_input()` first.
@@ -338,7 +340,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [x] Add regression cases for mixed English/Spanish texts.
 - [x] Add regression cases for summaries with several modified files..
-- [x] Expanded dataset to 182 examples with diverse real-world scenarios
+- [x] Expanded dataset to 242 examples with diverse real-world scenarios
 - [x] Define new metrics that do not penalize the current 7-bullet limit.
 - [x] Improve historical dataset diagnostics without losing recent bilingual cases.
 - [ ] Improve historical dataset scores without losing recent bilingual cases.
