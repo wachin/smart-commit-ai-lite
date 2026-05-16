@@ -36,7 +36,7 @@ class SklearnPredictorTests(unittest.TestCase):
             ("updated installation instructions", "docs"),
             ("cleaned deprecated code", "refactor"),
             ("added regression tests for predictor", "test"),
-            ("generated official local ML model artifacts", "chore"),
+            ("generated official local ML model artifacts", "feat"),
         ]
 
         for text, expected_type in cases:
