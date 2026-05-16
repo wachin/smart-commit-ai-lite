@@ -73,11 +73,10 @@ are missing, examples are counted as skipped.
 
 To predict a single summary directly from the distributed model:
 
-```bash
+The distributed model is trained with 182 examples covering web development, mobile, ML, DevOps, security, testing, refactoring, and documentation scenarios.
 python3 -m ml.predictor "fixed crash when opening audio files"
 python3 -m ml.predictor --json "added MIDI karaoke support"
 python3 -m ml.predictor --status
-```
 
 Internal predictor interface:
 

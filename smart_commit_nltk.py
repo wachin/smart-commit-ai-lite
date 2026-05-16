@@ -103,7 +103,7 @@ class NLPCommitGenerator(QMainWindow):
     # Geometry order: x position, y position, width, height.
     DEFAULT_WINDOW_GEOMETRY = (90, 30, 660, 690)
     MINIMUM_WINDOW_SIZE = (620, 620)
-    MIN_ML_TYPE_CONFIDENCE = 0.6
+    MIN_ML_TYPE_CONFIDENCE = 0.4
 
     def __init__(self):
         super().__init__()

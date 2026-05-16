@@ -71,7 +71,13 @@ The current improvement track is not Git integration. It is better semantic qual
 Input summary:
 
 ```text
-I improved file mention detection in pasted text.
+Ip mp ovlntfiltim etxdctetx
+ utma_comt_ltk.pyt/tst_smr_com_lk.y,READMEm,
+Romp.d,comm_exmp_ata/aiso_rp.jsn
+19OK
+ utma_comt_ltk.pyts/tt_sma_com_lpy,README.m,
+Romp.d,comm_exmp_ata/aiso_rp.jsn
+19OK
 I updated smart_commit_nltk.py, tests/test_smart_commit_nltk.py, README.md,
 Roadmap.md, and commit_examples_data/comparison_report.json.
 Result: 19 tests OK.
@@ -210,11 +216,11 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Added metadata validation for supported labels and label counts matching the training total.
 - [x] Added offline seed examples to cover `feat`, `fix`, `docs`, `refactor`, `test`, and `chore`.
 - [x] Added shared utilities in `utils/` for NLTK preprocessing, language detection, and `python3-regex`.
-- [x] Documented Debian installation and local training.
+- [x] Documented Debian installation and local train1i2g.
 - [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
 - [x] Surface missing official model artifacts in the UI with a retraining command hint.
-- [x] Generated official local model artifacts with 68 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
-- [x] Added 5 user-supplied training examples for UI, ML, tests, and docs cases.
+- [x] Generated official local model artifacts with 172 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
+- [x] Added 90+ user-supplied training examples covering web, mobile, ML, DevOps, security, and more.
 - [x] Added entry-file validation for required training fields and supported commit types.
 - [x] Added duplicate title/text validation for training entry files.
 - [x] Made `python3 -m ml.train_model` stop before writing artifacts when entry validation fails.
@@ -331,7 +337,8 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Test distributed model prediction with `python3-sklearn`, `python3-joblib`, `python3-langdetect`, and `python3-regex` installed from apt.
 - [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [x] Add regression cases for mixed English/Spanish texts.
-- [x] Add regression cases for summaries with several modified files.
+- [x] Add regression cases for summaries with several modified files..
+- [x] Expanded dataset to 182 examples with diverse real-world scenarios
 - [x] Define new metrics that do not penalize the current 7-bullet limit.
 - [x] Improve historical dataset diagnostics without losing recent bilingual cases.
 - [ ] Improve historical dataset scores without losing recent bilingual cases.
