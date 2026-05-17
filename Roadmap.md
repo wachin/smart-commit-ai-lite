@@ -173,7 +173,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Created `compare_generator.py`.
 - [x] Compared generated commits against expected commits.
 - [x] Produced a JSON report with similarity metrics.
-- [x] Improved label balance from 12.25 to 1.05 with 542 diverse examples.
+- [x] Improved label balance from 12.25 to 1.0 with 582 diverse examples (perfect balance).
 - [x] Improved subject similarity to 0.509.
 - [x] Updated `compare_generator.py` for the current bilingual signature.
 - [x] Recalculated `comparison_report.json` after bilingual improvements.
@@ -219,7 +219,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Documented Debian installation and local training.
 - [x] Started separating NLTK/preprocessing responsibilities from sklearn/classification responsibilities.
 - [x] Surface missing official model artifacts in the UI with a retraining command hint.
-- [x] Generated official local model artifacts with 542 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
+- [x] Generated official local model artifacts with 572 examples: `ml/commit_model.pkl`, `ml/vectorizer.pkl`, and `ml/model_metadata.json`.
 - [x] Added 90+ user-supplied training examples covering web, mobile, ML, DevOps, security, and more.
 - [x] Added entry-file validation for required training fields and supported commit types.
 - [x] Added duplicate title/text validation for training entry files.
@@ -340,7 +340,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Verify prompt examples: crash/audio -> `fix`, MIDI karaoke -> `feat`, instructions -> `docs`, deprecated code -> `refactor`.
 - [x] Add regression cases for mixed English/Spanish texts.
 - [x] Add regression cases for summaries with several modified files..
-- [x] Expanded dataset to 542 examples with diverse real-world scenarios
+- [x] Expanded dataset to 577 examples with diverse real-world scenarios
 - [x] Define new metrics that do not penalize the current 7-bullet limit.
 - [x] Improve historical dataset diagnostics without losing recent bilingual cases.
 - [ ] Improve historical dataset scores without losing recent bilingual cases.
