@@ -3,12 +3,13 @@ import time
 import threading
 import contextlib
 import io
+import os
 import nltk
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QTextEdit, QPushButton, QLabel, QMessageBox,
                              QHBoxLayout, QGroupBox, QComboBox)
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QFont, QClipboard
+from PyQt6.QtGui import QFont, QClipboard, QIcon
 
 try:
     import regex as re
@@ -110,6 +111,12 @@ class NLPCommitGenerator(QMainWindow):
         self.setWindowTitle("Generador de Commits - NLTK Enhanced")
         self.setGeometry(*self.DEFAULT_WINDOW_GEOMETRY)
         self.setMinimumSize(*self.MINIMUM_WINDOW_SIZE)
+        
+        # Set window icon
+        icon_path = os.path.join(os.path.dirname(__file__), "icons", "smart-commit-icon.svg")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+        
         self.detected_commit_type = None
         self.detected_scope = None
         self.current_subject = ""
