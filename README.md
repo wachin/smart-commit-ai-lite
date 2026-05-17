@@ -30,7 +30,7 @@ The project is intentionally local-first: no API keys, no cloud model, and no ne
 
 ## Model Training
 
-The distributed model is trained with 577 diverse examples covering web development, mobile, ML, DevOps, security, testing, refactoring, and documentation. To retrain the model with new examples:
+The distributed model is trained with 593 diverse examples covering web development, mobile, ML, DevOps, security, testing, refactoring, and documentation. To retrain the model with new examples:
 
 ```bash
 python3 -m ml.train_model
@@ -59,7 +59,7 @@ Optional:
 sudo apt install python3-gensim
 ```
 
-The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, its TF-IDF vectorizer lives in `ml/vectorizer.pkl`, and metadata lives in `ml/model_metadata.json`. The current model is trained with 582 diverse examples covering web development, mobile, ML, DevOps, security, and more.
+The sklearn packages are part of the standard Debian 12 installation path for this project. The distributed model lives in `ml/commit_model.pkl`, its TF-IDF vectorizer lives in `ml/vectorizer.pkl`, and metadata lives in `ml/model_metadata.json`. The current model is trained with 593 diverse examples covering web development, mobile, ML, DevOps, security, and more.
 
 This project is designed for Debian repository packages and offline use. Avoid heavy AI stacks such as transformers, torch, tensorflow, spaCy, Hugging Face tooling, cloud APIs, or online inference services.
 

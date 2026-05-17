@@ -1,5 +1,5 @@
 {
-  "title": "Fix: Race condition in cache",
+  "title": "Fix: Concurrency bug in caching system",
   "original_text": "Fixed race condition in cache. Implemented cache locking. Added atomic operations. Implemented cache consistency checks. Added cache validation. Result: race condition fixed.",
   "expected_subject": "fix(concurrency): fix race condition in cache",
   "expected_body_lines": [

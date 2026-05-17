@@ -1,34 +1,34 @@
 {
   "artifact_policy_version": 1,
-  "created_at_utc": "2026-05-17T03:13:10+00:00",
+  "created_at_utc": "2026-05-17T20:12:39+00:00",
   "format_version": 1,
   "label_balance": {
     "counts": {
-      "chore": 97,
-      "docs": 97,
-      "feat": 97,
-      "fix": 97,
-      "refactor": 97,
-      "test": 97
+      "chore": 98,
+      "docs": 98,
+      "feat": 99,
+      "fix": 98,
+      "refactor": 98,
+      "test": 102
     },
-    "imbalance_ratio": 1.0,
-    "largest_count": 97,
-    "largest_label": "chore",
-    "smallest_count": 97,
+    "imbalance_ratio": 1.04,
+    "largest_count": 102,
+    "largest_label": "test",
+    "smallest_count": 98,
     "smallest_label": "chore",
-    "total": 582
+    "total": 593
   },
   "labels": {
-    "chore": 97,
-    "docs": 97,
-    "feat": 97,
-    "fix": 97,
-    "refactor": 97,
-    "test": 97
+    "chore": 98,
+    "docs": 98,
+    "feat": 99,
+    "fix": 98,
+    "refactor": 98,
+    "test": 102
   },
   "model_path": "/home/wachin/Dev/smart-commit-ai-lite/ml/commit_model.pkl",
   "seed_examples_included": true,
   "trainer": "TfidfVectorizer(ngram_range=(1, 2)) + LinearSVC(class_weight='balanced')",
-  "training_examples": 582,
+  "training_examples": 593,
   "vectorizer_path": "/home/wachin/Dev/smart-commit-ai-lite/ml/vectorizer.pkl"
 }
