@@ -196,13 +196,13 @@ class NLPEngine:
         if re.search(r'\bwe\s+got\b', s):
             score += 14
         if re.search(r'\b(roadmap|readme|documentación|documentacion|guía|guia|docs)\b', s):
-            score += 5
+            score -= 5
         if re.search(r'\bhelp\s*->\s*user guide\b', s):
             score += 12
-        if re.search(r'\b(user guide|lyrics window|channels view|piano player|pianola|roadmap|readme|docs)\b', s):
+        if re.search(r'\b(user guide|lyrics window|channels view|piano player|pianola)\b', s):
             score += 5
         if re.search(r'\b(test|tests|unittest|pytest|ci|coverage|validation)\b', s):
-            score -= 2
+            score -= 15
         return score
 
     def extract_action_phrase(self, sentence):
@@ -220,11 +220,7 @@ class NLPEngine:
             if re.search(r'\b(updated|mark|completed|complete)\b', sentence_lower):
                 return 'update', 'project roadmap'
 
-        if (
-            re.search(r'\b(test|tests|regression|testing|evaluation|comparison_report|compare_generator|baseline)\b', sentence_lower)
-            and re.search(r'\b(add|added|update|updated|recalculate|recalculated|\.gitignore|roadmap|readme|6\s+tests|45\s+examples)\b', sentence_lower)
-        ):
-            return 'add', 'regression suite and evaluation baseline'
+
 
         if re.search(r'\b(type\s*(?:and|/)\s*scope|manual type|manual scope|type selector|scope selector|dropdowns?|manual override|regenerat(?:e|ion))\b', sentence_lower):
             return 'add', 'manual type and scope selectors'
@@ -372,11 +368,7 @@ class NLPEngine:
             if re.search(r'\b(actualizad[oa]|marcar|marcando|completad[oa]s?)\b', sentence_lower):
                 return 'update', 'roadmap del proyecto'
 
-        if (
-            re.search(r'\b(test|tests|regresiones|testing|evaluaci[oó]n|comparison_report|compare_generator|baseline|l[ií]nea base)\b', sentence_lower)
-            and re.search(r'\b(añad|actualic|recalcul|\.gitignore|roadmap|readme|6\s+tests|45\s+ejemplos)\b', sentence_lower)
-        ):
-            return 'add', 'suite de regresión y baseline de evaluación'
+
 
         if re.search(r'\b(type\s*(?:y|/)\s*scope|selectores|tipo:|scope:|editar manualmente|corregirlo manualmente|regenera|ajuste manual)\b', sentence_lower):
             return 'add', 'selectores manuales de type y scope'

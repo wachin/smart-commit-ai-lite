@@ -343,7 +343,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Expanded dataset to 593 examples with diverse real-world scenarios
 - [x] Define new metrics that do not penalize the current 7-bullet limit.
 - [x] Improve historical dataset diagnostics without losing recent bilingual cases.
-- [ ] Improve historical dataset scores without losing recent bilingual cases.
+- [x] Improve historical dataset scores without losing recent bilingual cases.
 
 ### [ ] ML Engine and Data
 - [x] Evaluate dataset balance: the historical examples currently favor `feat`.
@@ -359,7 +359,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Improve language detection for mixed-language texts.
 - [x] Share language detection cleanup between the GUI and ML preprocessing path.
 - [x] Separate language-specific rules into more maintainable structures.
-- [ ] Evaluate a Spanish POS tagger if more grammatical precision is desired.
+- [x] Evaluate a Spanish POS tagger if more grammatical precision is desired.
 - [x] Support regional variants and more colloquial phrases.
 
 ### [ ] Architecture and Maintainability
