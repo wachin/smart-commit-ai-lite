@@ -4,6 +4,9 @@ from commit_examples_data.compare_generator import MAX_BODY_LINES, compare_entry
 
 
 class StubGenerator:
+    def __init__(self):
+        self.nlp_engine = self
+
     def analyze_with_nltk(self, _text):
         return "add", "feature", "en"
 

@@ -325,11 +325,11 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 - [x] Added a regression for ML metadata validation summaries so they generate `feat(ml)` instead of generic style/docs output.
 - [x] Expanded training dataset to 182 examples with diverse real-world scenarios.
 - [x] Lowered ML confidence gate to 0.4 to improve ML contribution.
-- [ ] If the subject is too generic, add a specific subject rule before touching the body.
-- [ ] If the body has good bullets but poor ordering, adjust `rank_body_lines()`.
-- [ ] If useful information is lost from pasted text, inspect `clean_input()` first.
-- [ ] After each improvement, add or adjust a regression test in `tests/test_smart_commit_nltk.py`.
-- [ ] Always run `QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v`.
+- [x] If the subject is too generic, add a specific subject rule before touching the body.
+- [x] If the body has good bullets but poor ordering, adjust `rank_body_lines()`.
+- [x] If useful information is lost from pasted text, inspect `clean_input()` first.
+- [x] After each improvement, add or adjust a regression test in `tests/test_smart_commit_nltk.py`.
+- [x] Always run `QT_QPA_PLATFORM=offscreen python3 -m unittest discover -s tests -v`.
 
 ### [ ] Evaluation and Testing
 - [x] Add more unit tests for Spanish action extraction.
@@ -364,7 +364,7 @@ Note: `__pycache__/smart_commit_nltk.cpython-311.pyc` may appear modified becaus
 
 ### [ ] Architecture and Maintainability
 - [x] Add external modules for preprocessing, language, and ML without rewriting `smart_commit_nltk.py`.
-- [ ] Fully separate heuristic NLP logic from the PyQt6 interface.
+- [x] Fully separate heuristic NLP logic from the PyQt6 interface.
 - [x] Create a dedicated class or module for input cleanup.
 - [x] Create a dedicated module for type/scope detection.
 - [x] Create reusable fixtures with real examples.

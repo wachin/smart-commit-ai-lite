@@ -68,7 +68,7 @@ python3 -m py_compile smart_commit_nltk.py
 
 Ahora detecta idioma y genera commits mejores.
 """
-        cleaned = self.generator.strip_markdown_noise(text)
+        cleaned = self.generator.nlp_engine.strip_markdown_noise(text)
 
         self.assertNotIn('git commit -m', cleaned)
         self.assertNotIn('-m "- Bad embedded body"', cleaned)
@@ -78,8 +78,8 @@ Ahora detecta idioma y genera commits mejores.
         spanish = 'He creado soporte bilingüe para detectar español e inglés.'
         english = 'Created bilingual support to detect Spanish and English input.'
 
-        self.assertEqual(self.generator.detect_language(spanish), 'es')
-        self.assertEqual(self.generator.detect_language(english), 'en')
+        self.assertEqual(self.generator.nlp_engine.detect_language(spanish), 'es')
+        self.assertEqual(self.generator.nlp_engine.detect_language(english), 'en')
 
     def test_spanish_bilingual_summary_generates_feat_nlp(self):
         command = self.render_command(SPANISH_BILINGUAL_SUMMARY)
@@ -125,9 +125,9 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
     def test_ci_detection_uses_whole_word_matching(self):
         text = 'He creado funcionalidades y secciones nuevas en Roadmap.md.'
-        verb, obj, _language = self.generator.analyze_with_nltk(text)
+        verb, obj, _language = self.generator.nlp_engine.analyze_with_nltk(text)
 
-        self.assertEqual(self.generator.select_commit_type(text, verb, obj), 'docs')
+        self.assertEqual(self.generator.nlp_engine.select_commit_type(text, verb, obj), 'docs')
 
     def test_select_commit_type_handles_core_change_categories(self):
         cases = [
@@ -139,7 +139,7 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
         for text, verb, obj, expected_type in cases:
             with self.subTest(text=text):
-                self.assertEqual(self.generator.select_commit_type(text, verb, obj), expected_type)
+                self.assertEqual(self.generator.nlp_engine.select_commit_type(text, verb, obj), expected_type)
 
     def test_low_confidence_ml_prediction_does_not_override_heuristic_type(self):
         original_predictor = self.generator.ml_predictor
@@ -183,7 +183,7 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
         for text, expected_scope in cases:
             with self.subTest(text=text):
-                self.assertEqual(self.generator.detect_scope(text), expected_scope)
+                self.assertEqual(self.generator.nlp_engine.detect_scope(text), expected_scope)
 
     def test_extract_action_phrase_es_handles_common_verbs(self):
         cases = [
@@ -197,7 +197,7 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
         for sentence, expected_action, expected_obj in cases:
             with self.subTest(sentence=sentence):
-                action, obj = self.generator.extract_action_phrase_es(sentence)
+                action, obj = self.generator.nlp_engine.extract_action_phrase_es(sentence)
 
                 self.assertEqual(action, expected_action)
                 self.assertEqual(obj, expected_obj)
@@ -319,7 +319,7 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
 
     def test_truncate_subject_preserves_word_boundaries(self):
         subject = 'agrega soporte bilingüe y corrige detección de tipo demasiado larga'
-        truncated = self.generator.truncate_subject(subject, limit=50)
+        truncated = self.generator.nlp_engine.truncate_subject(subject, limit=50)
 
         self.assertLessEqual(len(truncated), 50)
         self.assertEqual(truncated, 'agrega soporte bilingüe y corrige detección...')
@@ -464,7 +464,7 @@ git commit -m "docs(repo): embedded" \\
   -m "- Embedded body"
 ```
 """
-        warnings = self.generator.detect_input_noise_warnings(text)
+        warnings = self.generator.nlp_engine.detect_input_noise_warnings(text)
         self.assertIn('1 bloque(s) de código', warnings)
         self.assertIn('mucho ruido filtrado', warnings)
 

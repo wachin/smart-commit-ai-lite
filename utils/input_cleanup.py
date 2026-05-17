@@ -6,12 +6,16 @@ from utils.regex_utils import regex as re
 
 
 ACTION_PATTERN = re.compile(
-    r'\b(we|i|added|created|implemented|updated|changed|fixed|fixes|refactored|cleaned|improved|made|'
+    r'\b(we|i|add|implement|create|introduce|build|land|push|move|refactor|clean|'
+    r'update|change|modify|fix|resolve|correct|enhance|extend|replace|improve|make|'
+    r'remove|delete|rename|merge|optimize|format|configure|'
+    r'added|created|implemented|updated|changed|fixed|fixes|refactored|cleaned|improved|made|'
     r'detects|detect|uses|use|loads|load|writes|write|reports|report|normalizes|normalize|covers|cover|documents|document|'
     r'supports|support|generates|generate|validated|validate|'
     r'he|hemos|creado|creé|creamos|añadido|añadí|añadimos|agregado|implementado|implementé|implemente|actualizado|'
     r'actualicé|actualice|actualizamos|recalculé|recalcule|afiné|afine|cambiado|corregido|'
     r'arreglado|arreglé|arreglamos|arregló|mejorado|mejoré|mejore|mejoramos|documenta|documentado|documentada|documentamos|incluye|resume|'
+    r'agrega|añade|crea|crear|actualiza|modifica|arregla|mejora|optimiza|reemplaza|formatea|configura|'
     r'detecta|usa|entiende|genera|corrige|corregí|corregi|verifiqué|verifique|validé|valide|'
     r'le metí|metí|le puse|puse|puedes|selectores|tipo|scope|regenera|manteniendo|ajuste|manual|'
     r'añadí|anadi|quité|quite|quitada|eliminé|elimine|elimina|borra|borrar|desactiva|devuelve|foco|resultado|tests|'

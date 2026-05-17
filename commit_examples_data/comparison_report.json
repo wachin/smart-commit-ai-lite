@@ -6,8 +6,8 @@
   "exact_scope_matches": 26,
   "exact_body_count_matches": 12,
   "capped_body_count_matches": 17,
-  "average_subject_similarity": 0.44408683748714967,
-  "average_subject_text_similarity": 0.3946962509885035,
+  "average_subject_similarity": 0.44297761441530975,
+  "average_subject_text_similarity": 0.3937670988398392,
   "average_body_line_ratio": 0.0,
   "average_capped_body_line_ratio": 0.0,
   "average_capped_body_coverage": 0.0,
@@ -37,12 +37,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add Rhythm view panel with beat, bar, meter, and bpm display",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add RhythmView panel showing meter, bar, beat, BPM, and strip",
@@ -88,12 +88,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add General preferences and playback behavior settings",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Persist solo_volume_reduction (default 50%) and midi_reset",
@@ -137,12 +137,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add Help > User Guide action with shared localized lookup",
@@ -186,12 +186,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add View > Channels action and non-modal ChannelsDialog",
@@ -238,12 +238,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add per-channel Mute/Solo controls to the Channels view"
       ],
       "expected_body_lines": [
         "- Implement per-channel mute/solo tracking in player.py",
@@ -290,12 +290,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add per-channel volume sliders and real-time CC7 updates"
       ],
       "expected_body_lines": [
         "- Implement per-channel volume scaling before global volume",
@@ -342,12 +342,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
         "- Include documentation, community, and testing areas",
-        "- Use checkbox format for completed and pending tasks"
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Organize the roadmap with clear status sections"
       ],
       "expected_body_lines": [
         "- Add Program spinbox to ChannelsDialog with immediate CC send",
@@ -393,12 +393,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
         "- Include documentation, community, and testing areas",
-        "- Use checkbox format for completed and pending tasks"
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add per-channel patch lock to suppress file program changes"
       ],
       "expected_body_lines": [
         "- Implement per-channel lock state in player.py",
@@ -444,12 +444,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Use GM instrument names for channel program selection",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Replace numeric spinbox with QComboBox showing GM instrument names",
@@ -495,12 +495,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add Lyrics window with text-event filtering"
       ],
       "expected_body_lines": [
         "- Add View > Lyrics action and non-modal LyricsDialog",
@@ -546,12 +546,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add Lyrics window with text-event filtering"
       ],
       "expected_body_lines": [
         "- Preserve source track info in TextEvent via drumstick_py/file.py",
@@ -597,12 +597,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add Copy button to export filtered text to clipboard",
@@ -691,10 +691,10 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Update documentation mentioned in the summary",
         "- Add or update user guide and localized help content",
         "- Add encoding selector and save support for exported lyrics",
+        "- Cover changes with regression tests",
+        "- Update documentation mentioned in the summary",
         "- Validation: 138 tests pass"
       ],
       "expected_body_lines": [
@@ -741,12 +741,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add fullscreen mode for the dialog"
       ],
       "expected_body_lines": [
         "- Add Fullscreen/Window toggle button with dynamic label",
@@ -790,12 +790,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add Print support for filtered lyrics text"
       ],
       "expected_body_lines": [
         "- Add Print button using Qt standard print dialog for filtered text",
@@ -839,12 +839,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add Lyrics window with text-event filtering"
       ],
       "expected_body_lines": [
         "- Store raw bytes in TextEvent; decode via shared helper on demand",
@@ -891,12 +891,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Sync LyricsDialog with playback tick for real-time updates",
@@ -934,17 +934,17 @@
       "body_count_match": true,
       "capped_body_count_match": true,
       "expected_body_first": "- Add Roadmap-GUI/dmidiplayer-GUI.md to primary reading list",
-      "generated_body_first": "- Organize the roadmap with clear status sections",
+      "generated_body_first": "- Document completed features and project progress",
       "body_line_ratio": 0.0,
       "capped_body_line_ratio": 0.0,
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
         "- Include documentation, community, and testing areas",
-        "- Use checkbox format for completed and pending tasks"
+        "- Use checkbox format for completed and pending tasks",
+        "- Organize the roadmap with clear status sections",
+        "- Update documentation mentioned in the summary"
       ],
       "expected_body_lines": [
         "- Add Roadmap-GUI/dmidiplayer-GUI.md to primary reading list",
@@ -988,12 +988,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add Lyrics window with text-event filtering"
       ],
       "expected_body_lines": [
         "- Prefer track with lyric meta events (0x05) over generic text",
@@ -1031,17 +1031,17 @@
       "body_count_match": false,
       "capped_body_count_match": false,
       "expected_body_first": "- Specify default first tab and max 8 tracks per tab rule",
-      "generated_body_first": "- Organize the roadmap with clear status sections",
+      "generated_body_first": "- Document completed features and project progress",
       "body_line_ratio": 0.0,
       "capped_body_line_ratio": 0.0,
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
         "- Include documentation, community, and testing areas",
-        "- Use checkbox format for completed and pending tasks"
+        "- Use checkbox format for completed and pending tasks",
+        "- Organize the roadmap with clear status sections",
+        "- Update documentation mentioned in the summary"
       ],
       "expected_body_lines": [
         "- Specify default first tab and max 8 tracks per tab rule",
@@ -1083,12 +1083,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add View > Piano Player action and PianolaDialog class",
@@ -1136,12 +1136,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add midi_track_infos() to expose labels and channel data",
@@ -1231,12 +1231,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Cover changes with regression tests",
+        "- Organize the roadmap with clear status sections"
       ],
       "expected_body_lines": [
         "- Implement visible_white_notes() and visible_black_notes() helpers",
@@ -1280,12 +1280,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add Show checkbox per track row with keyboard area collapsing",
@@ -1331,12 +1331,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add fullscreen mode for the dialog"
       ],
       "expected_body_lines": [
         "- Add Fullscreen toggle button with Esc key exit support",
@@ -1378,12 +1378,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add Range selector with Exact and Used octaves options",
@@ -1429,12 +1429,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Track per-note velocity in PianoKeyboard for active notes",
@@ -1478,12 +1478,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Support never/minimal/active/always display modes in PianoKeyboard",
@@ -1527,12 +1527,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Support configurable active-color palettes in PianoKeyboard widget",
@@ -1578,12 +1578,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Support octave offset in PianoKeyboard for Scientific/Yamaha modes",
@@ -1627,12 +1627,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Cover changes with regression tests"
       ],
       "expected_body_lines": [
         "- Add mouse and QWERTY keyboard input support to PianoKeyboard widget",
@@ -1678,12 +1678,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add General preferences and playback behavior settings"
       ],
       "expected_body_lines": [
         "- Persist color mode, note labels, and octave designation settings",
@@ -1727,12 +1727,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add General preferences and playback behavior settings"
       ],
       "expected_body_lines": [
         "- Persist font family, size, and past/future text colors",
@@ -1778,12 +1778,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
-        "- Include documentation, community, and testing areas"
+        "- Include documentation, community, and testing areas",
+        "- Use checkbox format for completed and pending tasks",
+        "- Add or update user guide and localized help content",
+        "- Add General preferences and playback behavior settings"
       ],
       "expected_body_lines": [
         "- Support custom font family and size in PianoKeyboard widget",
@@ -1827,12 +1827,12 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Organize the roadmap with clear status sections",
-        "- Update documentation mentioned in the summary",
         "- Document completed features and project progress",
         "- Outline future work for Git, ML, UI, tests, and multilingual support",
         "- Include documentation, community, and testing areas",
-        "- Use checkbox format for completed and pending tasks"
+        "- Use checkbox format for completed and pending tasks",
+        "- Add General preferences and playback behavior settings",
+        "- Organize the roadmap with clear status sections"
       ],
       "expected_body_lines": [
         "- Persist pianola/single_color setting with default blue highlight",
@@ -1876,8 +1876,8 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
         "- Add General preferences and playback behavior settings",
+        "- Cover changes with regression tests",
         "- Validation: 178 tests pass"
       ],
       "expected_body_lines": [
@@ -1924,10 +1924,10 @@
       "capped_body_coverage": 0.0,
       "generated_body_lines": [
         "- Update code paths mentioned in the summary",
-        "- Cover changes with regression tests",
         "- Add per-channel Mute/Solo controls to the Channels view",
         "- Add per-channel volume sliders and real-time CC7 updates",
         "- Add encoding selector and save support for exported lyrics",
+        "- Cover changes with regression tests",
         "- Validation: 180 tests pass"
       ],
       "expected_body_lines": [
@@ -2083,7 +2083,7 @@
     {
       "title": "45. WPS Dicts: Enriched Configs (Batch 1)",
       "expected_subject": "feat(dict): enrich dict.conf with localized display names",
-      "generated_subject": "build(dict): actualiza proyecto",
+      "generated_subject": "build(dict): actualiza archivos (tools/wps_libr...",
       "subject_match": false,
       "expected_type": "feat",
       "generated_type": "build",
@@ -2091,8 +2091,8 @@
       "expected_scope": "dict",
       "generated_scope": "dict",
       "scope_match": true,
-      "subject_similarity": 0.38636363636363635,
-      "subject_text_similarity": 0.2857142857142857,
+      "subject_similarity": 0.3364485981308411,
+      "subject_text_similarity": 0.24390243902439024,
       "expected_body_count": 4,
       "capped_expected_body_count": 4,
       "generated_body_count": 2,

@@ -33,14 +33,14 @@ def parse_commit_header(subject: str) -> tuple[str, str, str]:
 
 def compare_entry(entry, generator):
     orig = entry['original_text']
-    verb, obj, language = generator.analyze_with_nltk(orig)
-    scope = generator.detect_scope(orig)
-    commit_type = generator.select_commit_type(orig, verb, obj)
-    subject_text = generator.format_subject(verb, obj, language)
+    verb, obj, language = generator.nlp_engine.analyze_with_nltk(orig)
+    scope = generator.nlp_engine.detect_scope(orig)
+    commit_type = generator.nlp_engine.select_commit_type(orig, verb, obj)
+    subject_text = generator.nlp_engine.format_subject(verb, obj, language)
     subject = f'{commit_type}({scope}): {subject_text}'
     if len(subject) > 50:
         subject = subject[:47] + '...'
-    body_lines = generator.generate_body_lines(generator.clean_input(orig), language)
+    body_lines = generator.nlp_engine.generate_body_lines(generator.nlp_engine.clean_input(orig), language)
 
     expected_subject = entry['expected_subject']
     expected_body = entry['expected_body_lines']
