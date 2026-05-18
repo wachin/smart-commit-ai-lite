@@ -268,11 +268,6 @@ class NLPEngine:
             (r'\b(?:i|we)\s+refactored\s+(.+?)(?:\s+to|\s+for|\s+with|\s+in|\s+and|\.|$)', 'refactor'),
             (r'\b(?:i|we)\s+(?:fixed|corrected|resolved)\s+(.+?)(?:\s+to|\s+for|\s+with|\s+in|\s+and|\.|$)', 'fix'),
             (r'\b(?:i|we)\s+sent\s+(.+?)(?:\s+to|\s+for|\s+with|\s+in|\s+and|\.|$)', 'send'),
-            (r'\bwe\s+got\s+(.+?)\s+over the line', 'add'),
-            (r'\bwe\s+landed\s+(.+?)(?:\s+with|\s+\.|$)', 'add'),
-            (r'\bwe\s+carried\s+(.+?)\s+one step further', 'add'),
-            (r'\bwe\s+kept\s+(.+?)\s+moving', 'add'),
-            (r'\bwe\s+made\s+(.+?)\s+much nicer to use', 'improve'),
         ]
 
         for pattern, action in special_patterns:
@@ -467,6 +462,8 @@ class NLPEngine:
             'add', 'implement', 'create', 'introduce', 'build', 'land', 'push', 'move', 'refactor', 'clean',
             'update', 'change', 'modify', 'fix', 'resolve', 'correct', 'enhance', 'extend', 'replace', 'improve',
             'make', 'remove', 'delete', 'rename', 'merge', 'optimize', 'document', 'format', 'configure',
+            'recognize', 'raise', 'prevent', 'support', 'load', 'write', 'read', 'report', 'normalize', 'cover',
+            'validate', 'generate', 'fall', 'give', 'set', 'use', 'return', 'throw', 'handle', 'catch', 'allow',
             'agrega', 'añade', 'crea', 'creado', 'crear', 'implementa', 'implementado', 'actualiza',
             'actualizado', 'cambia', 'modifica', 'corrige', 'arregla', 'mejora', 'mejorado',
             'documenta', 'documentado', 'incluye', 'resume'
@@ -939,13 +936,6 @@ class NLPEngine:
                     add_bullet('- Establece baseline: 0.446 de similitud de subject')
                 return bullets
 
-            if self.is_mixed_language_nlp_summary(text_lower):
-                add_bullet('- Mejora la detección de idioma en textos mixtos')
-                if 'spanish' in text_lower or 'english' in text_lower or 'español' in text_lower or 'inglés' in text_lower:
-                    add_bullet('- Reconoce entradas combinadas en español e inglés')
-                if 'tokenization' in text_lower or 'tokenización' in text_lower:
-                    add_bullet('- Mantiene tokenización localizada para cada idioma')
-                add_validation_bullet()
                 return bullets
 
             has_bilingual_nlp = any(k in text_lower for k in ['bilingüe', 'bilingue', 'español', 'inglés', 'ingles', 'tokenización', 'tokenizacion', 'verbos españoles'])
@@ -1098,79 +1088,12 @@ class NLPEngine:
                     add_bullet('- Write local joblib artifacts and model metadata')
                 if 'ml/predictor.py' in text_lower or 'artifact readiness' in text_lower:
                     add_bullet('- Report ML artifact readiness from the predictor')
-                if 'utils/preprocessing.py' in text_lower or 'vectorization' in text_lower or 'vectorizer' in text_lower:
-                    add_bullet('- Normalize text before TF-IDF vectorization')
-                if 'test_ml_training.py' in text_lower or 'test_predictor.py' in text_lower:
-                    add_bullet('- Cover training and predictor behavior with tests')
-                if 'readme.md' in text_lower or 'roadmap.md' in text_lower:
-                    add_bullet('- Document the offline ML workflow')
-                add_validation_bullet()
                 return bullets
 
-            if self.is_spanish_verb_expansion_summary(text_lower):
-                add_bullet('- Expand Spanish conjugation coverage for commit summaries')
-                if 'actualiza proyecto' in text_lower:
-                    add_bullet('- Prevent fallback to actualiza proyecto for common Spanish summaries')
-                if 'ci' in text_lower and 'instrucciones' in text_lower:
-                    add_bullet('- Fix ci scope matching inside instrucciones')
-                if 'test_smart_commit_nltk.py' in text_lower or 'regression' in text_lower:
-                    add_bullet('- Add regression tests for Spanish verb expansion')
-                if 'roadmap.md' in text_lower:
-                    add_bullet('- Update Roadmap.md with Spanish verb progress')
-                add_validation_bullet()
                 return bullets
 
-            if self.is_mixed_language_nlp_summary(text_lower):
-                add_bullet('- Improve language detection for mixed-language input')
-                if 'spanish' in text_lower or 'english' in text_lower:
-                    add_bullet('- Recognize summaries that combine Spanish and English')
-                if 'tokenization' in text_lower or 'tokenización' in text_lower:
-                    add_bullet('- Preserve localized tokenization behavior')
-                add_validation_bullet()
                 return bullets
 
-            has_bilingual_nlp = any(k in text_lower for k in ['bilingual', 'spanish', 'english', 'tokenization', 'spanish verbs'])
-            if has_bilingual_nlp and any(k in text_lower for k in ['smart_commit_nltk.py', 'nltk', 'language']):
-                add_bullet('- Detect input language for localized tokenization')
-                add_bullet('- Support Spanish verbs like creado, actualizado, and incluye')
-                add_bullet('- Generate commit subject and body in the source language')
-                if re.search(r'\bci\b|false-positive|false positive|type detection', text_lower):
-                    add_bullet('- Fix false-positive ci detection inside common words')
-                if 'py_compile' in text_lower:
-                    add_bullet('- Validate syntax with py_compile')
-            if 'roadmap.md' in text_lower or 'roadmap' in text_lower:
-                if re.search(r'\b(created|add|added|new file)\b', text_lower):
-                    add_bullet('- Document completed features and project progress')
-                    add_bullet('- Outline future work for Git, ML, UI, tests, and multilingual support')
-                    add_bullet('- Organize the roadmap with clear status sections')
-                    add_bullet('- Include documentation, community, and testing areas')
-                    add_bullet('- Use checkbox format for completed and pending tasks')
-                else:
-                    add_bullet('- Update Roadmap.md to mark completed items')
-            if 'user guide' in text_lower or 'help -> user guide' in text_lower or 'local help' in text_lower or 'localized document lookup' in text_lower:
-                add_bullet('- Add or update user guide and localized help content')
-            if 'general midi' in text_lower or 'gm name' in text_lower or 'qcombobox' in text_lower:
-                add_bullet('- Use GM instrument names for channel program selection')
-            if 'mute' in text_lower and 'solo' in text_lower:
-                add_bullet('- Add per-channel Mute/Solo controls to the Channels view')
-            if 'volume slider' in text_lower or 'volume sliders' in text_lower or 'per-channel volume' in text_lower:
-                add_bullet('- Add per-channel volume sliders and real-time CC7 updates')
-            if 'program lock' in text_lower or 'patch lock' in text_lower or 'lock checkbox' in text_lower:
-                add_bullet('- Add per-channel patch lock to suppress file program changes')
-            if 'lyrics' in text_lower and 'text events' in text_lower:
-                add_bullet('- Add Lyrics window with text-event filtering')
-            if 'rhythm view' in text_lower or 'rhythm panel' in text_lower:
-                add_bullet('- Add Rhythm view panel with beat, bar, meter, and bpm display')
-            if 'preferences' in text_lower and 'gmos' not in text_lower:
-                add_bullet('- Add General preferences and playback behavior settings')
-            if 'print' in text_lower and 'dialog' in text_lower:
-                add_bullet('- Add Print support for filtered lyrics text')
-            if 'fullscreen' in text_lower:
-                add_bullet('- Add fullscreen mode for the dialog')
-            if 'encoding' in text_lower and 'save' in text_lower:
-                add_bullet('- Add encoding selector and save support for exported lyrics')
-            if 'track-aware' in text_lower or 'source track' in text_lower:
-                add_bullet('- Add track-aware filtering for lyrics events')
 
             add_file_mention_bullets()
             add_validation_bullet()

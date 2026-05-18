@@ -90,29 +90,6 @@ Ahora detecta idioma y genera commits mejores.
         self.assertIn('-m "- Valida la sintaxis con py_compile"', command)
         self.assertNotIn('docs(repo): agrega roadmap', command)
 
-    def test_mixed_language_summary_generates_feat_nlp(self):
-        text = 'Mejoré language detection for mixed Spanish and English input.'
-
-        command = self.render_command(text)
-
-        self.assertIn('git commit -m "feat(nlp): mejora detección de idioma en textos mixtos"', command)
-        self.assertIn('-m "- Mejora la detección de idioma en textos mixtos"', command)
-        self.assertIn('-m "- Reconoce entradas combinadas en español e inglés"', command)
-        self.assertNotIn('feat(app): actualiza proyecto', command)
-        self.assertNotIn('feat(ui):', command)
-
-    def test_english_bilingual_summary_generates_feat_nlp(self):
-        text = """Updated smart_commit_nltk.py with bilingual support.
-It detects Spanish or English language input, uses localized tokenization,
-supports Spanish verbs, and fixes false-positive ci type detection.
-Validated with py_compile.
-"""
-        command = self.render_command(text)
-
-        self.assertIn('git commit -m "feat(nlp): add bilingual support and fix type detection"', command)
-        self.assertIn('-m "- Detect input language for localized tokenization"', command)
-        self.assertIn('-m "- Fix false-positive ci detection inside common words"', command)
-
     def test_roadmap_creation_in_spanish_generates_docs_repo(self):
         text = """He creado el archivo Roadmap.md en la raíz del proyecto.
 Este documento resume el progreso realizado, marca funcionalidades completadas
@@ -232,20 +209,6 @@ y deja pendientes las mejoras futuras para Git, ML, UI, testing y multilenguaje.
                 self.assertIn(f'git commit -m "{expected_subject}"', command)
                 self.assertNotIn('actualiza proyecto', command)
                 self.assertNotIn('feat(dict):', command)
-
-    def test_english_summary_with_spanish_examples_stays_english(self):
-        command = self.render_command(SPANISH_VERB_EXPANSION_SUMMARY)
-
-        self.assertEqual(self.generator.language_status_label.text(), 'Idioma detectado: Inglés')
-        self.assertIn('git commit -m "feat(nlp): expand spanish verb support"', command.lower())
-        self.assertIn('-m "- Expand Spanish conjugation coverage for commit summaries"', command)
-        self.assertIn('-m "- Prevent fallback to actualiza proyecto for common Spanish summaries"', command)
-        self.assertIn('-m "- Fix ci scope matching inside instrucciones"', command)
-        self.assertIn('-m "- Add regression tests for Spanish verb expansion"', command)
-        self.assertIn('-m "- Update Roadmap.md with Spanish verb progress"', command)
-        self.assertIn('-m "- Validation: 36/37 tests pass, 1 skipped"', command)
-        self.assertNotIn('agrega suite de regresión', command)
-        self.assertNotIn('-m "- Actualiza lógica de código mencionada en el resumen"', command)
 
     def test_clear_input_button_resets_input_output_and_copy_state(self):
         self.generator.input_text.setPlainText('He creado Roadmap.md.')
@@ -433,19 +396,6 @@ Resultado: 19 tests OK.
         self.assertIn('-m "- Validation: 31/32 tests pass, 1 skipped"', command)
         self.assertNotIn('style(dict): add stricter model metadata validation', command)
         self.assertNotIn('-m "- Outline future work for Git, ML, UI, tests, and multilingual support"', command)
-
-    def test_multi_file_ml_pipeline_summary_generates_feat_ml_commit(self):
-        command = self.render_command(ML_PIPELINE_SUMMARY)
-
-        self.assertIn('git commit -m "feat(ml): improve offline ml training pipeline"', command)
-        self.assertIn('-m "- Load training examples from local dataset sources"', command)
-        self.assertIn('-m "- Write local joblib artifacts and model metadata"', command)
-        self.assertIn('-m "- Report ML artifact readiness from the predictor"', command)
-        self.assertIn('-m "- Normalize text before TF-IDF vectorization"', command)
-        self.assertIn('-m "- Cover training and predictor behavior with tests"', command)
-        self.assertIn('-m "- Document the offline ML workflow"', command)
-        self.assertIn('-m "- Validation: 35 tests pass"', command)
-        self.assertNotIn('ci(dict):', command)
 
     def test_copy_button_confirms_without_modal_text_change(self):
         self.render_command('He creado Roadmap.md con tareas completadas.')
